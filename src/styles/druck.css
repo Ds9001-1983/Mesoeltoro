@@ -1,0 +1,96 @@
+/* ============================================================================
+   Druckausgabe
+   ----------------------------------------------------------------------------
+   Ersetzt das PDF. Die druckbare Speisekarte entsteht aus denselben Daten wie
+   die Bildschirmfassung — es gibt also keine zweite Wahrheit, die veralten
+   könnte. Ein separates PDF wäre genau das.
+   ============================================================================ */
+
+@media print {
+  :root {
+    --kopfhoehe: 0rem;
+    --ankerleiste: 0rem;
+    --callbar: 0rem;
+  }
+
+  body {
+    background: #fff;
+    color: #000;
+    font-size: 11pt;
+    line-height: 1.45;
+    padding-block-end: 0;
+  }
+
+  /* Bildschirmnavigation, Bewegungssteuerung und Dekor haben auf Papier
+     nichts verloren. */
+  .kopfzeile,
+  .callbar,
+  .sprungmarke,
+  .bewegung,
+  [data-dekor],
+  canvas,
+  .fuss__liste,
+  video {
+    display: none !important;
+  }
+
+  /* Das dunkle Kapitel würde eine halbe Tonerpatrone kosten. */
+  [data-flaeche='glut'] {
+    background: #fff !important;
+    color: #000 !important;
+  }
+
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  /* Ziel-URL hinter externen Links ausschreiben — auf Papier ist ein Link
+     sonst wertlos. Interne Links bleiben unangetastet, sonst wird die
+     Speisekarte von Fußnoten zugemüllt. */
+  a[href^='http']::after {
+    content: ' (' attr(href) ')';
+    font-size: 9pt;
+    word-break: break-all;
+  }
+
+  a[href^='tel:']::after,
+  a[href^='mailto:']::after,
+  a[href^='#']::after,
+  a[href^='/']::after {
+    content: '';
+  }
+
+  /* Überschriften nicht allein am Seitenende stehen lassen. */
+  h1,
+  h2,
+  h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  /* Ein Gericht darf nie über den Seitenumbruch zerfallen — sonst steht die
+     Allergenkennzeichnung auf der nächsten Seite als Waise. */
+  .gericht,
+  .zitat,
+  figure,
+  tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  /* Kategorien beginnen auf neuer Seite, sobald es eng wird. */
+  .kategorie {
+    break-before: auto;
+  }
+
+  /* Die Legende gehört zwingend mit aufs Papier — sie löst die Codes auf,
+     die neben jedem Gericht stehen. Ohne sie ist die Karte unvollständig. */
+  .legende {
+    break-before: page;
+  }
+
+  @page {
+    margin: 18mm 16mm;
+  }
+}

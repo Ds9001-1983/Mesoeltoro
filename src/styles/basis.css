@@ -1,0 +1,203 @@
+/* ============================================================================
+   Basis — Reset, Fokus, Zielgrößen, Sprungmarke
+   ============================================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  /* scroll-padding hält Ankersprünge unter allen Sticky-Elementen frei.
+     Ein falscher Wert hier ist ein 2.4.11-Verstoß, kein Schönheitsfehler. */
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--kopfhoehe) + var(--ankerleiste) + 8px);
+  scroll-padding-bottom: calc(var(--callbar) + 8px);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+:root[data-motion='reduced'] ,
+:root[data-motion='off'] {
+  scroll-behavior: auto;
+}
+
+body {
+  min-height: 100svh;
+  background-color: var(--flaeche);
+  color: var(--text);
+  font-family: var(--schrift-text);
+  font-size: var(--t-basis);
+  line-height: var(--zeile-text);
+  /* Kein text-rendering: optimizeLegibility — verzögert das erste Rendering
+     ohne messbaren Gewinn und bricht in Safari gelegentlich Ligaturen. */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- Medien ---------------------------------------------------------------- */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  /* Verhindert CLS, wenn width/height am Element fehlen. Sie sollen trotzdem
+     immer gesetzt werden — pruefe-bildrechte.mjs meckert, wenn nicht. */
+  height: auto;
+}
+
+/* --- Formular-Elemente (existieren aktuell nur als Radios im Fuß) ---------- */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* --- Typografische Grundlagen ---------------------------------------------- */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--schrift-display);
+  font-weight: 400;
+  line-height: var(--zeile-h);
+  text-wrap: balance;
+  /* Bindestrich-Trennung nur im Fließtext, nie in Überschriften. */
+  hyphens: manual;
+}
+
+p,
+li,
+dd,
+dt,
+figcaption {
+  text-wrap: pretty;
+}
+
+/* --- Links -----------------------------------------------------------------
+   Unterstreichung bleibt. Sie ist die einzige Auszeichnung, die auch bei
+   Farbenblindheit trägt (1.4.1) — eine reine Farbunterscheidung wäre ein
+   Verstoß, sobald der Link im Fließtext steht.                              */
+a {
+  color: var(--akzent);
+  text-decoration: underline;
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.18em;
+  transition: text-decoration-thickness var(--dauer-schnell) var(--ease);
+}
+
+a:hover {
+  text-decoration-thickness: 0.14em;
+}
+
+/* --- Fokus -----------------------------------------------------------------
+   Doppelring, sichtbar auf hellem UND dunklem Grund. Niemals outline: none.
+   :focus-visible statt :focus, damit Mausklicks keinen Ring hinterlassen.   */
+:focus-visible {
+  outline: 2px solid var(--fokus-innen);
+  outline-offset: 0;
+  box-shadow: 0 0 0 4px var(--fokus-aussen);
+  border-radius: 2px;
+}
+
+/* Für Browser ohne :focus-visible bleibt der Standardring erhalten —
+   deshalb hier bewusst KEIN pauschales `:focus { outline: none }`. */
+
+/* --- Zielgrößen (2.5.8 fordert 24×24, wir setzen 44×44) -------------------- */
+a[data-ziel],
+button,
+input[type='radio'],
+label[data-ziel] {
+  min-block-size: var(--ziel-min);
+  min-inline-size: var(--ziel-min);
+}
+
+/* --- Sprungmarke -----------------------------------------------------------
+   Erstes fokussierbares Element der Seite. Sichtbar erst bei Fokus, dann
+   aber vollflächig und kontrastreich — kein 2px-Streifen am Bildrand.      */
+.sprungmarke {
+  position: absolute;
+  inset-inline-start: var(--raum-4);
+  inset-block-start: var(--raum-4);
+  z-index: 1000;
+  display: inline-block;
+  padding: var(--raum-3) var(--raum-5);
+  background-color: var(--espresso);
+  color: var(--kalk);
+  font-family: var(--schrift-mikro);
+  text-decoration: none;
+  transform: translateY(calc(-100% - var(--raum-6)));
+  transition: transform var(--dauer-schnell) var(--ease);
+}
+
+.sprungmarke:focus-visible {
+  transform: translateY(0);
+}
+
+/* --- Nur für Hilfsmittel ---------------------------------------------------
+   Nicht `display: none` — das entfernt den Inhalt auch aus dem
+   Accessibility Tree. Diese Variante bleibt vorlesbar.                     */
+.vh {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* --- Layout-Hilfen ---------------------------------------------------------- */
+.huelle {
+  inline-size: min(100% - 2 * var(--rahmen), var(--breite-max));
+  margin-inline: auto;
+}
+
+.satz {
+  max-inline-size: var(--satzspiegel);
+}
+
+.stapel > * + * {
+  margin-block-start: var(--raum-4);
+}
+
+/* --- Hoher Kontrast (Windows) ----------------------------------------------
+   Dekor verschwindet folgenlos, Fokus bleibt sichtbar. Ohne diese Regel
+   zeichnet Windows den Doppelring weg.                                     */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 3px solid CanvasText;
+    box-shadow: none;
+  }
+
+  [data-dekor] {
+    display: none;
+  }
+}

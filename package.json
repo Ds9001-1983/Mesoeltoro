@@ -1,0 +1,46 @@
+{
+  "name": "meson-el-toro",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Website der Meson el Toro GmbH, Waldbröl — statisch, ohne externe Requests, WCAG 2.2 AA",
+  "packageManager": "pnpm@10.33.0",
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build && pnpm pruefen:dist",
+    "preview": "astro preview",
+    "check": "astro check",
+    "pruefen": "pnpm check && pnpm vitest run && pnpm pruefen:inhalt && pnpm pruefen:kontrast",
+    "pruefen:inhalt": "node scripts/pruefe-karte.mjs && node scripts/pruefe-pflichtfelder.mjs && node scripts/pruefe-datumsbomben.mjs",
+    "pruefen:kontrast": "node scripts/pruefe-kontraste.mjs",
+    "pruefen:dist": "node scripts/pruefe-claims.mjs && node scripts/pruefe-bildrechte.mjs && node scripts/pruefe-externe-requests.mjs",
+    "pruefen:recht": "pnpm pruefen:dist",
+    "bilder": "node scripts/bilder-aufbereiten.mjs",
+    "test": "vitest run",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "astro": "7.1.4",
+    "ogl": "1.0.11"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "sharp"
+    ]
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@axe-core/playwright": "4.12.1",
+    "@playwright/test": "1.62.0",
+    "@types/node": "^26.1.2",
+    "lightningcss": "^1.33.0",
+    "sharp": "0.35.3",
+    "typescript": "5.9.3",
+    "vitest": "4.1.10"
+  }
+}

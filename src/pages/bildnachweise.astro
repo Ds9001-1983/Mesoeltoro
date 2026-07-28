@@ -1,0 +1,160 @@
+---
+/**
+ * Bildnachweise.
+ *
+ * Vollständig aus content/bildnachweise.json erzeugt — dieselbe Datei, die
+ * als Build-Gate dient. Register und öffentliche Liste können deshalb nicht
+ * auseinanderlaufen.
+ *
+ * § 13 UrhG verlangt die Urhebernennung. Eine Sammelnennung im Impressum
+ * genügt dafür nicht: Es muss erkennbar sein, welches Bild von wem stammt.
+ */
+import Basis from '../layouts/Basis.astro'
+import { REGISTER } from '../lib/bilder.ts'
+
+const eintraege = Object.entries(REGISTER)
+const freigegeben = eintraege.filter(([, e]) => e.freigabe)
+const offen = eintraege.filter(([, e]) => !e.freigabe)
+---
+
+<Basis
+  titel="Bildnachweise"
+  beschreibung="Urheber der auf dieser Website verwendeten Fotografien, einzeln je Motiv ausgewiesen."
+>
+  <div class="huelle nachweise">
+    <h1>Bildnachweise</h1>
+    <p class="lead">
+      Die Urheber der hier verwendeten Fotografien, einzeln je Motiv. Eine Sammelnennung im
+      Impressum wäre nach § 13 UrhG nicht ausreichend.
+    </p>
+
+    {freigegeben.length > 0 && (
+      <table class="nachweise__tabelle">
+        <caption class="vh">Verwendete Bilder und ihre Urheber</caption>
+        <thead>
+          <tr>
+            <th scope="col">Motiv</th>
+            <th scope="col">Urheber</th>
+            <th scope="col">Verwendet auf</th>
+          </tr>
+        </thead>
+        <tbody>
+          {freigegeben.map(([schluessel, eintrag]) => (
+            <tr>
+              <th scope="row">{eintrag.motiv}</th>
+              <td>{eintrag.urheber}</td>
+              <td class="mikro">{eintrag.verwendung.join(', ')}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    )}
+
+    {offen.length > 0 && (
+      <section class="nachweise__offen" aria-labelledby="offen-titel">
+        <h2 id="offen-titel">Noch nicht veröffentlicht</h2>
+        <p class="satz">
+          Für die folgenden Aufnahmen ist die Rechtekette noch nicht abschließend dokumentiert.
+          Solange das so ist, zeigen wir an ihrer Stelle einen Platzhalter statt des Bildes.
+        </p>
+        <ul class="nachweise__liste">
+          {offen.map(([schluessel, eintrag]) => (
+            <li>
+              {eintrag.motiv} <span class="leise">— {eintrag.urheber}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    <p class="mikro leise nachweise__fuss">
+      Alle übrigen Grafiken — Wortmarke, Lageplan, Symbole — wurden für diese Website erstellt.
+    </p>
+  </div>
+</Basis>
+
+<style>
+  .nachweise {
+    padding-block: var(--raum-8) var(--raum-9);
+    max-inline-size: 52rem;
+  }
+
+  .nachweise .lead {
+    margin-block-start: var(--raum-5);
+  }
+
+  .nachweise__tabelle {
+    inline-size: 100%;
+    border-collapse: collapse;
+    margin-block-start: var(--raum-7);
+  }
+
+  .nachweise__tabelle th,
+  .nachweise__tabelle td {
+    padding-block: var(--raum-3);
+    padding-inline-end: var(--raum-4);
+    text-align: start;
+    vertical-align: baseline;
+    border-block-end: 1px solid var(--linie);
+  }
+
+  .nachweise__tabelle thead th {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    color: var(--text-leise);
+  }
+
+  .nachweise__tabelle tbody th {
+    font-weight: 400;
+  }
+
+  .nachweise__offen {
+    margin-block-start: var(--raum-8);
+    padding-block-start: var(--raum-6);
+    border-block-start: 1px solid var(--linie);
+  }
+
+  .nachweise__offen p {
+    margin-block-start: var(--raum-4);
+  }
+
+  .nachweise__liste {
+    margin-block-start: var(--raum-4);
+    padding-inline-start: var(--raum-5);
+    display: grid;
+    gap: var(--raum-2);
+  }
+
+  .nachweise__fuss {
+    margin-block-start: var(--raum-8);
+  }
+
+  @media (max-width: 35rem) {
+    .nachweise__tabelle,
+    .nachweise__tabelle thead,
+    .nachweise__tabelle tbody,
+    .nachweise__tabelle tr,
+    .nachweise__tabelle th,
+    .nachweise__tabelle td {
+      display: block;
+      inline-size: auto;
+    }
+
+    .nachweise__tabelle thead {
+      display: none;
+    }
+
+    .nachweise__tabelle tr {
+      padding-block: var(--raum-3);
+      border-block-end: 1px solid var(--linie);
+    }
+
+    .nachweise__tabelle th,
+    .nachweise__tabelle td {
+      border: none;
+      padding-block: 0.1rem;
+    }
+  }
+</style>

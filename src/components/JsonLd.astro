@@ -1,0 +1,182 @@
+---
+/**
+ * Strukturierte Daten.
+ *
+ * Ehrlich gegenüber dem Kunden: „Restaurant“ und „Menu“ sind KEINE
+ * Rich-Result-Typen in Googles Katalog. Es wird also keine Sternebewertung
+ * und kein Speisekarten-Karussell in den Suchergebnissen geben. Der Nutzen
+ * liegt im Knowledge Graph und darin, dass KI-Antwortsysteme die Öffnungs-
+ * zeiten und die Karte sauber auslesen können — nicht in garantierten
+ * Snippets.
+ *
+ * Bewusst NICHT enthalten: aggregateRating und review. Selbst ausgespielte
+ * Bewertungen erzeugen seit 2019 ohnehin keine Sterne, wecken Spam-Verdacht
+ * und verschärfen die Prüfpflicht nach § 5b Abs. 3 UWG.
+ *
+ * Öffnungszeiten und Schließtage stammen aus derselben Datei wie die
+ * sichtbare Tabelle. Es gibt keine zweite Wahrheit, die auseinanderlaufen
+ * könnte.
+ */
+import { restaurant } from '../lib/daten.ts'
+import { KARTE_META, KATEGORIEN, preiszeile } from '../lib/karte.ts'
+import { WOCHENTAGE, type Wochentag } from '../lib/zeiten.ts'
+
+interface Props {
+  /** Nur auf /speisekarte/ true — sonst bläht das Menü jede Seite auf. */
+  readonly mitSpeisekarte?: boolean
+  readonly brotkrumen?: readonly { name: string; pfad: string }[]
+  readonly faq?: readonly { frage: string; antwort: string }[]
+}
+
+const { mitSpeisekarte = false, brotkrumen, faq } = Astro.props
+
+const basis = 'https://meson-el-toro.de'
+
+const SCHEMA_TAG: Record<Wochentag, string> = {
+  montag: 'Monday',
+  dienstag: 'Tuesday',
+  mittwoch: 'Wednesday',
+  donnerstag: 'Thursday',
+  freitag: 'Friday',
+  samstag: 'Saturday',
+  sonntag: 'Sunday',
+}
+
+// Jeder Zeitraum wird eine eigene Angabe — Mittag und Abend sind zwei
+// getrennte Öffnungszeiten, keine durchgehende von 12 bis 22 Uhr.
+const oeffnungszeiten = WOCHENTAGE.flatMap((tag) =>
+  (restaurant.regulaer[tag] ?? []).map(([von, bis]) => ({
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: `https://schema.org/${SCHEMA_TAG[tag]}`,
+    opens: von,
+    closes: bis,
+  })),
+)
+
+/**
+ * Wiederkehrende Schließtage als specialOpeningHoursSpecification.
+ * Schema.org verlangt volle Datumsangaben, unsere Daten sind aber
+ * jahresunabhängig (MM-TT) — deshalb hier auf das laufende und das
+ * kommende Jahr abgebildet.
+ */
+const jahr = Number(KARTE_META.stand.slice(0, 4))
+const schliessungen = [jahr, jahr + 1].flatMap((j) =>
+  restaurant.schliessungen_wiederkehrend.map((zeitraum) => ({
+    '@type': 'OpeningHoursSpecification',
+    validFrom: `${j}-${zeitraum.von}`,
+    validThrough: `${zeitraum.von > zeitraum.bis ? j + 1 : j}-${zeitraum.bis}`,
+    opens: '00:00',
+    closes: '00:00',
+  })),
+)
+
+const restaurantDaten = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  '@id': `${basis}/#restaurant`,
+  name: restaurant.name,
+  legalName: restaurant.name_lang,
+  description: restaurant.beschreibung,
+  url: `${basis}/`,
+  telephone: restaurant.telefon_e164,
+  email: restaurant.email,
+  foundingDate: String(restaurant.zahlen.gegruendet),
+  servesCuisine: ['Spanisch', 'Steakhouse'],
+  priceRange: '€€€',
+  currenciesAccepted: 'EUR',
+  acceptsReservations: 'https://schema.org/True',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: restaurant.adresse.strasse,
+    postalCode: restaurant.adresse.plz,
+    addressLocality: restaurant.adresse.ort,
+    addressRegion: 'Nordrhein-Westfalen',
+    addressCountry: restaurant.adresse.land,
+  },
+  geo: {
+    '@type': 'GeoCoordinates',
+    latitude: restaurant.adresse.geo.breite,
+    longitude: restaurant.adresse.geo.laenge,
+  },
+  openingHoursSpecification: oeffnungszeiten,
+  specialOpeningHoursSpecification: schliessungen,
+  hasMenu: `${basis}/speisekarte/`,
+  publicAccess: true,
+}
+
+const speisekarte = mitSpeisekarte
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Menu',
+      '@id': `${basis}/speisekarte/#menu`,
+      name: 'Speisekarte',
+      inLanguage: 'de-DE',
+      dateModified: KARTE_META.stand,
+      hasMenuSection: KATEGORIEN.map((kategorie) => ({
+        '@type': 'MenuSection',
+        name: kategorie.titel,
+        ...(kategorie.einleitung ? { description: kategorie.einleitung } : {}),
+        hasMenuItem: kategorie.gerichte.map((gericht) => ({
+          '@type': 'MenuItem',
+          name: gericht.name,
+          ...(gericht.beschreibung ? { description: gericht.beschreibung } : {}),
+          ...(gericht.vegan
+            ? { suitableForDiet: 'https://schema.org/VeganDiet' }
+            : gericht.vegetarisch
+              ? { suitableForDiet: 'https://schema.org/VegetarianDiet' }
+              : {}),
+          offers: gericht.varianten.map((variante) => ({
+            '@type': 'Offer',
+            // Schema.org verlangt einen Punkt als Dezimaltrenner — die
+            // sichtbare Darstellung bleibt davon unberührt.
+            price: variante.preis.replace(',', '.'),
+            priceCurrency: 'EUR',
+            ...(variante.bezeichnung ? { name: variante.bezeichnung } : {}),
+          })),
+          ...(gericht.kennzeichnung_status === 'geprueft' && gericht.allergene.length > 0
+            ? {
+                additionalProperty: gericht.allergene.map((code) => ({
+                  '@type': 'PropertyValue',
+                  name: 'Allergen',
+                  value: code,
+                })),
+              }
+            : {}),
+        })),
+      })),
+    }
+  : null
+
+const brotkrumenDaten = brotkrumen
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: brotkrumen.map((eintrag, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: eintrag.name,
+        item: `${basis}${eintrag.pfad}`,
+      })),
+    }
+  : null
+
+const faqDaten = faq
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faq.map((eintrag) => ({
+        '@type': 'Question',
+        name: eintrag.frage,
+        acceptedAnswer: { '@type': 'Answer', text: eintrag.antwort },
+      })),
+    }
+  : null
+
+const bloecke = [restaurantDaten, speisekarte, brotkrumenDaten, faqDaten].filter(Boolean)
+---
+
+{
+  bloecke.map((block) => (
+    <script type="application/ld+json" set:html={JSON.stringify(block)} />
+  ))
+}

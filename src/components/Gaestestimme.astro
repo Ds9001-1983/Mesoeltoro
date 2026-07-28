@@ -1,0 +1,44 @@
+---
+/**
+ * Gästestimme mit Pflicht-Prüfhinweis.
+ *
+ * § 5b Abs. 3 UWG: Wer Verbraucherbewertungen zugänglich macht, muss
+ * angeben, ob und wie sichergestellt wird, dass sie von echten Kunden
+ * stammen. Die Angabe muss beim Zitat stehen — nicht in den AGB, nicht in
+ * einer Fußnote.
+ *
+ * Deshalb rendert dieses Bauteil den Hinweis ZWINGEND mit. Es gibt keinen
+ * Schalter, ihn wegzulassen. Wer ein Zitat zeigen will, zeigt den Hinweis.
+ *
+ * Ebenfalls bewusst: kein aggregateRating im JSON-LD, keine Sterne, kein
+ * Durchschnittswert. Selbst ausgespielte Bewertungen erzeugen bei Google
+ * ohnehin keine Sterne und verschärfen nur die Prüfpflicht.
+ */
+import { restaurant } from '../lib/daten.ts'
+---
+
+<figure class="stimme zitat">
+  <blockquote cite="https://www.google.com/maps">
+    Perfekte Bedienung, gemütliches Ambiente, sehr gutes Essen.
+  </blockquote>
+  <figcaption>
+    Gast im öffentlichen Google-Unternehmensprofil
+    <span class="stimme__pruefung">{restaurant.bewertungen_pruefhinweis}</span>
+  </figcaption>
+</figure>
+
+<style>
+  .stimme {
+    margin-block-start: var(--raum-8);
+    max-inline-size: 52ch;
+  }
+
+  .stimme__pruefung {
+    display: block;
+    margin-block-start: var(--raum-3);
+    /* Kleiner als die Quellenangabe, aber nicht versteckt: Der Hinweis muss
+       wahrnehmbar sein, sonst erfüllt er § 5b Abs. 3 UWG nicht. */
+    font-size: 0.9em;
+    line-height: 1.5;
+  }
+</style>

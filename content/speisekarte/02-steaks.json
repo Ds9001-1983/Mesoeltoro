@@ -1,0 +1,60 @@
+{
+  "$schema": "../schema/kategorie.schema.json",
+  "id": "steaks",
+  "titel": "Steaks „La Morocha“ vom Grill",
+  "einleitung": "Über offener Glut gegrillt, auf den Punkt.",
+  "reihenfolge": 2,
+  "steuerkategorie": "speise",
+  "gerichte": [
+    {
+      "id": "rumpsteak",
+      "name": "Rumpsteak",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": "200 g",
+          "preis": "22,00"
+        },
+        {
+          "bezeichnung": "300 g",
+          "preis": "33,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "filetsteak",
+      "name": "Filetsteak",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": "200 g",
+          "preis": "31,00"
+        },
+        {
+          "bezeichnung": "300 g",
+          "preis": "44,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    }
+  ]
+}

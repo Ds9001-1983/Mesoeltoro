@@ -1,0 +1,98 @@
+{
+  "$schema": "./schema/claims.schema.json",
+  "//": "Claim-Matrix. Pflichtartefakt, nicht Dokumentation. Jede Aussage, die auf der alten Seite stand und rechtlich zu beanstanden war, ist hier mit Rechtsgrundlage und Entscheidung festgehalten. Die 'blockliste' speist scripts/pruefe-claims.mjs — der Linter läuft gegen das GEBAUTE HTML, nicht gegen die Quelldateien. Damit greift die Sperre auch dann noch, wenn in drei Jahren jemand den alten Philosophie-Text zurückkopiert.",
+  "geprueft_am": "2026-07-28",
+  "geprueft_von": "SUPERBRAND.marketing",
+  "anwaltliche_abnahme": false,
+  "entscheidungen": [
+    {
+      "aussage": "reich an Vitamin E und Omega-3-Fettsäuren",
+      "quelle": "Altseite /philosophie/",
+      "grundlage": "VO (EG) 1924/2006 Art. 8 i.V.m. Anhang — nährwertbezogene Angabe. 'Reich an' setzt das Doppelte des Schwellenwerts für 'Quelle von' voraus; Rindfleisch erreicht ihn nicht.",
+      "entscheidung": "gestrichen",
+      "entschieden_am": "2026-07-28"
+    },
+    {
+      "aussage": "geringer Cholesterinanteil",
+      "quelle": "Altseite /philosophie/",
+      "grundlage": "VO (EG) 1924/2006 — Cholesterin ist im Anhang der zugelassenen nährwertbezogenen Angaben überhaupt nicht aufgeführt. Zulässig wäre allenfalls eine Aussage zu gesättigten Fettsäuren.",
+      "entscheidung": "gestrichen",
+      "entschieden_am": "2026-07-28"
+    },
+    {
+      "aussage": "nachhaltig / Nachhaltigkeit",
+      "quelle": "Altseite /philosophie/, Überschrift „Qualität & Nachhaltigkeit“",
+      "grundlage": "EmpCo-Richtlinie (EU) 2024/825, umgesetzt durch das 3. UWG-Änderungsgesetz, anwendbar ab 27.09.2026. Allgemeine Umweltaussagen ohne nachgewiesene hervorragende Umweltleistung sind dann per se unlauter.",
+      "entscheidung": "gestrichen",
+      "entschieden_am": "2026-07-28"
+    },
+    {
+      "aussage": "ohne Hormone / hormonfrei",
+      "quelle": "Altseite /philosophie/, sinngemäß „ohne zusätzliche Fütterung“",
+      "grundlage": "§ 5 UWG — Werbung mit einer Selbstverständlichkeit. Der Einsatz von Hormonen als Wachstumsförderer ist in der EU nach Richtlinie 96/22/EG ohnehin verboten.",
+      "entscheidung": "gestrichen",
+      "entschieden_am": "2026-07-28"
+    },
+    {
+      "aussage": "Weidehaltung",
+      "quelle": "Altseite /philosophie/, sinngemäß „Gras- und Kräutervielfalt in der Pampa“",
+      "grundlage": "§ 5 UWG — der Begriff ist rechtlich nicht definiert und ohne Lieferantennachweis nicht belegbar.",
+      "entscheidung": "gesperrt_bis_beleg",
+      "beleg": null,
+      "entschieden_am": "2026-07-28"
+    },
+    {
+      "aussage": "Argentinisches Rind / Aberdeen Angus",
+      "quelle": "Altseite /speisekarte/, Kategorie „La Morocha“",
+      "grundlage": "§ 5 UWG i.V.m. VO (EG) 1760/2000 — Herkunfts- und Rasseangaben müssen zutreffen und belegbar sein.",
+      "entscheidung": "gesperrt_bis_beleg",
+      "beleg": null,
+      "hinweis": "Bis zum Nachweis steht auf der Seite nur der Kategoriename „La Morocha“ und die Zubereitungsart. Sobald der Lieferantennachweis vorliegt, kann die Herkunft ergänzt und dieser Eintrag auf 'belegt' gesetzt werden.",
+      "entschieden_am": "2026-07-28"
+    },
+    {
+      "aussage": "Hinweis auf die EU-Plattform zur Online-Streitbeilegung",
+      "quelle": "Altseite /impressum/ — Link auf ec.europa.eu/consumers/odr",
+      "grundlage": "Verordnung (EU) 2024/3228 — die Plattform wurde zum 20.07.2025 eingestellt. Ein fortbestehender Verweis auf eine nicht mehr existierende Pflichtstelle ist nach §§ 5, 5a UWG als irreführende geschäftliche Handlung angreifbar.",
+      "entscheidung": "gestrichen",
+      "entschieden_am": "2026-07-28"
+    },
+    {
+      "aussage": "Verweis auf § 5 TMG",
+      "quelle": "Altseite /impressum/",
+      "grundlage": "Das Telemediengesetz wurde zum 14.05.2024 durch das Digitale-Dienste-Gesetz abgelöst. Maßgeblich ist § 5 DDG.",
+      "entscheidung": "gestrichen",
+      "entschieden_am": "2026-07-28"
+    }
+  ],
+  "blockliste": [
+    "Vitamin E",
+    "Omega-3",
+    "Omega 3",
+    "Cholesterin",
+    "nachhaltig",
+    "Nachhaltigkeit",
+    "klimaneutral",
+    "umweltfreundlich",
+    "Weidehaltung",
+    "ohne Hormone",
+    "hormonfrei",
+    "bekömmlich",
+    "Aberdeen Angus",
+    "Online-Streitbeilegung",
+    "OS-Plattform",
+    "ec.europa.eu/consumers/odr",
+    "§ 5 TMG",
+    "5 TMG",
+    "Telemediengesetz",
+    "Argentinisches Rind",
+    "Argentinische Steaks",
+    "Argentinisches Rindfleisch",
+    "argentinischem Rind"
+  ],
+  "//ausnahmen": "Routen, in denen ein Blockwort zulässigerweise vorkommen darf — etwa weil dort erklärt wird, warum es NICHT verwendet wird.",
+  "ausnahmen": [
+    "/barrierefreiheit/",
+    "/bildnachweise/"
+  ]
+}

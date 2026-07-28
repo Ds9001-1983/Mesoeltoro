@@ -1,0 +1,66 @@
+{
+  "$schema": "./schema/restaurant.schema.json",
+
+  "name": "Meson el Toro",
+  "name_lang": "Meson el Toro GmbH",
+  "beschreibung": "Spanisches Restaurant und Steakhouse in Waldbröl, seit 1975.",
+
+  "adresse": {
+    "strasse": "Brölbahnstraße 71",
+    "plz": "51545",
+    "ort": "Waldbröl",
+    "land": "DE",
+    "geo": { "breite": 50.8756, "laenge": 7.6183 }
+  },
+
+  "parken": {
+    "strasse": "Talstraße 43",
+    "plz": "51545",
+    "ort": "Waldbröl",
+    "hinweis": "Unsere Parkplätze liegen direkt gegenüber, an der Talstraße 43. Sie sind kostenfrei."
+  },
+
+  "telefon_e164": "+4922914347",
+  "telefon_anzeige": "02291 4347",
+  "email": "info@meson-el-toro.de",
+
+  "zeitzone": "Europe/Berlin",
+
+  "regulaer": {
+    "montag": [],
+    "dienstag": [],
+    "mittwoch": [["12:00", "14:00"], ["18:00", "22:00"]],
+    "donnerstag": [["12:00", "14:00"], ["18:00", "22:00"]],
+    "freitag": [["12:00", "14:00"], ["18:00", "22:00"]],
+    "samstag": [["12:00", "14:00"], ["18:00", "22:00"]],
+    "sonntag": [["12:00", "14:00"], ["18:00", "22:00"]]
+  },
+  "ruhetage_text": "Montag und Dienstag sind Ruhetage.",
+
+  "schliessungen_wiederkehrend": [
+    { "von": "12-24", "bis": "12-24", "grund": "Geschlossen", "banner": false },
+    { "von": "12-27", "bis": "12-28", "grund": "Geschlossen", "banner": false },
+    { "von": "01-01", "bis": "01-13", "grund": "Betriebsruhe", "banner": true }
+  ],
+  "schliessungen_einmalig": [],
+
+  "geprueft_bis": "2027-06-30",
+
+  "zahlen": {
+    "gegruendet": 1975,
+    "mitarbeiter": 8
+  },
+
+  "rechtsform": {
+    "firma": "Meson el Toro GmbH",
+    "vertreten_durch": "Christian Böhmer",
+    "registergericht": "Amtsgericht Siegburg",
+    "hrb": "HRB 16767",
+    "ust_id": "DE 348118893",
+    "bestaetigt_vom_kunden": false
+  },
+
+  "bewertungen_pruefhinweis": "Diese Rückmeldung stammt aus dem öffentlichen Google-Unternehmensprofil des Meson el Toro. Wir prüfen nicht, ob die verfassende Person tatsächlich bei uns zu Gast war, und nehmen keine Echtheitsprüfung vor.",
+
+  "glut_shader_aktiv": true
+}

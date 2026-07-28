@@ -1,0 +1,75 @@
+name: Wartung
+
+# Monatslauf gegen Datumsbomben.
+#
+# Eine Website, die fünf Jahre läuft, enthält Aussagen mit Verfallsdatum:
+# Preisstand, geprüfte Öffnungszeiten, abgelaufene Schließzeiträume, das Jahr
+# in der Fußzeile. Niemand merkt es, weil die Seite ja weiterhin lädt.
+# Deshalb meldet sie sich hier von selbst.
+
+on:
+  schedule:
+    - cron: '0 6 1 * *' # am Ersten jedes Monats, 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  datumsbomben:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+
+      - name: Verfallsdaten prüfen
+        id: pruefung
+        continue-on-error: true
+        run: |
+          {
+            echo 'bericht<<ENDE'
+            node scripts/pruefe-datumsbomben.mjs 2>&1 || true
+            node scripts/pruefe-karte.mjs 2>&1 || true
+            echo 'ENDE'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Hinweis eröffnen
+        if: steps.pruefung.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const bericht = `${{ steps.pruefung.outputs.bericht }}`
+            const titel = 'Wartung: Angaben mit Verfallsdatum prüfen'
+
+            const offene = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'wartung',
+            })
+
+            if (offene.data.some((eintrag) => eintrag.title === titel)) return
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: titel,
+              labels: ['wartung'],
+              body: [
+                'Der Monatslauf hat Angaben gefunden, die abgelaufen sind oder demnächst ablaufen.',
+                '',
+                '```',
+                bericht,
+                '```',
+                '',
+                'Was zu tun ist, steht in `docs/UEBERGABE.md`, Abschnitt „Wiedervorlage“.',
+              ].join('\n'),
+            })

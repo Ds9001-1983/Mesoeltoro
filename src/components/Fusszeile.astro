@@ -1,0 +1,243 @@
+---
+/**
+ * Fußzeile: Kontakt, Rechtsnavigation, Bewegungsschalter.
+ *
+ * Die Rechtslinks sind echte <a href> und funktionieren ohne JavaScript —
+ * § 5 DDG verlangt „ständig verfügbar“, und ein Modal ist das nicht.
+ *
+ * Der Bewegungsschalter steht bewusst hier und nicht in der Kopfzeile: Er ist
+ * eine Einstellung, kein Navigationsziel. Er wird per JavaScript eingeblendet,
+ * weil er ohne JavaScript nichts bewirken könnte — ein sichtbares
+ * Bedienelement ohne Wirkung wäre schlimmer als keines.
+ */
+import { restaurant, adresseEinzeilig } from '../lib/daten.ts'
+import { fussnavigation } from '../lib/navigation.ts'
+import { alsTabelle } from '../lib/zeiten.ts'
+
+const zeiten = alsTabelle(restaurant.regulaer)
+const jahr = 2026
+---
+
+<footer class="fuss">
+  <div class="huelle fuss__raster">
+    <section class="fuss__block">
+      <h2 class="fuss__titel">{restaurant.name_lang}</h2>
+      <address class="fuss__adresse">
+        {restaurant.adresse.strasse}<br />
+        {restaurant.adresse.plz}
+        {restaurant.adresse.ort}
+      </address>
+      <p class="fuss__kontakt">
+        <a href={`tel:${restaurant.telefon_e164}`} data-ziel>{restaurant.telefon_anzeige}</a><br />
+        <a href={`mailto:${restaurant.email}`} data-ziel>{restaurant.email}</a>
+      </p>
+    </section>
+
+    <section class="fuss__block">
+      <h2 class="fuss__titel">Öffnungszeiten</h2>
+      <dl class="fuss__zeiten">
+        {
+          zeiten.map((zeile) => (
+            <>
+              <dt>{zeile.bezeichnung}</dt>
+              <dd>{zeile.zeiten}</dd>
+            </>
+          ))
+        }
+      </dl>
+      <p class="fuss__notiz">
+        Geschlossen am 24., 27. und 28. Dezember. Betriebsruhe vom 1. bis 13. Januar.
+      </p>
+    </section>
+
+    <section class="fuss__block">
+      <h2 class="fuss__titel">Rechtliches</h2>
+      <nav aria-label="Rechtliche Hinweise">
+        <ul class="fuss__liste">
+          {
+            fussnavigation.map((route) => (
+              <li>
+                <a href={route.pfad} data-ziel>
+                  {route.titel}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      {/* Wird von src/islands/bewegung.ts sichtbar geschaltet. */}
+      <fieldset class="bewegung" data-bewegungsschalter hidden>
+        <legend class="bewegung__legende">Bewegung auf dieser Seite</legend>
+        <p class="bewegung__hinweis" id="bewegung-hinweis">
+          Die Einstellung gilt für diese Seite und bleibt gespeichert.
+        </p>
+        <div class="bewegung__optionen" aria-describedby="bewegung-hinweis">
+          <label class="bewegung__option" data-ziel>
+            <input type="radio" name="bewegung" value="full" /><span>Voll</span>
+          </label>
+          <label class="bewegung__option" data-ziel>
+            <input type="radio" name="bewegung" value="reduced" /><span>Reduziert</span>
+          </label>
+          <label class="bewegung__option" data-ziel>
+            <input type="radio" name="bewegung" value="off" /><span>Aus</span>
+          </label>
+        </div>
+      </fieldset>
+    </section>
+  </div>
+
+  <div class="huelle fuss__schluss">
+    <p class="fuss__urheber">© {jahr} {restaurant.name_lang}. Alle Rechte vorbehalten.</p>
+    <p class="fuss__agentur">
+      Made with ❤️ by <a href="https://superbrand.marketing" rel="noopener">SUPERBRAND.marketing</a>
+      – Dein Superheld für deine Werbung.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .fuss {
+    margin-block-start: var(--raum-9);
+    padding-block: var(--raum-8) var(--raum-6);
+    background-color: var(--espresso);
+    /* Kalk auf Espresso = 13,20:1 */
+    color: var(--kalk-auf-dunkel);
+  }
+
+  /* Im dunklen Fuß trägt Ochsenblut nicht (2,52:1). Links laufen über
+     Ember-hell (7,08:1). Das ist derselbe Mechanismus wie im Glut-Kapitel. */
+  .fuss a {
+    color: var(--ember-hell);
+  }
+
+  .fuss__raster {
+    display: grid;
+    gap: var(--raum-7);
+    grid-template-columns: 1fr;
+  }
+
+  @media (min-width: 48rem) {
+    .fuss__raster {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--raum-6);
+    }
+  }
+
+  .fuss__titel {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    font-weight: 600;
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    color: var(--messing-hell); /* 6,25:1 auf Espresso */
+    margin-block-end: var(--raum-4);
+  }
+
+  .fuss__adresse {
+    font-style: normal;
+  }
+
+  .fuss__kontakt {
+    margin-block-start: var(--raum-3);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .fuss__zeiten {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--raum-1) var(--raum-4);
+    font-size: var(--t-mikro);
+  }
+
+  .fuss__zeiten dt {
+    font-family: var(--schrift-mikro);
+  }
+
+  .fuss__zeiten dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .fuss__notiz {
+    margin-block-start: var(--raum-4);
+    font-size: var(--t-mikro);
+    color: color-mix(in oklab, var(--kalk) 82%, var(--espresso));
+  }
+
+  .fuss__liste {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--raum-1);
+  }
+
+  .fuss__liste a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--ziel-min);
+  }
+
+  /* --- Bewegungsschalter --------------------------------------------------- */
+  .bewegung {
+    margin-block-start: var(--raum-6);
+    padding: var(--raum-4);
+    border: 1px solid color-mix(in oklab, var(--kalk) 30%, transparent);
+  }
+
+  .bewegung[hidden] {
+    display: none;
+  }
+
+  .bewegung__legende {
+    padding-inline: var(--raum-2);
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+  }
+
+  .bewegung__hinweis {
+    font-size: var(--t-mikro);
+    color: color-mix(in oklab, var(--kalk) 82%, var(--espresso));
+    margin-block-end: var(--raum-3);
+  }
+
+  .bewegung__optionen {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--raum-3);
+  }
+
+  .bewegung__option {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--raum-2);
+    min-block-size: var(--ziel-min);
+    cursor: pointer;
+  }
+
+  .bewegung__option input {
+    inline-size: 1.15rem;
+    block-size: 1.15rem;
+    accent-color: var(--ember-hell);
+  }
+
+  /* --- Schluss ------------------------------------------------------------- */
+  .fuss__schluss {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--raum-3);
+    margin-block-start: var(--raum-8);
+    padding-block-start: var(--raum-5);
+    border-block-start: 1px solid color-mix(in oklab, var(--kalk) 24%, transparent);
+    font-size: var(--t-mikro);
+  }
+
+  .fuss__urheber,
+  .fuss__agentur {
+    color: color-mix(in oklab, var(--kalk) 82%, var(--espresso));
+  }
+</style>

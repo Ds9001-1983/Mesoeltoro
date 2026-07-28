@@ -1,0 +1,112 @@
+---
+/**
+ * Die vollständige Zeitentabelle.
+ *
+ * Eine echte <table> mit <caption> und <th scope="row">. Kein Raster aus
+ * <div>s: Screenreader-Nutzer navigieren Tabellen zeilenweise und bekommen
+ * dabei die Zeilenüberschrift mitgelesen — bei einem Raster fehlt genau das.
+ *
+ * Der heutige Tag wird zusätzlich als versteckter Text ausgezeichnet, nicht
+ * nur farblich hervorgehoben (1.4.1).
+ */
+import { restaurant } from '../lib/daten.ts'
+import { alsTabelle, kalendertag } from '../lib/zeiten.ts'
+
+interface Props {
+  /**
+   * Der heutige Tag wird nur markiert, wenn ein Zeitpunkt übergeben wird.
+   * Auf statisch gebauten Seiten wäre „heute“ sonst der Bautag — also fast
+   * immer falsch. Die Markierung übernimmt darum das Statusband per
+   * JavaScript, nicht diese Tabelle.
+   */
+  readonly zeitpunkt?: Date
+}
+
+const { zeitpunkt } = Astro.props
+const zeilen = alsTabelle(restaurant.regulaer)
+const heute = zeitpunkt ? kalendertag(zeitpunkt, restaurant.zeitzone).wochentag : null
+---
+
+<table class="zeiten">
+  <caption class="vh">Öffnungszeiten des Mesón el Toro</caption>
+  <tbody>
+    {
+      zeilen.map((zeile) => (
+        <tr class:list={{ 'zeiten__heute': heute === zeile.wochentag }}>
+          <th scope="row">
+            {zeile.bezeichnung}
+            {heute === zeile.wochentag && <span class="vh"> (heute)</span>}
+          </th>
+          <td class:list={['zahlen', { 'zeiten__ruhetag': zeile.ruhetag }]}>{zeile.zeiten}</td>
+        </tr>
+      ))
+    }
+  </tbody>
+</table>
+
+<ul class="zeiten__ausnahmen liste-schlicht mikro leise">
+  <li>Geschlossen am 24., 27. und 28. Dezember.</li>
+  <li>Betriebsruhe vom 1. bis 13. Januar.</li>
+</ul>
+
+<style>
+  .zeiten {
+    inline-size: 100%;
+    border-collapse: collapse;
+  }
+
+  .zeiten th,
+  .zeiten td {
+    padding-block: var(--raum-3);
+    text-align: start;
+    vertical-align: baseline;
+    border-block-end: 1px solid var(--linie);
+  }
+
+  .zeiten th {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+    font-weight: 600;
+    inline-size: 9rem;
+  }
+
+  .zeiten td {
+    font-size: var(--t-mikro);
+  }
+
+  .zeiten__ruhetag {
+    color: var(--text-leise);
+  }
+
+  .zeiten__heute th {
+    color: var(--ochsenblut);
+  }
+
+  .zeiten__ausnahmen {
+    margin-block-start: var(--raum-4);
+    display: grid;
+    gap: var(--raum-1);
+  }
+
+  /* Bei 320px würde die zweispaltige Tabelle waagerecht scrollen müssen.
+     1.4.10 Reflow verlangt hier die vertikale Stapelung. */
+  @media (max-width: 29.99rem) {
+    .zeiten,
+    .zeiten tbody,
+    .zeiten tr,
+    .zeiten th,
+    .zeiten td {
+      display: block;
+      inline-size: auto;
+    }
+
+    .zeiten th {
+      border-block-end: none;
+      padding-block-end: 0;
+    }
+
+    .zeiten td {
+      padding-block-start: var(--raum-1);
+    }
+  }
+</style>

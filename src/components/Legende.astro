@@ -1,0 +1,143 @@
+---
+/**
+ * Legende der Allergen- und Zusatzstoffcodes.
+ *
+ * Immer offen, nie ein Akkordeon. Zwei Gründe:
+ *  1. Ein zugeklapptes Akkordeon bricht die Browser-Suche (Strg+F) — genau
+ *     das, was jemand mit Nussallergie als Erstes tut.
+ *  2. Ein Gast, der die Codes am Gericht liest, muss sie sofort auflösen
+ *     können, ohne ein Bedienelement zu finden und zu betätigen.
+ *
+ * Jede Zeile trägt eine stabile id, damit vom Gericht aus verlinkt werden
+ * könnte. Verlinkt wird aber nur EINMAL pro Kategorie zur Legende, nicht pro
+ * Code — 38 Gerichte × 3 Codes wären über hundert Links, durch die sich
+ * ein Screenreader-Nutzer durchtabben müsste.
+ */
+import { ALLERGENE, ZUSATZSTOFFE, verwendeteCodes } from '../lib/karte.ts'
+
+const { allergene: benutzteAllergene, zusatzstoffe: benutzteZusatzstoffe } = verwendeteCodes()
+
+// Allergene stehen immer vollständig: Die 14 sind eine gesetzlich festgelegte
+// Liste, und ein Gast soll sehen, dass an alle gedacht wurde.
+// Zusatzstoffe dagegen nur, soweit sie tatsächlich vorkommen — sonst
+// behauptet die Legende Stoffe, die es im Haus gar nicht gibt.
+const zusatzstoffeAnzeigen =
+  benutzteZusatzstoffe.size > 0
+    ? ZUSATZSTOFFE.filter((eintrag) => benutzteZusatzstoffe.has(eintrag.code))
+    : []
+---
+
+<section class="legende" id="allergene" aria-labelledby="legende-titel">
+  <h2 id="legende-titel" tabindex="-1">Allergene und Zusatzstoffe</h2>
+
+  <div class="legende__spalten">
+    <div>
+      <h3 class="legende__rubrik">Allergene</h3>
+      <dl class="legende__liste">
+        {
+          ALLERGENE.map((eintrag) => (
+            <div class="legende__zeile" id={`allergen-${eintrag.code}`}>
+              <dt>
+                <span class="legende__code">{eintrag.code}</span> {eintrag.kurz}
+              </dt>
+              <dd>{eintrag.voll}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      {
+        benutzteAllergene.size === 0 && (
+          <p class="legende__notiz">
+            Die Zuordnung zu den einzelnen Gerichten wird derzeit erhoben. Bis dahin geben wir
+            Ihnen zu jedem Gericht persönlich Auskunft.
+          </p>
+        )
+      }
+    </div>
+
+    {
+      zusatzstoffeAnzeigen.length > 0 && (
+        <div>
+          <h3 class="legende__rubrik">Zusatzstoffe</h3>
+          <dl class="legende__liste">
+            {zusatzstoffeAnzeigen.map((eintrag) => (
+              <div class="legende__zeile" id={`zusatzstoff-${eintrag.code}`}>
+                <dt>
+                  <span class="legende__code">{eintrag.code}</span> {eintrag.kurz}
+                </dt>
+                <dd>{eintrag.voll}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .legende {
+    padding-block-start: var(--raum-8);
+    margin-block-start: var(--raum-8);
+    border-block-start: 2px solid var(--linie);
+  }
+
+  .legende__spalten {
+    display: grid;
+    gap: var(--raum-7);
+    margin-block-start: var(--raum-6);
+  }
+
+  @media (min-width: 48rem) {
+    .legende__spalten {
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+    }
+  }
+
+  .legende__rubrik {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    font-weight: 600;
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    color: var(--text-leise);
+    margin-block-end: var(--raum-4);
+  }
+
+  .legende__liste {
+    display: grid;
+    gap: var(--raum-3);
+  }
+
+  .legende__zeile {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .legende__zeile dt {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+    font-weight: 600;
+  }
+
+  .legende__zeile dd {
+    margin: 0;
+    font-size: var(--t-mikro);
+    color: var(--text-leise);
+  }
+
+  .legende__code {
+    display: inline-block;
+    min-inline-size: 1.6em;
+    /* Messing nur als Linie/Rahmen — als Schriftfarbe verfehlt es 4,5:1. */
+    border-block-end: 2px solid var(--akzent-gross);
+    color: var(--text);
+  }
+
+  .legende__notiz {
+    margin-block-start: var(--raum-4);
+    font-size: var(--t-mikro);
+    color: var(--text-leise);
+    max-inline-size: 46ch;
+  }
+</style>

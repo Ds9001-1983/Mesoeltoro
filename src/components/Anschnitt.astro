@@ -1,0 +1,249 @@
+---
+/**
+ * Signature Move 1 — „Der Anschnitt“.
+ *
+ * Zwei Bilder liegen übereinander. Beim Scrollen wandert eine gerissene
+ * Maske über das obere Bild, sodass das untere durchkommt — und an der
+ * Schnittkante läuft ein glühender Saum mit, als verbrenne ein Negativ.
+ *
+ * Warum das kein Ken Burns ist: Ken Burns behauptet eine Kamerabewegung, die
+ * es nie gab. Das Auge erkennt in unter einer Sekunde, dass keine Parallaxe
+ * entsteht, und stuft das Ganze als Diashow ein. Hier bewegt sich das Bild
+ * überhaupt nicht — die MASKE bewegt sich. Das ist ein Montageereignis, kein
+ * Schwenk.
+ *
+ * WCAG-seitig ist das die billigste aller Lösungen:
+ *  - Die Bewegung startet nicht von selbst, sondern folgt dem Scrollen.
+ *    2.2.2 („Pause, Stop, Hide“) greift bei automatisch startender Bewegung
+ *    über fünf Sekunden — hier gibt es keine.
+ *  - Es gibt kein <video>, also auch keine Autoplay-Frage.
+ *  - Kein Text liegt über dem Bild. Damit ist 1.4.3 über Bewegtbild
+ *    strukturell erledigt statt mühsam gemessen.
+ *
+ * Die Pausetaste ist trotzdem da: Sie hält den Glutsaum an, der als einzige
+ * Komponente zeitgesteuert pulsiert.
+ */
+import Bild from './Bild.astro'
+import Pausetaste from './Pausetaste.astro'
+
+interface Props {
+  readonly obenSchluessel: string
+  readonly untenSchluessel: string
+}
+
+const { obenSchluessel, untenSchluessel } = Astro.props
+---
+
+<div class="anschnitt">
+  {/* Die gerissene Kante als SVG-Maske. Rein dekorativ. */}
+  <svg class="anschnitt__form" aria-hidden="true" focusable="false" width="0" height="0">
+    <defs>
+      {/*
+        Die Form reicht bewusst bis y = -1, also eine volle Rahmenhöhe nach
+        oben über den sichtbaren Bereich hinaus.
+
+        Ohne diesen Überstand deckt sie nur den Bereich 0 bis 0,62 ab — beim
+        Start wäre also entweder das obere oder das untere Drittel offen, je
+        nach Verschiebung. Genau das war am 28.07.2026 im ersten Screenshot
+        zu sehen: Haus oben, Steak unten, harte Kante dazwischen.
+
+        Mit dem Überstand gilt:
+          translateY( 38%) → Form von -0,62 bis 1,00 → deckt vollständig
+          translateY(-102%) → Form von -2,02 bis -0,40 → deckt nichts mehr
+      */}
+      <clipPath id="riss" clipPathUnits="objectBoundingBox">
+        <path
+          d="M0,-1 L1,-1 L1,0.62 C0.86,0.585 0.79,0.655 0.68,0.63 C0.55,0.60 0.47,0.68 0.35,0.655 C0.22,0.628 0.13,0.69 0,0.66 Z"
+        ></path>
+      </clipPath>
+    </defs>
+  </svg>
+
+  <div class="anschnitt__rahmen">
+    {/* Untere Ebene — kommt beim Scrollen zum Vorschein. */}
+    <div class="anschnitt__ebene anschnitt__ebene--unten">
+      <Bild schluessel={untenSchluessel} breite={1200} hoehe={1500} sizes="(min-width: 64rem) 46vw, 100vw" />
+    </div>
+
+    {/*
+      Obere Ebene, zweistufig — und das muss so sein.
+
+      clip-path wirkt im lokalen Koordinatensystem des Elements, transform
+      verschiebt danach das FERTIG BESCHNITTENE Element als Ganzes. Wer beides
+      auf denselben Knoten legt, verschiebt also auch das Bild mit: Das Motiv
+      wandert nach unten aus dem Rahmen, statt stehen zu bleiben.
+      Am 28.07.2026 genau so beobachtet.
+
+      Deshalb außen die Maske samt Verschiebung, innen der exakte Gegenzug.
+      Ergebnis: Die Maske wandert, das Bild steht.
+    */}
+    <div class="anschnitt__ebene anschnitt__ebene--oben">
+      <div class="anschnitt__gegenzug">
+        <Bild schluessel={obenSchluessel} breite={1200} hoehe={1500} vorrang sizes="(min-width: 64rem) 46vw, 100vw" />
+      </div>
+    </div>
+
+    {/* Glutsaum an der Schnittkante. */}
+    <span class="anschnitt__saum" aria-hidden="true" data-anim="zeit" data-dekor></span>
+
+    <Pausetaste klasse="anschnitt__pause" />
+  </div>
+</div>
+
+<style>
+  .anschnitt {
+    /* Passepartout: Das Bild sitzt in einer Kalkfläche wie im Museum.
+       Nebenwirkung mit Absicht — es rechtfertigt Text NEBEN statt ÜBER dem
+       Bild und löst das Kontrastproblem gestalterisch statt technisch. */
+    padding: var(--rahmen);
+    background-color: var(--kalk);
+  }
+
+  .anschnitt__form {
+    position: absolute;
+    inline-size: 0;
+    block-size: 0;
+  }
+
+  .anschnitt__rahmen {
+    position: relative;
+    /* Quadratisch statt 4:5. Die Vorlagen sind Querformate; ein hochkantes
+       Fenster hätte beim Steak den halben Teller abgeschnitten. */
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background-color: color-mix(in oklab, var(--espresso) 8%, var(--kalk));
+  }
+
+  .anschnitt__ebene {
+    position: absolute;
+    inset: 0;
+  }
+
+  .anschnitt__gegenzug {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .anschnitt__ebene :global(.bild),
+  .anschnitt__ebene :global(.bild img),
+  .anschnitt__ebene :global(.platzhalter) {
+    block-size: 100%;
+    inline-size: 100%;
+    object-fit: cover;
+  }
+
+  /* Ausgangszustand: Das obere Bild deckt vollständig. Erst wenn der Browser
+     scroll-getriebene Animationen kann UND der Nutzer volle Bewegung erlaubt,
+     wandert die Maske. Ohne Unterstützung sieht man ein sauber komponiertes
+     Standbild — keine kaputte Halbfassung. */
+  .anschnitt__ebene--oben {
+    clip-path: none;
+  }
+
+  .anschnitt__saum {
+    position: absolute;
+    inset-inline: 0;
+    block-size: 3%;
+    /* Ember ist hier reine Dekoration und trägt keinen Text — der einzige
+       Ort, an dem diese Farbe überhaupt zulässig ist. */
+    background: radial-gradient(
+      ellipse 60% 100% at 50% 50%,
+      color-mix(in oklab, var(--ember) 85%, transparent),
+      transparent 70%
+    );
+    opacity: 0;
+    inset-block-start: 100%;
+    pointer-events: none;
+  }
+
+  .anschnitt__pause {
+    position: absolute;
+    inset-block-end: var(--raum-3);
+    inset-inline-end: var(--raum-3);
+    z-index: 2;
+  }
+</style>
+
+<style is:global>
+  @supports (animation-timeline: view()) {
+    :root[data-motion='full'] .anschnitt__ebene--oben {
+      clip-path: url(#riss);
+      /* Nur Langformen — Minifier falten die Kurzschreibweise sonst mit
+         animation-timeline zusammen und machen sie damit ungültig. */
+      animation-name: riss-wandern;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      /*
+       * scroll() statt view() — und das ist keine Feinheit.
+       *
+       * Eine view()-Zeitachse misst die Lage des Elements im Sichtfeld.
+       * Der Hero steht beim Laden aber schon mitten im Bild, also war die
+       * Animation sofort zu rund 45 Prozent fortgeschritten: Man sah beim
+       * Öffnen der Seite bereits einen halb aufgezogenen Schnitt statt eines
+       * komponierten Standbilds. Am 28.07.2026 im Screenshot nachgewiesen.
+       *
+       * scroll() misst dagegen den Seitenfortschritt. Bei Scrollposition 0
+       * ist die Animation garantiert bei 0 — das Bild steht ganz.
+       */
+      animation-timeline: scroll(root block);
+      animation-range: 0 90vh;
+    }
+
+    /* Der Gegenzug hebt die Verschiebung der Maske für das Bild wieder auf. */
+    :root[data-motion='full'] .anschnitt__gegenzug {
+      animation-name: gegenzug;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 90vh;
+    }
+
+    :root[data-motion='full'] .anschnitt__saum {
+      animation-name: saum-wandern;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 90vh;
+    }
+  }
+
+  @keyframes riss-wandern {
+    from {
+      transform: translateY(38%);
+    }
+    to {
+      transform: translateY(-102%);
+    }
+  }
+
+  @keyframes gegenzug {
+    from {
+      transform: translateY(-38%);
+    }
+    to {
+      transform: translateY(102%);
+    }
+  }
+
+  /* Die Unterkante der Maske läuft von 100 % auf -40 % — der Glutsaum
+     folgt exakt dieser Bahn, sonst liefe er neben dem Schnitt her. */
+  @keyframes saum-wandern {
+    from {
+      inset-block-start: 100%;
+      opacity: 0;
+    }
+    10% {
+      opacity: 1;
+    }
+    82% {
+      opacity: 1;
+    }
+    to {
+      inset-block-start: -40%;
+      opacity: 0;
+    }
+  }
+</style>

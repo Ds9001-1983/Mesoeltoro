@@ -1,0 +1,123 @@
+---
+/**
+ * Allergen- und Zusatzstoffkennzeichnung eines Gerichts.
+ *
+ * Die Darstellung ist dreischichtig, und jede Schicht hat einen Adressaten:
+ *
+ *   „A Gluten“              sichtbarer Code + sichtbarer Kurzbegriff
+ *                           → für Sehende, die die Legende nicht kennen
+ *   „(glutenhaltiges …)“    nur für Hilfsmittel
+ *                           → für Screenreader, ohne die Karte zu überfrachten
+ *
+ * Was hier bewusst NICHT passiert:
+ *  - kein title-Attribut (auf Touch nicht erreichbar, von Screenreadern
+ *    uneinheitlich behandelt)
+ *  - kein Tooltip, kein Aufklappen (1.4.13 und Tastaturbedienung)
+ *  - kein reiner Buchstabe ohne Klartext (erfüllt zwar Art. 44 LMIV
+ *    buchstäblich, aber nicht seinen Zweck)
+ *  - keine Farb- oder Symbolkodierung (1.4.1)
+ */
+import { allergenEintrag, zusatzstoffEintrag, type Gericht } from '../lib/karte.ts'
+
+interface Props {
+  readonly gericht: Gericht
+}
+
+const { gericht } = Astro.props
+
+const allergene = gericht.allergene
+  .map((code) => ({ code, eintrag: allergenEintrag(code) }))
+  .filter((paar): paar is { code: string; eintrag: NonNullable<typeof paar.eintrag> } =>
+    Boolean(paar.eintrag),
+  )
+
+const zusatzstoffe = gericht.zusatzstoffe
+  .map((code) => ({ code, eintrag: zusatzstoffEintrag(code) }))
+  .filter((paar): paar is { code: string; eintrag: NonNullable<typeof paar.eintrag> } =>
+    Boolean(paar.eintrag),
+  )
+
+const ausstehend = gericht.kennzeichnung_status === 'ausstehend'
+const nichtsEnthalten = !ausstehend && allergene.length === 0 && zusatzstoffe.length === 0
+---
+
+<p class="kennzeichnung">
+  {
+    ausstehend && (
+      <span class="kennzeichnung__offen">
+        Allergene und Zusatzstoffe zu diesem Gericht nennen wir Ihnen gern am Telefon oder vor Ort.
+      </span>
+    )
+  }
+
+  {
+    nichtsEnthalten && (
+      <span>Keine kennzeichnungspflichtigen Allergene oder Zusatzstoffe.</span>
+    )
+  }
+
+  {
+    allergene.length > 0 && (
+      <span class="kennzeichnung__gruppe">
+        <span class="kennzeichnung__rubrik">Allergene:</span>{' '}
+        {allergene.map((paar, index) => (
+          <>
+            {index > 0 && ', '}
+            <span class="kennzeichnung__code">{paar.code}</span>{' '}
+            {paar.eintrag.kurz}
+            <span class="vh"> ({paar.eintrag.voll})</span>
+          </>
+        ))}
+      </span>
+    )
+  }
+
+  {
+    zusatzstoffe.length > 0 && (
+      <span class="kennzeichnung__gruppe">
+        <span class="kennzeichnung__rubrik">Zusatzstoffe:</span>{' '}
+        {zusatzstoffe.map((paar, index) => (
+          <>
+            {index > 0 && ', '}
+            <span class="kennzeichnung__code">{paar.code}</span>{' '}
+            {paar.eintrag.kurz}
+            <span class="vh"> ({paar.eintrag.voll})</span>
+          </>
+        ))}
+      </span>
+    )
+  }
+</p>
+
+<style>
+  .kennzeichnung {
+    margin-block-start: var(--raum-2);
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+    line-height: 1.5;
+    color: var(--text-leise);
+  }
+
+  /* Die Gruppen stehen mit Mittelpunkt getrennt nebeneinander, brechen aber
+     auf schmalen Schirmen sauber um. */
+  .kennzeichnung__gruppe + .kennzeichnung__gruppe::before {
+    content: ' · ';
+    /* Nur Dekor — der Screenreader liest ohnehin an der Rubrik weiter. */
+    padding-inline: 0.15em;
+  }
+
+  .kennzeichnung__rubrik {
+    font-weight: 600;
+  }
+
+  .kennzeichnung__code {
+    font-weight: 600;
+    /* Espresso statt espresso-70: Der Code ist der Anker zur Legende und
+       muss sich vom umgebenden Kleintext abheben. 13,20:1 auf Kalk. */
+    color: var(--text);
+  }
+
+  .kennzeichnung__offen {
+    font-style: italic;
+  }
+</style>

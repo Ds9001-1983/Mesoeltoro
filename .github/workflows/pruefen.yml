@@ -1,0 +1,60 @@
+name: Prüfen
+
+# Läuft bei jedem Push und jedem Pull Request. Was hier rot wird, geht nicht
+# live: Vercel führt dieselben Prüfungen im Build Command aus, sodass ein
+# fehlgeschlagener Lauf die Veröffentlichung tatsächlich verhindert und nicht
+# nur ein rotes Kreuz auf GitHub erzeugt.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Typen und Astro-Diagnostik
+        run: pnpm check
+
+      - name: Einheitentests (Zeitlogik, Preise, Kontraste)
+        run: pnpm vitest run
+
+      - name: Inhaltliche Prüfungen
+        run: pnpm pruefen:inhalt
+
+      - name: Kontrastprüfung
+        run: pnpm pruefen:kontrast
+
+      - name: Bauen (löst Claim-, Bildrechte- und Fremdanfragen-Prüfung aus)
+        run: pnpm build
+
+      - name: Browser installieren
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Barrierefreiheit und Verhalten im Browser
+        run: pnpm exec playwright test
+
+      - name: Berichte sichern
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-bericht
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 14

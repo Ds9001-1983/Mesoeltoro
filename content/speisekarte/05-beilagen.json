@@ -1,0 +1,241 @@
+{
+  "$schema": "../schema/kategorie.schema.json",
+  "id": "beilagen",
+  "titel": "Beilagen und Saucen",
+  "einleitung": null,
+  "reihenfolge": 5,
+  "steuerkategorie": "speise",
+  "gerichte": [
+    {
+      "id": "gemischter-salat",
+      "name": "Gemischter Salat",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "5,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "kartoffelbeilage",
+      "name": "Pommes frites, Kroketten oder Bratkartoffeln",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "4,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "folienkartoffel",
+      "name": "Gebackene Folienkartoffel",
+      "beschreibung": "Mit saurer Sahne.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "4,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "champignons",
+      "name": "Frische Champignons",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "5,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "gruenes-gemuese",
+      "name": "Spinat, Rosenkohl oder Brokkoli",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "5,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "grillgemuese",
+      "name": "Grillgemüse mediterran",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "5,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "saisongemuese",
+      "name": "Gemüse der Saison",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "5,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "kraeuterbutter",
+      "name": "Hausgemachte Kräuterbutter",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "3,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "bearnaise",
+      "name": "Frisch geschlagene Sauce Béarnaise",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "4,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "aioli",
+      "name": "Hausgemachte Aioli",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "4,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "pfeffersauce",
+      "name": "Pfeffersauce",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "4,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    }
+  ]
+}

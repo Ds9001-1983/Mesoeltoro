@@ -1,0 +1,171 @@
+---
+/**
+ * Anfahrtskarte als selbst gezeichnetes SVG.
+ *
+ * Bewusst KEIN Google-Maps-Embed und auch keine Kartenbibliothek: Beides
+ * lädt von fremden Servern und löst damit die Einwilligungspflicht nach
+ * § 25 Abs. 1 TDDDG aus — samt Banner, samt Fokusfalle, samt Absatz in der
+ * Datenschutzerklärung. Für eine Karte, die genau einen Punkt zeigt.
+ *
+ * Die eigentliche Orientierung leistet ohnehin der Volltext daneben. Das SVG
+ * ist die Zugabe, nicht die Information — deshalb trägt es role="img" mit
+ * einem knappen Namen und nicht die gesamte Wegbeschreibung.
+ */
+import { restaurant } from '../lib/daten.ts'
+
+const { adresse, parken } = restaurant
+
+// Der Routenlink geht an ein Kartenportal — aber erst nach einem Klick.
+// Ein Klick auf einen Link ist eine bewusste Handlung des Nutzers und
+// braucht keine vorherige Einwilligung.
+const routenlink = `https://www.openstreetmap.org/directions?to=${adresse.geo.breite}%2C${adresse.geo.laenge}`
+---
+
+<figure class="karte">
+  <svg
+    class="karte__svg"
+    viewBox="0 0 600 400"
+    role="img"
+    aria-labelledby="karte-titel karte-text"
+    data-dekor
+  >
+    <title id="karte-titel">Lageplan Mesón el Toro</title>
+    <desc id="karte-text">
+      Schematische Skizze: Das Restaurant liegt an der Brölbahnstraße in Waldbröl. Die Parkplätze
+      liegen gegenüber an der Talstraße. Die genaue Wegbeschreibung steht als Text daneben.
+    </desc>
+
+    <rect width="600" height="400" fill="#e8e2d6" />
+
+    {/* Bröl — der Bach, der dem Tal den Namen gibt */}
+    <path
+      d="M-20 300 C 90 285, 170 320, 260 300 S 430 265, 620 285"
+      fill="none"
+      stroke="#a8b8bd"
+      stroke-width="14"
+      stroke-linecap="round"
+    />
+
+    {/* Nebenstraßen */}
+    <g stroke="#d5cdbd" stroke-width="9" stroke-linecap="round" fill="none">
+      <path d="M120 -20 L 150 420" />
+      <path d="M430 -20 L 405 420" />
+      <path d="M-20 120 L 620 95" />
+    </g>
+
+    {/* Brölbahnstraße — die Hauptachse */}
+    <path
+      d="M-20 210 L 620 190"
+      fill="none"
+      stroke="#ffffff"
+      stroke-width="22"
+      stroke-linecap="round"
+    />
+    <path
+      d="M-20 210 L 620 190"
+      fill="none"
+      stroke="#c9c0ae"
+      stroke-width="23"
+      stroke-linecap="round"
+      stroke-dasharray="0 34"
+      stroke-linejoin="round"
+    />
+
+    {/* Talstraße, gegenüber */}
+    <path d="M300 200 L 330 400" fill="none" stroke="#ffffff" stroke-width="16" stroke-linecap="round" />
+
+    {/* Parkplatz */}
+    <g>
+      <rect x="292" y="268" width="74" height="52" rx="4" fill="#ffffff" stroke="#8f7400" stroke-width="2" />
+      <text
+        x="329"
+        y="301"
+        text-anchor="middle"
+        font-family="system-ui, sans-serif"
+        font-size="26"
+        font-weight="700"
+        fill="#8f7400">P</text>
+    </g>
+
+    {/* Das Haus */}
+    <g>
+      <circle cx="268" cy="196" r="19" fill="#b3372b" />
+      <path d="M268 168 L 258 186 L 278 186 Z" fill="#b3372b" />
+      <circle cx="268" cy="196" r="7" fill="#f4efe6" />
+    </g>
+
+    {/* Beschriftung */}
+    <g font-family="system-ui, sans-serif" font-size="15" fill="#2b2521">
+      <text x="24" y="180" font-weight="600">Brölbahnstraße</text>
+      <text x="344" y="352">Talstraße</text>
+      <text x="196" y="160" font-weight="700">Mesón el Toro</text>
+      <text x="24" y="332" fill="#6d7d82">Bröl</text>
+    </g>
+  </svg>
+
+  <figcaption class="karte__bildunterschrift mikro leise">
+    Schematische Skizze, nicht maßstabsgetreu. Die Wegbeschreibung steht daneben im Text.
+  </figcaption>
+</figure>
+
+<div class="anfahrt">
+  <h3>So finden Sie uns</h3>
+
+  <address class="anfahrt__adresse">
+    {restaurant.name_lang}<br />
+    {adresse.strasse}<br />
+    {adresse.plz} {adresse.ort}
+  </address>
+
+  <div class="anfahrt__wege stapel">
+    <p><strong>Aus Richtung Gummersbach</strong> über die B256 bis Waldbröl, dann den Schildern ins Bröltal folgen.</p>
+    <p><strong>Aus Richtung Siegen</strong> über die B256, im Ort links in die Brölbahnstraße.</p>
+    <p><strong>Aus Richtung Hennef und Bonn</strong> über die B478 durch das Bröltal bis Waldbröl.</p>
+    <p><strong>Aus Richtung Köln</strong> über die A4 bis Anschlussstelle Engelskirchen, dann über die B256 nach Waldbröl.</p>
+  </div>
+
+  <h3 class="anfahrt__untertitel">Parken</h3>
+  <p>{parken.hinweis}</p>
+  <p class="mikro leise">{parken.strasse}, {parken.plz} {parken.ort}</p>
+
+  <p class="anfahrt__route">
+    <a href={routenlink} rel="noopener" data-ziel>
+      Route bei OpenStreetMap planen
+      <span class="vh"> (öffnet openstreetmap.org in einem neuen Zusammenhang)</span>
+    </a>
+  </p>
+</div>
+
+<style>
+  .karte {
+    margin: 0;
+  }
+
+  .karte__svg {
+    inline-size: 100%;
+    block-size: auto;
+    border: 1px solid var(--linie);
+  }
+
+  .karte__bildunterschrift {
+    margin-block-start: var(--raum-2);
+  }
+
+  .anfahrt__adresse {
+    font-style: normal;
+    margin-block: var(--raum-4);
+  }
+
+  .anfahrt__wege {
+    margin-block-start: var(--raum-4);
+    max-inline-size: 52ch;
+  }
+
+  .anfahrt__untertitel {
+    margin-block-start: var(--raum-6);
+  }
+
+  .anfahrt__route {
+    margin-block-start: var(--raum-5);
+  }
+</style>

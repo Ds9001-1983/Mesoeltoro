@@ -1,0 +1,194 @@
+---
+/**
+ * Kopfzeile mit permanentem Telefon-Button.
+ *
+ * Der Telefon-Button steht auf JEDER Route an derselben Stelle und in
+ * derselben relativen Reihenfolge zur Navigation. Das ist keine Design-Laune,
+ * sondern WCAG 3.2.6 (Consistent Help) — und ein Test prüft es.
+ *
+ * Die Navigation funktioniert vollständig ohne JavaScript: Auf schmalen
+ * Schirmen ist sie eine sichtbare, umbrechende Liste, kein Aufklappmenü.
+ * Damit entfällt der gesamte Fokusfallen-Sonderfall eines Dialogs.
+ */
+import { restaurant } from '../lib/daten.ts'
+import { hauptnavigation, istAktiv } from '../lib/navigation.ts'
+
+interface Props {
+  readonly aktuellerPfad: string
+}
+
+const { aktuellerPfad } = Astro.props
+---
+
+<header class="kopfzeile">
+  <div class="kopfzeile__huelle huelle">
+    <a class="wortmarke" href="/" aria-label={`${restaurant.name} — zur Startseite`}>
+      <span class="wortmarke__name">Mesón el Toro</span>
+      <span class="wortmarke__ort">Waldbröl · seit {restaurant.zahlen.gegruendet}</span>
+    </a>
+
+    <nav class="hauptnav" aria-label="Hauptnavigation">
+      <ul class="hauptnav__liste">
+        {
+          hauptnavigation.map((route) => {
+            const aktiv = istAktiv(aktuellerPfad, route.pfad)
+            return (
+              <li>
+                <a
+                  href={route.pfad}
+                  data-ziel
+                  aria-current={aktiv ? 'page' : undefined}
+                  class:list={['hauptnav__link', { 'hauptnav__link--aktiv': aktiv }]}
+                >
+                  {route.nav ?? route.titel}
+                </a>
+              </li>
+            )
+          })
+        }
+      </ul>
+    </nav>
+
+    <a class="ruf" href={`tel:${restaurant.telefon_e164}`} data-ziel>
+      <span class="ruf__wort">Tisch reservieren</span>
+      <span class="ruf__nummer">{restaurant.telefon_anzeige}</span>
+    </a>
+  </div>
+</header>
+
+<style>
+  .kopfzeile {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: 100;
+    background-color: var(--kalk);
+    border-block-end: 1px solid var(--linie);
+  }
+
+  .kopfzeile__huelle {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--raum-3) var(--raum-5);
+    min-block-size: var(--kopfhoehe);
+    padding-block: var(--raum-3);
+  }
+
+  /* --- Wortmarke ---------------------------------------------------------- */
+  .wortmarke {
+    display: flex;
+    flex-direction: column;
+    margin-inline-end: auto;
+    color: var(--espresso);
+    text-decoration: none;
+    line-height: 1.1;
+  }
+
+  .wortmarke__name {
+    font-family: var(--schrift-display);
+    font-size: clamp(1.25rem, 1.1rem + 0.75vw, 1.75rem);
+  }
+
+  .wortmarke__ort {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    /* espresso-70 auf Kalk = 6,85:1 — auch als Kleinschrift sicher. */
+    color: var(--espresso-70);
+  }
+
+  /* --- Navigation --------------------------------------------------------- */
+  .hauptnav__liste {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--raum-2) var(--raum-5);
+    list-style: none;
+    padding: 0;
+  }
+
+  .hauptnav__link {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--ziel-min);
+    color: var(--espresso);
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    position: relative;
+  }
+
+  /* Brandzeichen: Unterstrich fährt aus der Mitte auf.
+     Nur Dekor — die aktive Seite wird zusätzlich per aria-current
+     ausgezeichnet, damit sie nicht allein an der Farbe hängt (1.4.1). */
+  .hauptnav__link::after {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0.55rem;
+    block-size: 2px;
+    background-color: var(--ochsenblut);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform var(--dauer-mittel) var(--ease);
+  }
+
+  .hauptnav__link:hover::after,
+  .hauptnav__link:focus-visible::after,
+  .hauptnav__link--aktiv::after {
+    transform: scaleX(1);
+  }
+
+  .hauptnav__link--aktiv {
+    color: var(--ochsenblut);
+  }
+
+  /* --- Telefon-Button ----------------------------------------------------- */
+  .ruf {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    min-block-size: var(--ziel-min);
+    padding: var(--raum-2) var(--raum-5);
+    background-color: var(--ochsenblut);
+    /* Kalk auf Ochsenblut = 5,24:1 — AA auch für Fließtextgrößen. */
+    color: var(--kalk);
+    font-family: var(--schrift-mikro);
+    text-decoration: none;
+    line-height: 1.2;
+  }
+
+  .ruf:hover {
+    background-color: color-mix(in oklab, var(--ochsenblut) 88%, black);
+  }
+
+  .ruf__wort {
+    font-size: var(--t-eyebrow);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .ruf__nummer {
+    font-size: var(--t-mikro);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Auf schmalen Schirmen trägt die Call-Bar am unteren Rand die Nummer.
+     Zwei gleichzeitige Telefon-Ziele wären doppelter Fokusstopp ohne Gewinn. */
+  @media (max-width: 47.99rem) {
+    .ruf {
+      display: none;
+    }
+
+    .kopfzeile__huelle {
+      row-gap: var(--raum-2);
+    }
+
+    .hauptnav {
+      inline-size: 100%;
+    }
+  }
+</style>

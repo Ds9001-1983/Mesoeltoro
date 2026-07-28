@@ -1,0 +1,220 @@
+{
+  "$schema": "../schema/kategorie.schema.json",
+  "id": "fleisch-fisch",
+  "titel": "Fleisch und Fisch",
+  "einleitung": null,
+  "reihenfolge": 3,
+  "steuerkategorie": "speise",
+  "gerichte": [
+    {
+      "id": "grillspiess",
+      "name": "Grillspieß",
+      "beschreibung": "Mit frischer Paprika und Zwiebel, dazu Pommes frites und Aioli.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "24,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "filetsteak-150",
+      "name": "Filetsteak, 150 g",
+      "beschreibung": "Mit Erbsenschoten, Kroketten und Sauce Béarnaise.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "33,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "entenbrust",
+      "name": "Gebratene Barbarie-Entenbrust",
+      "beschreibung": "Auf Orangensauce, mit Rosenkohl und Kroketten.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "34,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "kalbsfiletmedaillons",
+      "name": "Kalbsfiletmedaillons „Florida“",
+      "beschreibung": "Mit Pfirsich und Käse überbacken, dazu Kroketten.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "33,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "kalbskotelett",
+      "name": "Kalbskotelett",
+      "beschreibung": "Mit Bratkartoffeln, Kräuterbutter und Salat.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "39,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "kalbstagliata",
+      "name": "Kalbstagliata",
+      "beschreibung": "Mit Kartoffelpüree und Schmorzwiebeln in getrüffelter Champignonsauce.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "35,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "lammkoteletts",
+      "name": "Lammkoteletts",
+      "beschreibung": "Mit Speckbohnen, Pommes frites und Aioli.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "34,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "lachs",
+      "name": "Lachs vom Grill",
+      "beschreibung": "Mit Sauce hollandaise, Salat und Kartoffeln.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "32,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "steinbuttfilet",
+      "name": "Steinbuttfilet",
+      "beschreibung": "Mit Salat, Salzkartoffeln und zerlassener Butter.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "42,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "seezunge",
+      "name": "Seezunge „Müllerin“",
+      "beschreibung": "Mit gemischtem Salat und Petersilienkartoffeln.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "44,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    }
+  ]
+}

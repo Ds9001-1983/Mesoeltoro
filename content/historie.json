@@ -1,0 +1,26 @@
+{
+  "$schema": "./schema/historie.schema.json",
+  "//": "Betriebsdaten sind Tatsachen, keine Werbeaussagen — sie brauchen keinen Beleg nach EmpCo/UWG. Genau deshalb tragen sie den Vertrauensteil der Seite.",
+  "stationen": [
+    {
+      "jahr": 1975,
+      "titel": "Eröffnung",
+      "text": "Justo Vicente eröffnet das Mesón el Toro in der Brölstraße in Waldbröl."
+    },
+    {
+      "jahr": 1986,
+      "titel": "Umzug",
+      "text": "Das Restaurant bezieht den heutigen Standort in der Brölbahnstraße."
+    },
+    {
+      "jahr": 2023,
+      "titel": "Neue Geschäftsführung",
+      "text": "Das Haus wird unter neuer Geschäftsführung weitergeführt."
+    },
+    {
+      "jahr": 2026,
+      "titel": "Ein halbes Jahrhundert",
+      "text": "Fünfzig Jahre spanische Küche im Oberbergischen."
+    }
+  ]
+}

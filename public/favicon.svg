@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Mesón el Toro">
+  <title>Mesón el Toro</title>
+  <rect width="64" height="64" fill="#2b2521"/>
+  <!-- Stierhörner, auf das Nötigste reduziert. Kein Kitsch, keine Fratze. -->
+  <g fill="none" stroke="#b3372b" stroke-width="4.5" stroke-linecap="round">
+    <path d="M14 22c-2.5 8 1.5 14 8 15"/>
+    <path d="M50 22c2.5 8-1.5 14-8 15"/>
+  </g>
+  <path d="M22 37c0-5 4.5-8 10-8s10 3 10 8c0 6-4.5 10-10 10s-10-4-10-10z" fill="#f4efe6"/>
+  <circle cx="27.5" cy="37" r="2.2" fill="#2b2521"/>
+  <circle cx="36.5" cy="37" r="2.2" fill="#2b2521"/>
+</svg>

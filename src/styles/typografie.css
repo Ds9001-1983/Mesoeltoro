@@ -1,0 +1,105 @@
+/* ============================================================================
+   Typografie
+   ----------------------------------------------------------------------------
+   Instrument Serif hat nur einen Schnitt. Auszeichnung läuft deshalb über
+   Größe, Raum und Sperrung — nie über Fettung der Display-Schrift.
+   ============================================================================ */
+
+h1 {
+  font-size: var(--t-h1);
+}
+
+h2 {
+  font-size: var(--t-h2);
+}
+
+h3 {
+  font-size: var(--t-h3);
+  font-family: var(--schrift-text);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+/* --- Eyebrow: die kleine Zeile über einer Überschrift ---------------------- */
+.eyebrow {
+  display: block;
+  font-family: var(--schrift-mikro);
+  font-size: var(--t-eyebrow);
+  font-weight: 500;
+  letter-spacing: var(--sperrung);
+  text-transform: uppercase;
+  /* espresso-70 auf Kalk = 6,85:1 — auch in dieser Größe sicher. */
+  color: var(--text-leise);
+  margin-block-end: var(--raum-3);
+}
+
+/* --- Vorspann --------------------------------------------------------------- */
+.lead {
+  font-size: var(--t-lead);
+  line-height: 1.5;
+  max-inline-size: 46ch;
+}
+
+/* --- Zahlen ----------------------------------------------------------------
+   Preise, Uhrzeiten und Telefonnummern laufen immer mit Tabellenziffern.
+   Ohne das springen die Ziffernbreiten und Preisspalten franst aus.        */
+.zahlen,
+time,
+.preis {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+
+/* --- Zitat -----------------------------------------------------------------
+   Kein Kursivschnitt geladen (spart ~144 KB). Die Auszeichnung läuft über
+   die Display-Schrift, Einzug und einen Randstrich.                        */
+.zitat {
+  margin: 0;
+  padding-inline-start: var(--raum-5);
+  border-inline-start: 2px solid var(--akzent-gross);
+}
+
+.zitat blockquote {
+  margin: 0;
+  font-family: var(--schrift-display);
+  font-size: var(--t-h3);
+  line-height: 1.35;
+}
+
+.zitat figcaption {
+  margin-block-start: var(--raum-3);
+  font-family: var(--schrift-mikro);
+  font-size: var(--t-mikro);
+  color: var(--text-leise);
+}
+
+/* --- Abschnitte ------------------------------------------------------------- */
+.sektion {
+  padding-block: var(--raum-9);
+}
+
+.sektion--eng {
+  padding-block: var(--raum-8);
+}
+
+/* --- Listen ----------------------------------------------------------------- */
+.liste-schlicht {
+  list-style: none;
+  padding: 0;
+}
+
+/* --- Hilfsklassen ----------------------------------------------------------- */
+.mikro {
+  font-family: var(--schrift-mikro);
+  font-size: var(--t-mikro);
+}
+
+.leise {
+  color: var(--text-leise);
+}
+
+/* --- Textabstand (WCAG 1.4.12) ----------------------------------------------
+   Nutzer dürfen Zeilenhöhe, Wort- und Buchstabenabstand überschreiben, ohne
+   dass Inhalt verloren geht. Deshalb: nirgends feste Höhen an Textbehältern,
+   nirgends overflow: hidden auf Textcontainern. Der Playwright-Test
+   textabstand.spec.ts injiziert die geforderten Werte und prüft das.        */

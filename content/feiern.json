@@ -1,0 +1,24 @@
+{
+  "$schema": "./schema/feiern.schema.json",
+
+  "//": "GESPERRT bis der Kunde liefert. Solange 'veroeffentlicht' false ist oder eines der drei Pflichtfelder fehlt, existiert die Route nicht: kein Navigationseintrag, kein Sitemap-Eintrag, keine Seite. Siehe docs/UEBERGABE.md.",
+
+  "veroeffentlicht": false,
+
+  "max_personen": null,
+  "raum": null,
+  "vorlaufzeit": null,
+
+  "anlaesse": [
+    { "id": "familienfeiern", "titel": "Familienfeiern", "text": "Geburtstage, Taufen, Jubiläen." },
+    { "id": "firmenessen", "titel": "Firmenessen", "text": "Vom Abteilungsessen bis zum Jahresabschluss." },
+    { "id": "weihnachtsfeiern", "titel": "Weihnachtsfeiern", "text": "In der Adventszeit frühzeitig anfragen." },
+    { "id": "trauerkaffee", "titel": "Trauerkaffee", "text": "Ein ruhiger Rahmen, in Absprache." }
+  ],
+
+  "ablauf": [
+    "Sie rufen an: 02291 4347.",
+    "Wir sprechen über Termin, Personenzahl und Menü.",
+    "Wir halten den Tisch für Sie frei."
+  ]
+}

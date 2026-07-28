@@ -1,0 +1,139 @@
+---
+/**
+ * Grundlayout aller Routen.
+ *
+ * Verbindlich und nicht verhandelbar:
+ *  - lang="de" (3.1.1)
+ *  - Sprungmarke als erstes fokussierbares Element (2.4.1)
+ *  - <main id="inhalt" tabindex="-1"> als Sprungziel
+ *  - keine einzige Ressource von einem fremden Server (§ 25 TDDDG)
+ *
+ * Der Seitenwechsel läuft über natives @view-transition. Das kostet
+ * 0 KB JavaScript, erzeugt keine Fokusfallen und degradiert in Browsern
+ * ohne Unterstützung zu einem gewöhnlichen Seitenaufruf.
+ */
+import CallBar from '../components/CallBar.astro'
+import Fusszeile from '../components/Fusszeile.astro'
+import Kopfzeile from '../components/Kopfzeile.astro'
+import { restaurant } from '../lib/daten.ts'
+
+import '../styles/tokens.css'
+import '../styles/schriften.css'
+import '../styles/basis.css'
+import '../styles/typografie.css'
+import '../styles/druck.css'
+
+interface Props {
+  readonly titel: string
+  readonly beschreibung: string
+  /** Ohne Wert wird der Seitentitel um den Hausnamen ergänzt. */
+  readonly titelRoh?: boolean
+  readonly noindex?: boolean
+  /**
+   * Kennzeichnet die Seite am <html>-Element. Nötig für Seiten mit eigenen
+   * klebenden Leisten: --ankerleiste muss auf :root gesetzt werden, weil
+   * scroll-padding-top am <html> hängt. Auf einem Container gesetzt bliebe
+   * es wirkungslos, und Sprungziele lägen unter der Leiste (2.4.11).
+   */
+  readonly seite?: string
+}
+
+const { titel, beschreibung, titelRoh = false, noindex = false, seite } = Astro.props
+
+const seitentitel = titelRoh ? titel : `${titel} — Mesón el Toro, Waldbröl`
+const kanonisch = new URL(Astro.url.pathname, Astro.site).href
+const aktuellerPfad = Astro.url.pathname
+
+// Wird von islands/oeffnungsstatus.ts gelesen: Liegt die Uhr des Besuchers vor
+// diesem Zeitpunkt, ist sie unplausibel und die Status-Pille bleibt verborgen,
+// statt eine falsche Öffnungszeit zu behaupten.
+const bauzeitpunkt = new Date(Number(process.env['SOURCE_DATE_EPOCH'] ?? 0) * 1000 || Date.now())
+---
+
+<!doctype html>
+<html lang="de" data-motion="full" data-seite={seite}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{seitentitel}</title>
+    <meta name="description" content={beschreibung} />
+    <link rel="canonical" href={kanonisch} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={restaurant.name_lang} />
+    <meta property="og:title" content={seitentitel} />
+    <meta property="og:description" content={beschreibung} />
+    <meta property="og:url" content={kanonisch} />
+    <meta property="og:locale" content="de_DE" />
+
+    <meta name="theme-color" content="#f4efe6" />
+    <meta name="build-time" content={bauzeitpunkt.toISOString()} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    {/*
+      Schriften werden vorgeladen, weil sie das Textrendering blockieren.
+      crossorigin ist auch bei gleicher Herkunft nötig — Schriften werden
+      immer im CORS-Modus geholt, sonst greift der Preload nicht.
+    */}
+    <link
+      rel="preload"
+      href="/fonts/meson-text-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/meson-display-400.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+
+    <slot name="kopf" />
+  </head>
+
+  <body>
+    <a class="sprungmarke" href="#inhalt">Zum Inhalt springen</a>
+
+    <Kopfzeile aktuellerPfad={aktuellerPfad} />
+
+    <main id="inhalt" tabindex="-1">
+      <slot />
+    </main>
+
+    <Fusszeile />
+    <CallBar />
+
+    <script src="../islands/bewegung.ts"></script>
+  </body>
+</html>
+
+<style is:global>
+  /* Nativer Seitenwechsel. Bei reduzierter Bewegung abgeschaltet — ein
+     Cross-Fade ist Bewegung, auch wenn sie kurz ist. */
+  @view-transition {
+    navigation: auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    @view-transition {
+      navigation: none;
+    }
+  }
+
+  :root[data-motion='off'] {
+    view-transition-name: none;
+  }
+
+  main:focus {
+    /* Das Sprungziel bekommt keinen Ring — es ist kein Bedienelement.
+       Der Fokus sitzt trotzdem korrekt, was der Test prüft. */
+    outline: none;
+  }
+</style>

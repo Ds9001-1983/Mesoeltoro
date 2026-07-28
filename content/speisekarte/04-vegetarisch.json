@@ -1,0 +1,52 @@
+{
+  "$schema": "../schema/kategorie.schema.json",
+  "id": "vegetarisch",
+  "titel": "Vegetarisch",
+  "einleitung": null,
+  "reihenfolge": 4,
+  "steuerkategorie": "speise",
+  "gerichte": [
+    {
+      "id": "schmorgemuese",
+      "name": "Mediterranes Schmorgemüse",
+      "beschreibung": "In Tomaten-Kräutersud.",
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "19,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "salatteller-champignons",
+      "name": "Salatteller mit Champignons",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "16,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    }
+  ]
+}

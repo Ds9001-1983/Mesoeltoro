@@ -1,0 +1,109 @@
+---
+/**
+ * Layout für Impressum, Datenschutz und Barrierefreiheit.
+ *
+ * Schmale Spalte, großzügige Zeilenhöhe, keine Dekoration. Rechtstexte
+ * werden nicht überflogen, sondern gelesen — oder von einem Prüfer geprüft.
+ * Beides braucht Ruhe, keine Gestaltung.
+ *
+ * Kein `noindex`: § 5 DDG verlangt „ständig verfügbar“, und eine Seite,
+ * die Suchmaschinen ausgeschlossen ist, findet auch ein Nutzer schlechter.
+ */
+import Basis from './Basis.astro'
+
+interface Props {
+  readonly titel: string
+  readonly beschreibung: string
+  readonly vorspann?: string | undefined
+  readonly stand: string
+}
+
+const { titel, beschreibung, vorspann, stand } = Astro.props
+
+const standLesbar = new Intl.DateTimeFormat('de-DE', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(new Date(`${stand}T00:00:00Z`))
+---
+
+<Basis titel={titel} beschreibung={beschreibung}>
+  <article class="rechtstext huelle">
+    <header class="rechtstext__kopf">
+      <h1>{titel}</h1>
+      {vorspann && <p class="lead">{vorspann}</p>}
+      <p class="mikro leise">
+        Stand: <time datetime={stand}>{standLesbar}</time>
+      </p>
+    </header>
+
+    <div class="rechtstext__inhalt">
+      <slot />
+    </div>
+  </article>
+</Basis>
+
+<style>
+  .rechtstext {
+    padding-block: var(--raum-8) var(--raum-9);
+    max-inline-size: 46rem;
+    margin-inline: auto;
+  }
+
+  .rechtstext__kopf {
+    padding-block-end: var(--raum-5);
+    margin-block-end: var(--raum-7);
+    border-block-end: 2px solid var(--linie);
+  }
+
+  .rechtstext__kopf .lead {
+    margin-block-start: var(--raum-4);
+  }
+
+  .rechtstext__kopf .mikro {
+    margin-block-start: var(--raum-4);
+  }
+</style>
+
+<style is:global>
+  /* Der Markdown-Inhalt bringt keine Klassen mit — deshalb hier über die
+     Elementnamen. Nur innerhalb des Rechtstexts, nicht global. */
+  .rechtstext__inhalt > * + * {
+    margin-block-start: var(--raum-4);
+  }
+
+  .rechtstext__inhalt h2 {
+    margin-block-start: var(--raum-7);
+    font-size: var(--t-h3);
+    font-family: var(--schrift-display);
+  }
+
+  .rechtstext__inhalt h3 {
+    margin-block-start: var(--raum-6);
+    font-size: var(--t-basis);
+  }
+
+  .rechtstext__inhalt ul {
+    padding-inline-start: var(--raum-5);
+  }
+
+  .rechtstext__inhalt li + li {
+    margin-block-start: var(--raum-2);
+  }
+
+  /* Hervorgehobene Absätze — im Datenschutz ist das Widerspruchsrecht
+     nach Art. 21 Abs. 4 DSGVO ausdrücklich getrennt hervorzuheben. */
+  .rechtstext__inhalt p > strong:only-child {
+    display: block;
+    padding: var(--raum-4);
+    border-inline-start: 3px solid var(--ochsenblut);
+    background-color: color-mix(in oklab, var(--ochsenblut) 6%, transparent);
+    font-weight: 400;
+  }
+
+  /* Adressblöcke im Markdown stehen als Absatz mit harten Zeilenumbrüchen. */
+  .rechtstext__inhalt p {
+    max-inline-size: 62ch;
+  }
+</style>

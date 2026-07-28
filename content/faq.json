@@ -1,0 +1,38 @@
+{
+  "$schema": "./schema/faq.schema.json",
+  "//": "Antworten stehen permanent im DOM — kein Akkordeon. Zugeklappte Antworten sind für die Browser-Suche unsichtbar und werden von Suchmaschinen schlechter gewichtet. Der Preis sind ein paar Zentimeter Seitenlänge.",
+  "fragen": [
+    {
+      "frage": "Muss ich reservieren?",
+      "antwort": "Nicht zwingend, wir empfehlen es aber — besonders am Wochenende und an Feiertagen. Ein Anruf unter 02291 4347 genügt."
+    },
+    {
+      "frage": "Kann ich online buchen?",
+      "antwort": "Nein. Reservierungen nehmen wir telefonisch entgegen. So können wir gleich klären, ob Ihre Wunschzeit passt und ob wir etwas vorbereiten sollen."
+    },
+    {
+      "frage": "Wann ist Ruhetag?",
+      "antwort": "Montag und Dienstag. Von Mittwoch bis Sonntag sind wir mittags von 12:00 bis 14:00 Uhr und abends von 18:00 bis 22:00 Uhr für Sie da."
+    },
+    {
+      "frage": "Wo kann ich parken?",
+      "antwort": "Direkt gegenüber, an der Talstraße 43. Die Plätze sind kostenfrei."
+    },
+    {
+      "frage": "Haben Sie zwischen den Jahren geöffnet?",
+      "antwort": "Am 24., 27. und 28. Dezember bleibt das Restaurant geschlossen. Vom 1. bis 13. Januar haben wir Betriebsruhe. An den übrigen Tagen gelten die regulären Zeiten."
+    },
+    {
+      "frage": "Gibt es vegetarische Gerichte?",
+      "antwort": "Ja. Auf der Karte finden Sie vegetarische Hauptgerichte und Beilagen; sie sind dort ausdrücklich gekennzeichnet."
+    },
+    {
+      "frage": "Wie erfahre ich, welche Allergene enthalten sind?",
+      "antwort": "Wir ergänzen die Kennzeichnung derzeit für jedes Gericht. Bis dahin geben wir Ihnen die Angaben telefonisch und vor Ort durch unser Servicepersonal."
+    },
+    {
+      "frage": "Ist das Restaurant barrierefrei zugänglich?",
+      "antwort": "Dazu erheben wir gerade verlässliche Angaben, damit hier nichts steht, worauf Sie sich nicht verlassen können. Rufen Sie uns bitte an — wir sagen Ihnen genau, was Sie vor Ort erwartet."
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+# Build
+dist/
+.astro/
+.vercel/
+
+# Abhängigkeiten
+node_modules/
+
+# Tests
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# Bildoriginale — liegen bewusst NICHT im Git.
+# Sie werden als signiertes ZIP an jedem GitHub-Release abgelegt.
+# Grund: 40 Dateien à 2–5 MB blähen die Historie dauerhaft auf, und der
+# Rechtenachweis hängt an content/bildnachweise.json, nicht an den Dateien.
+media-src/
+
+# Betriebssystem / Editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/*
+!.vscode/extensions.json
+
+# Umgebung
+.env
+.env.*
+!.env.example

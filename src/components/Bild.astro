@@ -1,0 +1,139 @@
+---
+/**
+ * Das einzige Bauteil, das ein Bild ausliefern darf.
+ *
+ * Es nimmt einen SCHLÜSSEL aus content/bildnachweise.json entgegen —
+ * niemals einen Dateipfad. Damit ist es technisch unmöglich, ein Foto
+ * einzubinden, dessen Rechtekette nicht dokumentiert ist.
+ *
+ * Drei Zustände:
+ *
+ *   Schlüssel unbekannt      → Build bricht ab. Das ist ein Tippfehler oder
+ *                              ein fehlender Registereintrag; beides muss
+ *                              auffallen.
+ *   Bild nicht freigegeben   → gestalteter Platzhalter, Build läuft weiter,
+ *                              Warnung in der Bauausgabe.
+ *   Bild freigegeben         → <picture> mit AVIF, WebP und JPEG-Rückfall.
+ *
+ * Zur mittleren Variante: Ein harter Abbruch wäre strenger, würde aber das
+ * gesamte Projekt blockieren, solange der Kunde den Fotovertrag nicht
+ * herausgesucht hat. Der Platzhalter hält den Bau lauffähig — ausgeliefert
+ * wird trotzdem kein einziges ungeklärtes Foto.
+ */
+import { hole, istGesperrt, REGISTER } from '../lib/bilder.ts'
+
+interface Props {
+  /** Schlüssel aus content/bildnachweise.json. */
+  readonly schluessel: string
+  readonly breite: number
+  readonly hoehe: number
+  /** Nur beim LCP-Bild setzen — sonst konkurrieren die Prioritäten. */
+  readonly vorrang?: boolean
+  readonly sizes?: string
+  readonly klasse?: string
+}
+
+const { schluessel, breite, hoehe, vorrang = false, sizes = '100vw', klasse } = Astro.props
+
+const eintrag = REGISTER[schluessel]
+
+if (!eintrag) {
+  throw new Error(
+    `Bild.astro: Kein Bild mit dem Schlüssel "${schluessel}" im Register.\n` +
+      `  Bekannt sind: ${Object.keys(REGISTER).join(', ')}\n` +
+      '  Neue Bilder gehören mit Urheber, Rechtenachweis und Alternativtext\n' +
+      '  in content/bildnachweise.json. Ein Dateipfad allein genügt nicht.',
+  )
+}
+
+const gesperrt = istGesperrt(eintrag.datei)
+if (gesperrt) {
+  throw new Error(
+    `Bild.astro: "${eintrag.datei}" trägt das gesperrte Präfix "${gesperrt}".\n` +
+      '  Diese Datei stammt aus einem fremden Projekt im Medienverzeichnis der\n' +
+      '  alten WordPress-Installation und gehört nicht zum Mesón el Toro.',
+  )
+}
+
+const freigegeben = eintrag.freigabe
+const basis = eintrag.datei.replace(/\.[a-z0-9]+$/i, '')
+
+// hole() wirft, falls doch etwas nicht stimmt — doppelte Absicherung.
+if (freigegeben) hole(schluessel)
+---
+
+{
+  freigegeben ? (
+    <picture class:list={['bild', klasse]}>
+      <source type="image/avif" srcset={`/bilder/${basis}-1600.avif 1600w, /bilder/${basis}-1200.avif 1200w, /bilder/${basis}-800.avif 800w, /bilder/${basis}-400.avif 400w`} sizes={sizes} />
+      <source type="image/webp" srcset={`/bilder/${basis}-1600.webp 1600w, /bilder/${basis}-1200.webp 1200w, /bilder/${basis}-800.webp 800w, /bilder/${basis}-400.webp 400w`} sizes={sizes} />
+      <img
+        src={`/bilder/${basis}-1200.jpg`}
+        alt={eintrag.alt}
+        width={breite}
+        height={hoehe}
+        loading={vorrang ? 'eager' : 'lazy'}
+        decoding={vorrang ? 'sync' : 'async'}
+        fetchpriority={vorrang ? 'high' : 'auto'}
+      />
+    </picture>
+  ) : (
+    <div
+      class:list={['platzhalter', klasse]}
+      style={`aspect-ratio: ${breite} / ${hoehe}`}
+      role="img"
+      aria-label={`Bild folgt: ${eintrag.motiv}`}
+    >
+      <span class="platzhalter__text" aria-hidden="true">
+        <span class="platzhalter__motiv">{eintrag.motiv}</span>
+        <span class="platzhalter__grund">Bild folgt, sobald die Nutzungsrechte geklärt sind.</span>
+      </span>
+    </div>
+  )
+}
+
+<style>
+  .bild {
+    display: block;
+  }
+
+  .bild img {
+    inline-size: 100%;
+    block-size: auto;
+    /* Bilder sitzen im Passepartout; ohne object-fit würden sie bei fester
+       Bildproportion verzerren. */
+    object-fit: cover;
+  }
+
+  /* --- Platzhalter -----------------------------------------------------------
+     Bewusst gestaltet und nicht als graues Rechteck: So sieht der Kunde bei
+     jedem Blick auf die Seite, was noch fehlt — und ein Besucher liest eine
+     ehrliche Auskunft statt eines kaputten Bildsymbols. */
+  .platzhalter {
+    display: grid;
+    place-items: center;
+    inline-size: 100%;
+    padding: var(--raum-6);
+    background-color: color-mix(in oklab, var(--espresso) 5%, var(--kalk));
+    border: 1px dashed color-mix(in oklab, var(--espresso) 28%, transparent);
+    text-align: center;
+  }
+
+  .platzhalter__text {
+    display: grid;
+    gap: var(--raum-2);
+    max-inline-size: 32ch;
+  }
+
+  .platzhalter__motiv {
+    font-family: var(--schrift-display);
+    font-size: var(--t-h3);
+    color: var(--text);
+  }
+
+  .platzhalter__grund {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+    color: var(--text-leise);
+  }
+</style>

@@ -1,0 +1,177 @@
+---
+/**
+ * Eine Zeile der Speisekarte: Name, Führungslinie, Preis, Beschreibung,
+ * Kennzeichnung.
+ *
+ * Zur Führungslinie („Der Satz der Karte“):
+ * Sie ist ein leeres Flex-Element mit border-bottom — NICHT ein ::after mit
+ * Punktzeichen. Der Unterschied ist nicht kosmetisch: Pseudoelement-Inhalt
+ * wird von manchen Screenreadern mitgelesen, und eine Reihe von 40 Punkten
+ * zwischen Gerichtsname und Preis ist dann genau das, was vorgelesen wird.
+ *
+ * Bei 320px stapeln Name, Preis und Kennzeichnung untereinander; die Linie
+ * verschwindet, weil sie dort nichts mehr verbindet.
+ */
+import { preiszeile, type Gericht } from '../lib/karte.ts'
+import Kennzeichnung from './Kennzeichnung.astro'
+
+interface Props {
+  readonly gericht: Gericht
+}
+
+const { gericht } = Astro.props
+---
+
+<li class="gericht" id={gericht.id}>
+  <div class="gericht__kopf">
+    {/*
+      Die Kostform steht bewusst NEBEN der Überschrift, nicht darin.
+      Sonst lautet der zugängliche Name „Crema Catalana vegetarisch“, und
+      die Überschriftenliste eines Screenreaders — für viele Nutzer die
+      eigentliche Navigation — wird unlesbar.
+    */}
+    <h3 class="gericht__name">{gericht.name}</h3>
+    {
+      (gericht.vegan || gericht.vegetarisch) && (
+        <p class="gericht__kost">{gericht.vegan ? 'vegan' : 'vegetarisch'}</p>
+      )
+    }
+    <span class="gericht__linie" aria-hidden="true" data-dekor></span>
+    <p class="gericht__preis preis">{preiszeile(gericht)}</p>
+  </div>
+
+  {gericht.beschreibung && <p class="gericht__beschreibung">{gericht.beschreibung}</p>}
+  {gericht.hinweis && <p class="gericht__hinweis">{gericht.hinweis}</p>}
+
+  <Kennzeichnung gericht={gericht} />
+</li>
+
+<style>
+  .gericht {
+    padding-block: var(--raum-4);
+    border-block-end: 1px solid var(--linie);
+  }
+
+  .gericht:last-child {
+    border-block-end: none;
+  }
+
+  .gericht__kopf {
+    display: flex;
+    align-items: baseline;
+    gap: var(--raum-3);
+  }
+
+  .gericht__name {
+    font-family: var(--schrift-text);
+    font-size: var(--t-basis);
+    font-weight: 600;
+    line-height: 1.3;
+    /* Kein flex-shrink: Der Name darf umbrechen, statt gestaucht zu werden. */
+    flex: 0 1 auto;
+  }
+
+  /* Kennzeichnung der Kostform als Text, nie als Symbol oder Farbe (1.4.1). */
+  .gericht__kost {
+    flex: 0 0 auto;
+    display: inline-block;
+    padding: 0.1em 0.5em;
+    border: 1px solid var(--linie);
+    font-family: var(--schrift-mikro);
+    font-size: 0.75em;
+    font-weight: 400;
+    letter-spacing: 0.04em;
+    color: var(--text-leise);
+    white-space: nowrap;
+  }
+
+  /* Die Führungslinie. Wächst in die Lücke, zeichnet sich beim Eintritt
+     in den Viewport von links auf. */
+  .gericht__linie {
+    flex: 1 1 auto;
+    min-inline-size: var(--raum-4);
+    border-block-end: 1px dotted var(--linie);
+    transform-origin: left center;
+    /* Ausgangszustand ist SICHTBAR. Nur wenn der Browser scroll-getriebene
+       Animationen beherrscht und volle Bewegung erlaubt ist, wird sie unten
+       auf scaleX(0) gesetzt und aufgezeichnet. Andersherum — unsichtbar als
+       Vorgabe — bliebe die Linie in älteren Browsern dauerhaft weg. */
+    transform: scaleX(1);
+  }
+
+  .gericht__preis {
+    flex: 0 0 auto;
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+    white-space: nowrap;
+  }
+
+  .gericht__beschreibung {
+    margin-block-start: var(--raum-1);
+    font-size: var(--t-mikro);
+    max-inline-size: 58ch;
+  }
+
+  .gericht__hinweis {
+    margin-block-start: var(--raum-1);
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+    color: var(--text-leise);
+  }
+
+  /* Bei 320px trägt die Linie nichts mehr bei und verschwindet.
+     Reflow (1.4.10) verlangt hier ohnehin die vertikale Stapelung. */
+  @media (max-width: 29.99rem) {
+    .gericht__kopf {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--raum-1);
+    }
+
+    .gericht__linie {
+      display: none;
+    }
+  }
+</style>
+
+<style is:global>
+  /* Scroll-getriebenes Aufzeichnen der Führungslinie.
+     Nur wenn der Browser es nativ kann UND der Nutzer volle Bewegung
+     zugelassen hat. Kein Polyfill: 20 KB für einen Zierstrich. */
+  @supports (animation-timeline: view()) {
+    :root[data-motion='full'] .gericht__linie {
+      transform: scaleX(0);
+      /*
+       * Bewusst NUR Langformen, keine `animation`-Kurzschreibweise.
+       *
+       * Minifier falten `animation: … ` und `animation-timeline: view()`
+       * gern zu `animation: … view()` zusammen. Die Kurzschreibweise nimmt
+       * laut Spezifikation aber keinen Timeline-Wert — die Deklaration wird
+       * dadurch als Ganzes ungültig und der Browser verwirft sie. Ergebnis
+       * wäre animation-name: none, also gar keine Bewegung. Nachgemessen
+       * am 28.07.2026 im gebauten CSS.
+       */
+      animation-name: linie-zeichnen;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 28%;
+    }
+  }
+
+  @keyframes linie-zeichnen {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /* Beim Drucken ist die Linie das, was Name und Preis überhaupt verbindet. */
+  @media print {
+    .gericht__linie {
+      transform: scaleX(1) !important;
+      animation: none !important;
+      display: block !important;
+    }
+  }
+</style>

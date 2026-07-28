@@ -1,0 +1,66 @@
+---
+/**
+ * Sackgasse auffangen.
+ *
+ * Keine automatische Weiterleitung: Wer auf einer alten Adresse landet, soll
+ * lesen können, wo er ist, statt unvermittelt woanders zu stehen. Die
+ * 301-Weiterleitungen für die Altrouten stehen in vercel.json — hier landet
+ * nur, was es wirklich nicht gibt.
+ */
+import Basis from '../layouts/Basis.astro'
+import { restaurant } from '../lib/daten.ts'
+---
+
+<Basis
+  titel="Seite nicht gefunden"
+  beschreibung="Diese Seite gibt es nicht. Hier geht es zur Speisekarte, zum Kontakt und zur Startseite."
+  noindex
+>
+  <div class="huelle fehler">
+    <p class="eyebrow">Fehler 404</p>
+    <h1>Diese Seite haben wir nicht gefunden.</h1>
+    <p class="lead">
+      Möglicherweise hat sich die Adresse geändert. Von hier kommen Sie weiter:
+    </p>
+
+    <ul class="fehler__wege liste-schlicht">
+      <li><a href="/speisekarte/">Zur Speisekarte</a></li>
+      <li><a href="/kontakt/">Kontakt und Anfahrt</a></li>
+      <li><a href="/">Zur Startseite</a></li>
+    </ul>
+
+    <p class="fehler__ruf">
+      Oder rufen Sie einfach an:
+      <a class="zahlen" href={`tel:${restaurant.telefon_e164}`} data-ziel>
+        {restaurant.telefon_anzeige}
+      </a>
+    </p>
+  </div>
+</Basis>
+
+<style>
+  .fehler {
+    padding-block: var(--raum-9);
+    max-inline-size: 44rem;
+  }
+
+  .fehler .lead {
+    margin-block-start: var(--raum-5);
+  }
+
+  .fehler__wege {
+    display: grid;
+    gap: var(--raum-2);
+    margin-block-start: var(--raum-6);
+  }
+
+  .fehler__wege a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: var(--ziel-min);
+  }
+
+  .fehler__ruf {
+    margin-block-start: var(--raum-7);
+  }
+</style>

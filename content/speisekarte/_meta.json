@@ -1,0 +1,17 @@
+{
+  "$schema": "../schema/karte-meta.schema.json",
+
+  "//": "Kopfdaten der Speisekarte. 'stand' erscheint sichtbar unter den Preisen — die Preisangabenverordnung verlangt Endpreise, und ein Datum macht nachvollziehbar, worauf sich der Gast verlassen kann.",
+
+  "stand": "2026-07-28",
+
+  "preishinweis": "Alle Preise sind Endpreise in Euro inklusive gesetzlicher Mehrwertsteuer.",
+
+  "//preishinweis": "Bewusst OHNE Prozentsatz. Seit dem 01.01.2026 gilt für Speisen 7 %, für Getränke weiterhin 19 % — ein ausgeschriebener Satz wäre entweder unvollständig oder bei der nächsten Änderung falsch. Die Preisangabenverordnung verlangt den Satz nicht, nur den Endpreis.",
+
+  "kennzeichnungshinweis": "Allergene stehen als Buchstabe, Zusatzstoffe als Ziffer direkt am Gericht. Die vollständige Auflösung finden Sie in der Legende am Ende der Karte.",
+
+  "rueckfrage": "Bei Unverträglichkeiten sprechen Sie uns bitte an — wir geben Ihnen zu jedem Gericht Auskunft.",
+
+  "kreuzkontamination": "In unserer Küche werden alle 14 kennzeichnungspflichtigen Allergene verarbeitet. Spuren in einzelnen Gerichten lassen sich deshalb nicht vollständig ausschließen."
+}

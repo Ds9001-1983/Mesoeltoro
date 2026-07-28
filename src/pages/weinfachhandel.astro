@@ -1,0 +1,179 @@
+---
+/**
+ * Weinfachhandel — Information, kein Shop.
+ *
+ * Diese Seite bleibt HELL. Das Glut-Motiv wird auf der ganzen Website genau
+ * einmal gespielt; ab dem zweiten Mal ist es ein Muster statt einer
+ * Dramaturgie.
+ *
+ * Rechtlich entscheidend ist, was hier NICHT steht: kein Preis, kein
+ * Jahrgang, keine Rebsorte, kein Alkoholgehalt, keine Flaschengröße, kein
+ * Etikettenfoto. Das Datenschema in content/wein.json hat für diese Felder
+ * gar keinen Platz — dadurch lassen sich die Grundpreisangabe nach § 4 PAngV,
+ * die erweiterten Weinangaben nach VO (EU) 2021/2117, das Fernabsatzrecht
+ * und die Altersverifikation nach JuSchG strukturell nicht auslösen.
+ *
+ * Ebenfalls bewusst weggelassen: eine Altersangabe. „Abgabe nur ab 18“ wäre
+ * für Wein schlicht falsch — nach § 9 JuSchG gilt dort 16.
+ */
+import Bild from '../components/Bild.astro'
+import Basis from '../layouts/Basis.astro'
+import wein from '../../content/wein.json'
+import { restaurant } from '../lib/daten.ts'
+---
+
+<Basis
+  titel="Weinfachhandel"
+  beschreibung="Spanische Weine im Mesón el Toro in Waldbröl: fünfzehn Rotweine, fünfzehn Weißweine von spanischen Weingütern. Persönliche Beratung im Haus, Abgabe auch außer Haus."
+>
+  <div class="huelle">
+    <section class="aufmacher">
+      <div class="aufmacher__text">
+        <p class="eyebrow">Fachhandel im Haus</p>
+        <h1>Spanischer Weinfachhandel in Waldbröl.</h1>
+        <p class="lead">
+          {wein.zahlen.rot} Rotweine, {wein.zahlen.weiss} Weißweine von spanischen Weingütern, mit
+          denen uns langjährige Partnerschaften verbinden.
+        </p>
+      </div>
+      <div class="aufmacher__bild">
+        <Bild
+          schluessel="wein-service"
+          breite={1200}
+          hoehe={800}
+          sizes="(min-width: 62rem) 42vw, 100vw"
+        />
+      </div>
+    </section>
+
+    <section class="merkmale" aria-labelledby="merkmale-titel">
+      <h2 id="merkmale-titel" class="vh">Wie wir auswählen</h2>
+      <div class="merkmale__raster">
+        {
+          wein.merkmale.map((merkmal) => (
+            <article class="merkmal">
+              <h3 class="merkmal__titel">{merkmal.titel}</h3>
+              <p class="merkmal__text">{merkmal.text}</p>
+            </article>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="beratung" aria-labelledby="beratung-titel">
+      <h2 id="beratung-titel">Wir beraten Sie persönlich</h2>
+      <p class="satz beratung__text">
+        Sagen Sie uns, wozu der Wein passen soll — wir suchen etwas aus. Sprechen Sie uns im Haus
+        an oder rufen Sie vorher an.
+      </p>
+      <p class="beratung__wege">
+        <a class="beratung__ruf zahlen" href={`tel:${restaurant.telefon_e164}`} data-ziel>
+          {restaurant.telefon_anzeige}
+        </a>
+        <a href={`mailto:${restaurant.email}`} data-ziel>{restaurant.email}</a>
+      </p>
+    </section>
+
+    <section class="rahmen" aria-labelledby="rahmen-titel">
+      <h2 id="rahmen-titel" class="rahmen__titel">Gut zu wissen</h2>
+      <p>{wein.rahmen}</p>
+    </section>
+  </div>
+</Basis>
+
+<style>
+  .aufmacher {
+    display: grid;
+    gap: var(--raum-6);
+    padding-block: var(--raum-8);
+  }
+
+  @media (min-width: 62rem) {
+    .aufmacher {
+      grid-template-columns: 6fr 5fr;
+      gap: var(--raum-8);
+      align-items: center;
+    }
+  }
+
+  .aufmacher__text .lead {
+    margin-block-start: var(--raum-5);
+  }
+
+  /* --- Merkmale ---------------------------------------------------------- */
+  .merkmale {
+    padding-block: var(--raum-8);
+    border-block-start: 1px solid var(--linie);
+  }
+
+  .merkmale__raster {
+    display: grid;
+    gap: var(--raum-6);
+  }
+
+  @media (min-width: 48rem) {
+    .merkmale__raster {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--raum-7);
+    }
+  }
+
+  .merkmal {
+    padding-block-start: var(--raum-4);
+    border-block-start: 2px solid var(--akzent-gross);
+  }
+
+  .merkmal__titel {
+    font-family: var(--schrift-display);
+    font-size: var(--t-h3);
+    font-weight: 400;
+  }
+
+  .merkmal__text {
+    margin-block-start: var(--raum-3);
+    font-size: var(--t-mikro);
+  }
+
+  /* --- Beratung ----------------------------------------------------------- */
+  .beratung {
+    padding-block: var(--raum-8);
+    border-block-start: 1px solid var(--linie);
+  }
+
+  .beratung__text {
+    margin-block-start: var(--raum-4);
+  }
+
+  .beratung__wege {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--raum-3) var(--raum-6);
+    margin-block-start: var(--raum-5);
+  }
+
+  .beratung__ruf {
+    font-family: var(--schrift-display);
+    font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
+    text-decoration: none;
+    border-block-end: 2px solid currentColor;
+  }
+
+  /* --- Rahmen ------------------------------------------------------------- */
+  .rahmen {
+    padding: var(--raum-5);
+    margin-block-end: var(--raum-9);
+    border: 1px solid var(--linie);
+    max-inline-size: 52ch;
+  }
+
+  .rahmen__titel {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    font-weight: 600;
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    color: var(--text-leise);
+    margin-block-end: var(--raum-3);
+  }
+</style>

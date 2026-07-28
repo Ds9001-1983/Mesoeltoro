@@ -1,0 +1,292 @@
+---
+/**
+ * Speisekarte — rechtlich heikelste und meistgesuchte Seite.
+ *
+ * Technisch bewusst die langweiligste des ganzen Projekts:
+ *   · null JavaScript
+ *   · Sprungnavigation aus reinen <a href="#…">
+ *   · alle Kategorien immer offen (sonst bricht Strg+F)
+ *   · Legende auf derselben Seite, nicht dahinter
+ *
+ * Wer hier Interaktion einbaut, muss sie gegen Tastatur, Screenreader und
+ * 320px-Ansicht verteidigen. Der Gewinn wäre null: Eine Speisekarte wird
+ * gelesen, nicht bedient.
+ */
+import Legende from '../components/Legende.astro'
+import Gerichtszeile from '../components/Gerichtszeile.astro'
+import JsonLd from '../components/JsonLd.astro'
+import Basis from '../layouts/Basis.astro'
+import { restaurant } from '../lib/daten.ts'
+import { KARTE_META, KATEGORIEN, anzahlGerichte, uebergangshinweisAktiv } from '../lib/karte.ts'
+
+const standLesbar = new Intl.DateTimeFormat('de-DE', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+  timeZone: 'UTC',
+}).format(new Date(`${KARTE_META.stand}T00:00:00Z`))
+---
+
+<Basis
+  titel="Speisekarte"
+  beschreibung={`Die Speisekarte des Mesón el Toro in Waldbröl: ${anzahlGerichte} Gerichte, spanische Küche und argentinischer Grill. Alle Preise als Endpreise. Stand ${standLesbar}.`}
+  seite="speisekarte"
+>
+  <JsonLd
+    slot="kopf"
+    mitSpeisekarte
+    brotkrumen={[
+      { name: 'Restaurant', pfad: '/' },
+      { name: 'Speisekarte', pfad: '/speisekarte/' },
+    ]}
+  />
+  <div class="karte">
+    {/* --- Kopf ------------------------------------------------------------ */}
+    <section class="huelle karte__kopf">
+      <h1>Speisekarte</h1>
+
+      <div class="karte__hinweise satz">
+        <p>{KARTE_META.preishinweis}</p>
+        <p>{KARTE_META.kennzeichnungshinweis}</p>
+        <p class="mikro leise">
+          Stand: <time datetime={KARTE_META.stand}>{standLesbar}</time>
+        </p>
+      </div>
+
+      {
+        /*
+         * Übergangs-Hinweisblock.
+         *
+         * Erscheint automatisch, sobald auch nur ein Gericht die Kennzeichnung
+         * noch aussteht — und ist nicht abschaltbar. Art. 44 LMIV lässt die
+         * mündliche Auskunft zu, sofern darauf hingewiesen wird und im Betrieb
+         * eine schriftliche Dokumentation vorliegt. Eine Karte, die
+         * Vollständigkeit suggeriert und keine hat, wäre dagegen angreifbar.
+         */
+        uebergangshinweisAktiv && (
+          <aside class="uebergang" aria-labelledby="uebergang-titel">
+            <h2 id="uebergang-titel" class="uebergang__titel">
+              Zur Allergenkennzeichnung
+            </h2>
+            <p>
+              Wir ergänzen derzeit die Kennzeichnung der Allergene und Zusatzstoffe für jedes
+              einzelne Gericht. Bis das abgeschlossen ist, geben wir Ihnen diese Angaben
+              telefonisch unter{' '}
+              <a href={`tel:${restaurant.telefon_e164}`} data-ziel>
+                {restaurant.telefon_anzeige}
+              </a>{' '}
+              und vor Ort durch unser Servicepersonal.
+            </p>
+          </aside>
+        )
+      }
+    </section>
+
+    {/* --- Sprungnavigation ------------------------------------------------- */}
+    <nav class="anker" aria-label="Abschnitte der Speisekarte">
+      <ul class="huelle anker__liste">
+        {
+          KATEGORIEN.map((kategorie) => (
+            <li>
+              <a href={`#${kategorie.id}`}>{kategorie.titel}</a>
+            </li>
+          ))
+        }
+        <li><a href="#allergene">Allergene</a></li>
+      </ul>
+    </nav>
+
+    {/* --- Kategorien ------------------------------------------------------- */}
+    <div class="huelle karte__inhalt">
+      {
+        KATEGORIEN.map((kategorie) => (
+          <section class="kategorie" aria-labelledby={kategorie.id}>
+            {/*
+              tabindex="-1" macht die Überschrift zum Fokusziel des Ankersprungs.
+              Ohne das scrollt die Seite, der Fokus bleibt aber am Link stehen —
+              der häufigste reale Fehler bei Sprungnavigationen (2.4.3).
+            */}
+            <h2 class="kategorie__titel" id={kategorie.id} tabindex="-1">{kategorie.titel}</h2>
+
+            {kategorie.einleitung && <p class="kategorie__einleitung">{kategorie.einleitung}</p>}
+
+            <ul class="kategorie__gerichte liste-schlicht">
+              {kategorie.gerichte.map((gericht) => (
+                <Gerichtszeile gericht={gericht} />
+              ))}
+            </ul>
+
+            <p class="kategorie__legendenlink mikro">
+              <a href="#allergene">Allergene und Zusatzstoffe auflösen</a>
+            </p>
+          </section>
+        ))
+      }
+
+      <Legende />
+
+      {/* --- Rückfrage ------------------------------------------------------ */}
+      <section class="rueckfrage" aria-labelledby="rueckfrage-titel">
+        <h2 id="rueckfrage-titel">Fragen zu einem Gericht?</h2>
+        <p class="satz">{KARTE_META.rueckfrage}</p>
+        <p class="satz mikro leise">{KARTE_META.kreuzkontamination}</p>
+        <p class="rueckfrage__wege">
+          <a class="rueckfrage__ruf zahlen" href={`tel:${restaurant.telefon_e164}`} data-ziel>
+            {restaurant.telefon_anzeige}
+          </a>
+          <a href={`mailto:${restaurant.email}`} data-ziel>{restaurant.email}</a>
+        </p>
+      </section>
+    </div>
+  </div>
+</Basis>
+
+<style>
+  /* Die Ankerleiste ist auf dieser Seite sichtbar und muss deshalb in
+     scroll-padding-top einfließen — sonst landen Sprungziele darunter
+     (2.4.11 Focus Not Obscured). */
+  .karte {
+    --ankerleiste: 3.25rem;
+  }
+
+  .karte__kopf {
+    padding-block: var(--raum-8) var(--raum-6);
+  }
+
+  .karte__hinweise {
+    margin-block-start: var(--raum-5);
+    display: grid;
+    gap: var(--raum-2);
+  }
+
+  /* --- Übergangs-Hinweis ---------------------------------------------------- */
+  .uebergang {
+    margin-block-start: var(--raum-6);
+    padding: var(--raum-5);
+    border: 2px solid var(--ochsenblut);
+    max-inline-size: 62ch;
+  }
+
+  .uebergang__titel {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    font-weight: 600;
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    color: var(--ochsenblut);
+    margin-block-end: var(--raum-3);
+  }
+
+  /* --- Ankerleiste ---------------------------------------------------------- */
+  .anker {
+    position: sticky;
+    inset-block-start: var(--kopfhoehe);
+    z-index: 80;
+    background-color: var(--kalk);
+    border-block: 1px solid var(--linie);
+  }
+
+  .anker__liste {
+    display: flex;
+    gap: var(--raum-5);
+    list-style: none;
+    padding-block: 0;
+    margin: 0;
+    /* Waagerecht scrollbar, wenn die Titel nicht passen. Die Region ist
+       fokussierbar und damit auch per Tastatur erreichbar (2.1.1). */
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+
+  .anker__liste a {
+    display: inline-flex;
+    align-items: center;
+    min-block-size: 3.25rem;
+    white-space: nowrap;
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+    color: var(--text);
+    text-decoration: none;
+    border-block-end: 2px solid transparent;
+  }
+
+  .anker__liste a:hover,
+  .anker__liste a:focus-visible {
+    border-block-end-color: var(--ochsenblut);
+  }
+
+  /* --- Kategorien ------------------------------------------------------------ */
+  .karte__inhalt {
+    padding-block: var(--raum-7) var(--raum-8);
+  }
+
+  .kategorie {
+    margin-block-end: var(--raum-8);
+  }
+
+  .kategorie__titel {
+    /* Muss zur Summe aus Kopfzeile und Ankerleiste passen, sonst verschwindet
+       das Sprungziel unter den klebenden Leisten. */
+    scroll-margin-top: calc(var(--kopfhoehe) + var(--ankerleiste) + 0.5rem);
+    padding-block-end: var(--raum-3);
+    border-block-end: 2px solid var(--linie);
+  }
+
+  .kategorie__titel:focus {
+    outline: none;
+  }
+
+  .kategorie__einleitung {
+    margin-block-start: var(--raum-3);
+    color: var(--text-leise);
+    max-inline-size: 52ch;
+  }
+
+  .kategorie__gerichte {
+    margin-block-start: var(--raum-4);
+  }
+
+  .kategorie__legendenlink {
+    margin-block-start: var(--raum-4);
+  }
+
+  /* --- Rückfrage -------------------------------------------------------------- */
+  .rueckfrage {
+    margin-block-start: var(--raum-8);
+    padding-block-start: var(--raum-6);
+    border-block-start: 2px solid var(--linie);
+  }
+
+  .rueckfrage p {
+    margin-block-start: var(--raum-3);
+  }
+
+  .rueckfrage__wege {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--raum-3) var(--raum-6);
+    margin-block-start: var(--raum-5);
+  }
+
+  .rueckfrage__ruf {
+    font-family: var(--schrift-display);
+    font-size: clamp(1.75rem, 1.2rem + 2.5vw, 3rem);
+    text-decoration: none;
+    border-block-end: 2px solid currentColor;
+  }
+
+  /* Die klebende Ankerleiste ist auf Papier sinnlos. */
+  @media print {
+    .anker,
+    .uebergang a,
+    .kategorie__legendenlink {
+      display: none;
+    }
+
+    .kategorie {
+      margin-block-end: var(--raum-6);
+    }
+  }
+</style>

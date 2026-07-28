@@ -1,0 +1,23 @@
+{
+  "$schema": "../schema/katalog.schema.json",
+
+  "//": "Die 14 Hauptallergene nach Anhang II der Verordnung (EU) Nr. 1169/2011 (LMIV). Die Buchstabenzuordnung A–N ist die in der deutschen Gastronomie übliche Konvention. 'kurz' steht sichtbar neben dem Buchstaben am Gericht, 'voll' wird für Hilfsmittel ergänzt und steht in der Legende.",
+
+  "art": "allergene",
+  "eintraege": [
+    { "code": "A", "kurz": "Gluten", "voll": "Glutenhaltiges Getreide und daraus gewonnene Erzeugnisse" },
+    { "code": "B", "kurz": "Krebstiere", "voll": "Krebstiere und daraus gewonnene Erzeugnisse" },
+    { "code": "C", "kurz": "Eier", "voll": "Eier und daraus gewonnene Erzeugnisse" },
+    { "code": "D", "kurz": "Fisch", "voll": "Fische und daraus gewonnene Erzeugnisse" },
+    { "code": "E", "kurz": "Erdnüsse", "voll": "Erdnüsse und daraus gewonnene Erzeugnisse" },
+    { "code": "F", "kurz": "Soja", "voll": "Sojabohnen und daraus gewonnene Erzeugnisse" },
+    { "code": "G", "kurz": "Milch", "voll": "Milch und daraus gewonnene Erzeugnisse, einschließlich Laktose" },
+    { "code": "H", "kurz": "Schalenfrüchte", "voll": "Schalenfrüchte, also Mandeln, Haselnüsse, Walnüsse, Cashewnüsse, Pecannüsse, Paranüsse, Pistazien, Macadamias, und daraus gewonnene Erzeugnisse" },
+    { "code": "I", "kurz": "Sellerie", "voll": "Sellerie und daraus gewonnene Erzeugnisse" },
+    { "code": "J", "kurz": "Senf", "voll": "Senf und daraus gewonnene Erzeugnisse" },
+    { "code": "K", "kurz": "Sesam", "voll": "Sesamsamen und daraus gewonnene Erzeugnisse" },
+    { "code": "L", "kurz": "Sulfite", "voll": "Schwefeldioxid und Sulphite in Konzentrationen von mehr als 10 mg je Kilogramm oder Liter" },
+    { "code": "M", "kurz": "Lupinen", "voll": "Lupinen und daraus gewonnene Erzeugnisse" },
+    { "code": "N", "kurz": "Weichtiere", "voll": "Weichtiere und daraus gewonnene Erzeugnisse" }
+  ]
+}

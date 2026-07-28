@@ -1,0 +1,156 @@
+---
+/**
+ * Philosophie — die Vertrauensseite.
+ *
+ * Rechtlich der heikelste Fließtext des Projekts. Der alte Text warb mit
+ * „reich an Vitamin E und Omega-3-Fettsäuren“ und „geringem
+ * Cholesterinanteil“ — beides sind nährwert- und gesundheitsbezogene Angaben
+ * nach VO (EG) 1924/2006, die für Rindfleisch nicht zulässig sind.
+ * Sie sind ersatzlos gestrichen und stehen auf der Sperrliste in
+ * content/claims.json; scripts/pruefe-claims.mjs bricht den Build ab, falls
+ * sie je zurückkehren.
+ *
+ * Was bleibt, sind überprüfbare Tatsachen: seit wann es das Haus gibt, wie
+ * gekocht wird, wie viele Menschen hier arbeiten. Das trägt weiter als jede
+ * Nährwertaussage.
+ */
+import Bild from '../components/Bild.astro'
+import Zeitstrahl from '../components/Zeitstrahl.astro'
+import Basis from '../layouts/Basis.astro'
+import { restaurant } from '../lib/daten.ts'
+---
+
+<Basis
+  titel="Philosophie"
+  beschreibung="Seit 1975 in Waldbröl: wie im Mesón el Toro gekocht wird, woher das Haus kommt und wer hier arbeitet."
+>
+  <div class="huelle">
+    <section class="aufmacher">
+      <div class="aufmacher__text">
+        <p class="eyebrow">Seit {restaurant.zahlen.gegruendet}</p>
+        <h1>Ein halbes Jahrhundert Mesón el Toro in Waldbröl.</h1>
+        <p class="lead">
+          Ein Haus überlebt fünfzig Jahre nicht durch Ankündigungen, sondern dadurch, dass die
+          Gäste wiederkommen.
+        </p>
+      </div>
+      <div class="aufmacher__bild">
+        <Bild schluessel="gastraum" breite={1200} hoehe={800} sizes="(min-width: 62rem) 40vw, 100vw" />
+      </div>
+    </section>
+
+    <Zeitstrahl />
+
+    <section class="text" aria-labelledby="kueche-titel">
+      <h2 id="kueche-titel">Herkunft und Handwerk</h2>
+      <div class="text__spalte stapel">
+        <p>
+          Unser Rindfleisch beziehen wir seit Jahrzehnten über dieselbe Lieferkette. Gegrillt wird
+          über offener Glut — das ist der Punkt, an dem sich entscheidet, ob ein Steak gut wird
+          oder nicht.
+        </p>
+        <p>
+          Wir würzen zurückhaltend. Nicht aus Prinzip, sondern weil ein gutes Stück Fleisch nichts
+          braucht, was von ihm ablenkt.
+        </p>
+        <p>
+          Fisch und Gemüse richten sich nach der Saison. Was nicht in ordentlicher Qualität zu
+          bekommen ist, steht in dieser Woche eben nicht auf der Karte.
+        </p>
+        <p>
+          Die spanische Seite unserer Küche ist keine Dekoration. Sie kommt aus der Gründungszeit
+          des Hauses und ist geblieben, weil sie zu dem passt, was hier gegrillt wird.
+        </p>
+      </div>
+    </section>
+
+    <section class="zahlen-band" aria-labelledby="zahlen-titel">
+      <h2 id="zahlen-titel" class="vh">Das Haus in Zahlen</h2>
+      <dl class="zahlen-band__liste">
+        <div class="zahlen-band__paar">
+          <dt>Mitarbeiterinnen und Mitarbeiter</dt>
+          <dd class="zahlen">{restaurant.zahlen.mitarbeiter}</dd>
+        </div>
+        <div class="zahlen-band__paar">
+          <dt>Tage in der Woche geöffnet</dt>
+          <dd class="zahlen">5</dd>
+        </div>
+        <div class="zahlen-band__paar">
+          <dt>Jahre am selben Ort</dt>
+          <dd class="zahlen">{2026 - 1986}</dd>
+        </div>
+      </dl>
+      <p class="mikro leise zahlen-band__notiz">
+        Betriebsdaten, keine Werbeaussagen — sie brauchen keinen Beleg, weil sie überprüfbar sind.
+      </p>
+    </section>
+  </div>
+</Basis>
+
+<style>
+  .aufmacher {
+    display: grid;
+    gap: var(--raum-6);
+    padding-block: var(--raum-8);
+  }
+
+  @media (min-width: 62rem) {
+    .aufmacher {
+      grid-template-columns: 7fr 5fr;
+      gap: var(--raum-8);
+      align-items: center;
+    }
+  }
+
+  .aufmacher__text .lead {
+    margin-block-start: var(--raum-5);
+  }
+
+  .text {
+    padding-block: var(--raum-8);
+    border-block-start: 1px solid var(--linie);
+  }
+
+  .text__spalte {
+    margin-block-start: var(--raum-5);
+    max-inline-size: 66ch;
+  }
+
+  /* --- Zahlenband -------------------------------------------------------- */
+  .zahlen-band {
+    padding-block: var(--raum-8);
+    border-block-start: 1px solid var(--linie);
+  }
+
+  .zahlen-band__liste {
+    display: grid;
+    gap: var(--raum-6);
+  }
+
+  @media (min-width: 48rem) {
+    .zahlen-band__liste {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  .zahlen-band__paar dt {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    color: var(--text-leise);
+  }
+
+  .zahlen-band__paar dd {
+    margin: 0;
+    font-family: var(--schrift-display);
+    /* Messing trägt erst ab 24px — hier deutlich darüber. */
+    font-size: clamp(3rem, 2rem + 5vw, 5.5rem);
+    line-height: 1;
+    color: var(--akzent-gross);
+  }
+
+  .zahlen-band__notiz {
+    margin-block-start: var(--raum-6);
+  }
+</style>

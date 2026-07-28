@@ -1,0 +1,23 @@
+---
+import { getEntry, render } from 'astro:content'
+
+import Rechtstext from '../layouts/Rechtstext.astro'
+
+const eintrag = await getEntry('texte', 'impressum')
+if (!eintrag) {
+  throw new Error(
+    'content/texte/impressum.md fehlt oder hat kein gültiges Frontmatter. ' +
+      'Erwartet werden die Felder titel, beschreibung und stand.',
+  )
+}
+const { Content } = await render(eintrag)
+---
+
+<Rechtstext
+  titel={eintrag.data.titel}
+  beschreibung={eintrag.data.beschreibung}
+  vorspann={eintrag.data.vorspann}
+  stand={eintrag.data.stand}
+>
+  <Content />
+</Rechtstext>

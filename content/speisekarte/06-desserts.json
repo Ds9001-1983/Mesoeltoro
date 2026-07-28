@@ -1,0 +1,136 @@
+{
+  "$schema": "../schema/kategorie.schema.json",
+  "id": "desserts",
+  "titel": "Desserts",
+  "einleitung": null,
+  "reihenfolge": 6,
+  "steuerkategorie": "speise",
+  "gerichte": [
+    {
+      "id": "crema-catalana",
+      "name": "Crema Catalana",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "8,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "mousse-au-chocolat",
+      "name": "Mousse au Chocolat",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "7,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "gemischtes-eis",
+      "name": "Gemischtes Eis mit Sahne",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "6,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "vanilleeis-himbeeren",
+      "name": "Vanilleeis mit heißen Himbeeren",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "9,00"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "vanilleeis-mango",
+      "name": "Kugel Vanilleeis auf Mangosauce",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "5,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "geeistes-espresso",
+      "name": "Geeistes vom Espresso",
+      "beschreibung": null,
+      "varianten": [
+        {
+          "bezeichnung": null,
+          "preis": "5,50"
+        }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": true,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    }
+  ]
+}

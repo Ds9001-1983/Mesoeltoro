@@ -1,0 +1,185 @@
+/* ============================================================================
+   Design-Token — Mesón el Toro
+   ----------------------------------------------------------------------------
+   Alle Kontrastwerte sind nachgerechnet (WCAG 2.x relative luminance) und
+   werden von scripts/pruefe-kontraste.mjs im Build erneut nachgerechnet.
+   Wer hier eine Farbe ändert, ohne den Kommentar zu aktualisieren, bekommt
+   einen roten Build — das ist so gewollt.
+   ============================================================================ */
+
+:root {
+  /* --- Helle Grundfläche ------------------------------------------------- */
+  --kalk: #f4efe6; /* Grundfläche hell                                        */
+  --leinen: #e3d8c4; /* abgesetzte Fläche, NUR für Flächen — siehe Warnung    */
+
+  /* --- Text und Akzent auf Kalk ------------------------------------------ */
+  --espresso: #2b2521; /* Fließtext auf Kalk      → 13,20:1   AAA        OK   */
+  --espresso-70: #5a5049; /* Sekundärtext auf Kalk →  6,85:1   AA         OK   */
+  --ochsenblut: #b3372b; /* Links/CTA auf Kalk     →  5,24:1   AA         OK   */
+  --messing: #8f7400; /* auf Kalk                 →  3,93:1   NICHT AA-Text  */
+  --ember: #c1440e; /* auf Kalk                   →  4,47:1   NICHT AA-Text  */
+
+  /*  WARNUNGEN, die im Code gelten und nicht verhandelbar sind:
+   *
+   *  --ochsenblut  auf --espresso  =  2,52:1  → PROJEKTWEIT ALS TEXT VERBOTEN.
+   *                auf --leinen    =  4,26:1  → unter 4,5 → NICHT für Fließtext.
+   *                Ochsenblut ist ausschließlich Text/Fläche auf --kalk.
+   *  --messing     3,93:1 auf Kalk → NUR ≥24px oder ≥18.7px fett, Linien,
+   *                UI-Ränder (1.4.11 ≥3:1). NIE Fließtext, NIE Bildunterschrift,
+   *                NIE Kicker, NIE Preise.
+   *  --ember       4,47:1 → knapp unter 4,5. NIE Text, NIE Bedienelement.
+   *                Ausschließlich Glut, Schnittkante, Partikel — also Dekor.
+   */
+
+  /* --- Dunkles Kapitel: eigenes Token-Set --------------------------------
+   * Kein Alpha-Trick, keine Farbinterpolation zwischen hell und dunkel.
+   * Auf Espresso tragen Ochsenblut (2,52:1) und Messing (3,36:1) NICHT.
+   * Deshalb existieren aufgehellte Geschwister — sonst gäbe es keinen
+   * konformen Link im dunklen Kapitel.                                     */
+  --kalk-auf-dunkel: #f4efe6; /* Text auf Espresso   → 13,20:1   AAA      OK   */
+  --ember-hell: #e9a178; /* Links auf Espresso       →  7,08:1   AAA      OK   */
+  --messing-hell: #c9a227; /* Akzent auf Espresso    →  6,25:1   AA       OK   */
+
+  /* --- Semantische Ebene: nur diese vier werden in Komponenten benutzt ---- */
+  --flaeche: var(--kalk);
+  --text: var(--espresso);
+  --text-leise: var(--espresso-70);
+  --akzent: var(--ochsenblut);
+  --akzent-gross: var(--messing);
+  --linie: color-mix(in oklab, var(--espresso) 18%, transparent);
+
+  /* --- Typografie --------------------------------------------------------
+   * Die echten Schriftnamen sind hinter Aliassen gekapselt. Ein Wechsel von
+   * der OFL-Variante auf eine Kauflizenz ist damit eine @font-face-Änderung
+   * und keine Suchen-und-Ersetzen-Aktion über das ganze Projekt.           */
+  /* Zweites Glied ist jeweils die metrisch angeglichene Ersatzfamilie aus
+     schriften.css — sie verhindert den Layoutsprung beim Schriftwechsel. */
+  --schrift-display: 'MesonDisplay', 'MesonDisplay-Ersatz', Georgia, 'Times New Roman', serif;
+  --schrift-text: 'MesonText', 'MesonText-Ersatz', Georgia, 'Times New Roman', serif;
+  --schrift-mikro: 'MesonMikro', 'MesonMikro-Ersatz', ui-sans-serif, system-ui, sans-serif;
+
+  --t-eyebrow: clamp(0.75rem, 0.72rem + 0.15vw, 0.875rem); /*  12 → 14 */
+  --t-mikro: clamp(0.8125rem, 0.79rem + 0.12vw, 0.875rem); /*  13 → 14 */
+  --t-basis: clamp(1rem, 0.96rem + 0.2vw, 1.125rem); /*  16 → 18 */
+  --t-lead: clamp(1.125rem, 1.05rem + 0.36vw, 1.375rem); /*  18 → 22 */
+  --t-h3: clamp(1.25rem, 1.13rem + 0.6vw, 1.625rem); /*  20 → 26 */
+  --t-h2: clamp(1.75rem, 1.4rem + 1.75vw, 3rem); /*  28 → 48 */
+  --t-h1: clamp(2.25rem, 1.6rem + 3.2vw, 4.5rem); /*  36 → 72 */
+  --t-display: clamp(2.75rem, 1.7rem + 5.2vw, 6rem); /*  44 → 96 */
+  --t-telefon: clamp(2.5rem, 1.6rem + 4.5vw, 5.5rem); /*  40 → 88 */
+
+  --zeile-eng: 1.12; /* Display                        */
+  --zeile-h: 1.18; /* Überschriften                  */
+  --zeile-text: 1.65; /* Fließtext — Puffer für 1.4.12  */
+  --sperrung: 0.14em; /* nur Eyebrow und Versalien      */
+  --satzspiegel: 62ch; /* maximale Zeilenlänge           */
+
+  /* --- Raum (4px-Basis) --------------------------------------------------- */
+  --raum-1: 0.25rem;
+  --raum-2: 0.5rem;
+  --raum-3: 0.75rem;
+  --raum-4: 1rem;
+  --raum-5: 1.5rem;
+  --raum-6: 2rem;
+  --raum-7: 3rem;
+  --raum-8: clamp(3rem, 2rem + 5vw, 6rem);
+  --raum-9: clamp(4.5rem, 3rem + 7.5vw, 9rem); /* Sektionsabstand */
+
+  /* --- Layout -------------------------------------------------------------
+   * --kopfhoehe, --ankerleiste und --callbar speisen scroll-padding.
+   * Wer eine Sticky-Höhe ändert und diese Variable vergisst, erzeugt einen
+   * 2.4.11-Verstoß (Fokus unter der Leiste). Deshalb genau eine Quelle.    */
+  --kopfhoehe: 4.5rem;
+  --ankerleiste: 0rem; /* auf /speisekarte/ überschrieben */
+  --callbar: 0rem; /* unter 768px überschrieben, s. u. */
+  --rahmen: clamp(1rem, 0.5rem + 2vw, 2rem); /* Passepartout */
+  --breite-max: 82rem;
+  --ziel-min: 44px; /* 2.5.8 fordert 24 — wir setzen 44 */
+
+  /* --- Fokus: Doppelring --------------------------------------------------
+   * Heller Innen-, dunkler Außenring. Funktioniert auf jedem Untergrund,
+   * weil beide Farben zueinander 13,20:1 stehen — auf Kalk trägt der äußere,
+   * auf Espresso der innere Ring.                                          */
+  --fokus-innen: #f4efe6;
+  --fokus-aussen: #2b2521;
+
+  /* --- Bewegung ----------------------------------------------------------- */
+  --dauer-schnell: 150ms;
+  --dauer-mittel: 240ms;
+  --dauer-lang: 500ms;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+/* Die Speisekarte trägt unter der Kopfzeile eine zweite klebende Leiste.
+   Sie muss hier auf :root stehen, weil scroll-padding-top am <html> hängt —
+   auf einem Container gesetzt bliebe der Wert wirkungslos und Sprungziele
+   verschwänden unter der Leiste (2.4.11 Focus Not Obscured). */
+:root[data-seite='speisekarte'] {
+  --ankerleiste: 3.25rem;
+}
+
+/* Die feste Anrufleiste existiert nur unter 768px. Ihre Höhe muss global
+   bekannt sein, weil sie in scroll-padding-bottom einfließt — sonst
+   verdeckt sie fokussierte Elemente (2.4.11). */
+@media (max-width: 47.99rem) {
+  :root {
+    --callbar: 3.5rem;
+  }
+
+  body {
+    padding-block-end: calc(var(--callbar) + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/* ----------------------------------------------------------------------------
+   Dunkles Kapitel („La Morocha“). Wird per data-Attribut gesetzt, nicht per
+   Klasse — damit ist im DevTools-Baum sofort sichtbar, welche Fläche gilt.
+   ---------------------------------------------------------------------------- */
+[data-flaeche='glut'] {
+  --flaeche: var(--espresso);
+  --text: var(--kalk-auf-dunkel);
+  --text-leise: color-mix(in oklab, var(--kalk) 78%, var(--espresso));
+  --akzent: var(--ember-hell); /* NICHT --ochsenblut: 2,52:1 */
+  --akzent-gross: var(--messing-hell); /* NICHT --messing:    3,36:1 */
+  --linie: color-mix(in oklab, var(--kalk) 22%, transparent);
+
+  background-color: var(--flaeche);
+  color: var(--text);
+}
+
+/* ----------------------------------------------------------------------------
+   Bewegungsmodi.
+   Drei Zustände: full (Standard), reduced, off.
+   „reduced“ ist Vorgabe, sobald das System prefers-reduced-motion meldet;
+   der Schalter im Fuß überschreibt die Systemeinstellung in beide Richtungen.
+   ---------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dauer-schnell: 0.01ms;
+    --dauer-mittel: 0.01ms;
+    --dauer-lang: 0.01ms;
+  }
+}
+
+:root[data-motion='reduced'],
+:root[data-motion='off'] {
+  --dauer-schnell: 0.01ms;
+  --dauer-mittel: 0.01ms;
+  --dauer-lang: 0.01ms;
+}
+
+/* Der Nutzer hat ausdrücklich „volle Bewegung“ gewählt — das schlägt auch
+   ein gesetztes Systemflag, sonst wäre der Schalter eine Attrappe. */
+:root[data-motion='full'] {
+  --dauer-schnell: 150ms;
+  --dauer-mittel: 240ms;
+  --dauer-lang: 500ms;
+}
+
+/* Pause-Taste: friert ausschließlich ZEITgesteuerte Animationen ein.
+   Scroll-getriebene Bewegung bleibt unangetastet — sie ist nutzergesteuert,
+   fällt nicht unter 2.2.2, und ein Einfrieren würde die Seite in einem
+   halbfertigen Zwischenzustand stranden lassen. */
+:root[data-motion-paused='true'] [data-anim='zeit'] {
+  animation-play-state: paused !important;
+}

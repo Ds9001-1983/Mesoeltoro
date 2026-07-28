@@ -1,0 +1,77 @@
+---
+/**
+ * Pausetaste für zeitgesteuerte Bewegung.
+ *
+ * WCAG 2.2.2 verlangt einen Mechanismus AUF DER SEITE. Eine Media Query ist
+ * das nicht — genau daran scheitern die meisten Umsetzungen: Sie schalten
+ * brav bei `prefers-reduced-motion` ab und halten das für erledigt.
+ *
+ * Die Taste ist im Markup `hidden` und wird von islands/bewegung.ts
+ * eingeblendet. Ohne JavaScript könnte sie nichts bewirken, und ein
+ * Bedienelement ohne Wirkung ist schlimmer als keines.
+ *
+ * Sie sitzt bewusst NICHT nur im Hover-Zustand sichtbar, hat eine deckende
+ * Hinterlegung (1.4.11 verlangt 3:1 für Bedienelemente) und misst 44×44.
+ */
+
+interface Props {
+  readonly klasse?: string
+}
+
+const { klasse } = Astro.props
+---
+
+<button type="button" class:list={['pause', klasse]} data-pausetaste aria-pressed="false" hidden>
+  <span class="pause__zeichen" aria-hidden="true"></span>
+  <span class="vh" data-pausetaste-text>Bewegung pausieren</span>
+</button>
+
+<style>
+  .pause {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--ziel-min);
+    block-size: var(--ziel-min);
+    /* Deckend, nicht durchscheinend: Über einem hellen Bild muss die Fläche
+       ihre 3:1 auch dann halten, wenn darunter Weiß liegt. */
+    background-color: var(--espresso);
+    color: var(--kalk);
+    border: 2px solid var(--kalk);
+    border-radius: 2px;
+  }
+
+  .pause[hidden] {
+    display: none;
+  }
+
+  .pause:hover {
+    background-color: color-mix(in oklab, var(--espresso) 82%, var(--ochsenblut));
+  }
+
+  /* Zwei Balken = läuft, kann pausiert werden. */
+  .pause__zeichen {
+    inline-size: 0.75rem;
+    block-size: 0.85rem;
+    border-inline: 0.24rem solid currentColor;
+  }
+
+  /* Dreieck = pausiert, kann fortgesetzt werden.
+     Der Zustand steht zusätzlich in aria-pressed und im Textlabel —
+     die Form allein wäre eine Information nur über Form (1.4.1). */
+  .pause[aria-pressed='true'] .pause__zeichen {
+    inline-size: 0;
+    block-size: 0;
+    border: 0;
+    border-block-start: 0.42rem solid transparent;
+    border-block-end: 0.42rem solid transparent;
+    border-inline-start: 0.7rem solid currentColor;
+    margin-inline-start: 0.15rem;
+  }
+
+  @media print {
+    .pause {
+      display: none;
+    }
+  }
+</style>

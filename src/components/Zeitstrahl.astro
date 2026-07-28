@@ -1,0 +1,149 @@
+---
+/**
+ * Die Historie als waagerechter Zeitstrahl — die EINZIGE horizontale
+ * Scrollregion des ganzen Projekts.
+ *
+ * Umgesetzt mit nativem overflow-x und scroll-snap, NICHT mit einer
+ * gepinnten GSAP-Sektion. Der Unterschied ist der entscheidende:
+ *
+ *  - Der Browser kennt die echte Scrollposition, kann also ein fokussiertes
+ *    Element von sich aus ins Bild holen. Bei transform-basiertem
+ *    Scroll-Hijacking kann er das nicht — der Fokus landet auf Unsichtbarem.
+ *  - Pfeiltasten, Bild auf/ab und die Browser-Suche funktionieren ohne
+ *    eine Zeile JavaScript.
+ *  - Die Region ist fokussierbar und als Gruppe benannt (2.1.1), sonst
+ *    meldet axe zu Recht `scrollable-region-focusable`.
+ *
+ * Unter 62rem stapeln die Einträge senkrecht — 1.4.10 Reflow verlangt bei
+ * 320 px, dass kein Inhalt zwei Achsen zum Scrollen braucht.
+ */
+import historie from '../../content/historie.json'
+---
+
+<section class="zeitstrahl" aria-labelledby="zeitstrahl-titel">
+  <h2 id="zeitstrahl-titel">Ein Restaurant mit Historie</h2>
+
+  {/*
+    Die fokussierbare Scrollregion ist ein <div>, die Liste liegt DARIN.
+
+    Naheliegend wäre, role="group" und tabindex direkt auf die <ol> zu setzen.
+    Das ist falsch und wurde vom axe-Lauf am 28.07.2026 auch prompt gemeldet:
+    role="group" überschreibt die implizite Rolle „list“, womit die <li>
+    verwaiste Listenelemente werden — ein 1.3.1-Verstoß.
+
+    Die Aufteilung löst beides: Der Container ist eine benannte, per Tastatur
+    erreichbare Scrollregion (2.1.1), die Liste behält ihre Semantik.
+  */}
+  <div
+    class="zeitstrahl__spur"
+    tabindex="0"
+    role="group"
+    aria-label="Zeitleiste des Hauses, waagerecht scrollbar"
+  >
+    <ol class="zeitstrahl__liste">
+      {
+        historie.stationen.map((station) => (
+          <li class="station">
+            <p class="station__jahr zahlen">{station.jahr}</p>
+            <h3 class="station__titel">{station.titel}</h3>
+            <p class="station__text">{station.text}</p>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+
+  <p class="zeitstrahl__hinweis mikro leise">
+    Die Zeitleiste lässt sich seitlich verschieben — mit den Pfeiltasten, dem Rad oder dem Finger.
+  </p>
+</section>
+
+<style>
+  .zeitstrahl {
+    padding-block: var(--raum-8);
+    border-block-start: 1px solid var(--linie);
+  }
+
+  .zeitstrahl__spur {
+    margin-block-start: var(--raum-6);
+  }
+
+  .zeitstrahl__liste {
+    display: grid;
+    gap: var(--raum-5);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .zeitstrahl__hinweis {
+    margin-block-start: var(--raum-4);
+  }
+
+  .station {
+    padding-block-start: var(--raum-4);
+    border-block-start: 2px solid var(--akzent-gross);
+  }
+
+  .station__jahr {
+    font-family: var(--schrift-display);
+    /* Weit über 24px — nur so darf Messing überhaupt Schriftfarbe sein. */
+    font-size: clamp(2.5rem, 1.8rem + 3vw, 4rem);
+    line-height: 1;
+    color: var(--akzent-gross);
+  }
+
+  .station__titel {
+    margin-block-start: var(--raum-3);
+    font-size: var(--t-basis);
+  }
+
+  .station__text {
+    margin-block-start: var(--raum-2);
+    font-size: var(--t-mikro);
+    color: var(--text-leise);
+  }
+
+  /* Ab hier waagerecht — darunter bleibt die senkrechte Stapelung. */
+  @media (min-width: 62rem) {
+    .zeitstrahl__spur {
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x proximity;
+      /* Platz für den Fokusring, sonst schneidet ihn der Überlauf ab. */
+      padding-block: var(--raum-2);
+      padding-inline: 2px;
+    }
+
+    .zeitstrahl__liste {
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(16rem, 20rem);
+      gap: var(--raum-7);
+    }
+
+    .station {
+      scroll-snap-align: start;
+    }
+  }
+
+  /* Die Spur ist fokussierbar — dann muss der Ring auch sichtbar sein. */
+  .zeitstrahl__spur:focus-visible {
+    outline: 2px solid var(--fokus-innen);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 6px var(--fokus-aussen);
+  }
+
+  @media print {
+    .zeitstrahl__spur {
+      overflow: visible;
+    }
+
+    .zeitstrahl__liste {
+      grid-auto-flow: row;
+    }
+
+    .zeitstrahl__hinweis {
+      display: none;
+    }
+  }
+</style>

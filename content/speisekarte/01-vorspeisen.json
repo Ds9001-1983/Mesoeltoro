@@ -1,0 +1,130 @@
+{
+  "$schema": "../schema/kategorie.schema.json",
+
+  "id": "vorspeisen",
+  "titel": "Vorspeisen",
+  "einleitung": null,
+  "reihenfolge": 1,
+  "steuerkategorie": "speise",
+
+  "gerichte": [
+    {
+      "id": "gambas-al-ajillo",
+      "name": "Gambas al Ajillo",
+      "beschreibung": null,
+      "varianten": [
+        { "bezeichnung": "Portion", "preis": "17,50" },
+        { "bezeichnung": "kleine Portion", "preis": "14,00" }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "carpaccio-rinderfilet",
+      "name": "Carpaccio vom Rinderfilet",
+      "beschreibung": null,
+      "varianten": [
+        { "bezeichnung": "Portion", "preis": "17,50" },
+        { "bezeichnung": "kleine Portion", "preis": "14,00" }
+      ],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "bunter-salatteller",
+      "name": "Bunter Salatteller",
+      "beschreibung": "Mit Rinderfiletspitzen oder Gambas.",
+      "varianten": [{ "bezeichnung": null, "preis": "18,00" }],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "argentinischer-salat",
+      "name": "Argentinischer Salat",
+      "beschreibung": null,
+      "varianten": [{ "bezeichnung": null, "preis": "10,00" }],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "rinderkraftbruehe",
+      "name": "Rinderkraftbrühe mit Sherry",
+      "beschreibung": null,
+      "varianten": [{ "bezeichnung": null, "preis": "7,00" }],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "steinpilzsuppe",
+      "name": "Steinpilzsuppe",
+      "beschreibung": null,
+      "varianten": [{ "bezeichnung": null, "preis": "8,00" }],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    },
+    {
+      "id": "tomatencremesuppe",
+      "name": "Tomatencremesuppe",
+      "beschreibung": null,
+      "varianten": [{ "bezeichnung": null, "preis": "7,50" }],
+      "allergene": [],
+      "zusatzstoffe": [],
+      "kennzeichnung_status": "ausstehend",
+      "kennzeichnung_stand": null,
+      "kennzeichnung_quelle": null,
+      "bestaetigt_von": null,
+      "vegetarisch": false,
+      "vegan": false,
+      "verfuegbar": true,
+      "hinweis": null
+    }
+  ]
+}

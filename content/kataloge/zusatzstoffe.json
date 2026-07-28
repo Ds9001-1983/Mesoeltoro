@@ -1,0 +1,22 @@
+{
+  "$schema": "../schema/katalog.schema.json",
+
+  "//": "Kenntlichmachungspflichtige Zusatzstoffe nach § 9 Zusatzstoff-Zulassungsverordnung (ZZulV) in Verbindung mit der LMIV. Der Wortlaut in 'voll' ist der gesetzlich vorgegebene und darf NICHT umformuliert werden.",
+
+  "art": "zusatzstoffe",
+  "eintraege": [
+    { "code": "1", "kurz": "Farbstoff", "voll": "mit Farbstoff" },
+    { "code": "2", "kurz": "Konservierung", "voll": "mit Konservierungsstoff" },
+    { "code": "3", "kurz": "Antioxidationsmittel", "voll": "mit Antioxidationsmittel" },
+    { "code": "4", "kurz": "Geschmacksverstärker", "voll": "mit Geschmacksverstärker" },
+    { "code": "5", "kurz": "geschwefelt", "voll": "geschwefelt" },
+    { "code": "6", "kurz": "geschwärzt", "voll": "geschwärzt" },
+    { "code": "7", "kurz": "gewachst", "voll": "gewachst" },
+    { "code": "8", "kurz": "Phosphat", "voll": "mit Phosphat" },
+    { "code": "9", "kurz": "Süßungsmittel", "voll": "mit Süßungsmittel" },
+    { "code": "10", "kurz": "Phenylalanin", "voll": "enthält eine Phenylalaninquelle" },
+    { "code": "11", "kurz": "koffeinhaltig", "voll": "koffeinhaltig" },
+    { "code": "12", "kurz": "chininhaltig", "voll": "chininhaltig" },
+    { "code": "13", "kurz": "Nitritpökelsalz", "voll": "mit Nitritpökelsalz" }
+  ]
+}

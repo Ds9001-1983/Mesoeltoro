@@ -1,0 +1,358 @@
+---
+/**
+ * Startseite — genau sieben Sektionen.
+ *
+ * Dramaturgie: hell, hell, hell, DUNKEL, hell, hell, hell. Das dunkle
+ * Kapitel („La Morocha“) wird auf der gesamten Website genau einmal
+ * gespielt. Ab dem zweiten Mal wäre Glut ein Muster statt einer
+ * Dramaturgie — und jede dunkle Fläche verdoppelt die Kontrast-Prüffläche.
+ */
+import Anschnitt from '../components/Anschnitt.astro'
+import Gaestestimme from '../components/Gaestestimme.astro'
+import GlutKapitel from '../components/GlutKapitel.astro'
+import JsonLd from '../components/JsonLd.astro'
+import Gerichtszeile from '../components/Gerichtszeile.astro'
+import Statusband from '../components/Statusband.astro'
+import Basis from '../layouts/Basis.astro'
+import historie from '../../content/historie.json'
+import { restaurant } from '../lib/daten.ts'
+import { KATEGORIEN } from '../lib/karte.ts'
+
+// Fünf Zeilen als Auszug — die Karte selbst hat eine eigene Route.
+const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((gericht) =>
+  ['gambas-al-ajillo', 'carpaccio-rinderfilet', 'kalbskotelett', 'seezunge', 'crema-catalana'].includes(
+    gericht.id,
+  ),
+)
+---
+
+<Basis
+  titel="Spanisches Restaurant & Steakhouse"
+  beschreibung="Seit 1975 spanische Küche und Grill in Waldbröl. Mittwoch bis Sonntag, mittags und abends geöffnet. Reservierung unter 02291 4347."
+>
+  <JsonLd slot="kopf" />
+  {/* --- 1. Der Anschnitt ------------------------------------------------ */}
+  <section class="hero" aria-labelledby="hero-titel">
+    <div class="huelle hero__raster">
+      <div class="hero__text">
+        <p class="eyebrow">
+          {restaurant.adresse.ort} · {restaurant.adresse.strasse} · seit {restaurant.zahlen.gegruendet}
+        </p>
+        <h1 id="hero-titel">Mesón el Toro — spanische Küche und Grill.</h1>
+        <p class="lead">
+          Ein Haus, das seit einem halben Jahrhundert dasselbe tut: gut kochen und gut bedienen.
+        </p>
+        <p class="hero__ruf">
+          <a class="hero__nummer zahlen" href={`tel:${restaurant.telefon_e164}`} data-ziel>
+            {restaurant.telefon_anzeige}
+          </a>
+          <span class="mikro leise">Tisch reservieren</span>
+        </p>
+      </div>
+
+      <div class="hero__bild">
+        <Anschnitt obenSchluessel="steak-teller" untenSchluessel="haus-abendlicht" />
+      </div>
+    </div>
+  </section>
+
+  {/* --- 2. Heute --------------------------------------------------------- */}
+  <section class="heute" aria-labelledby="heute-titel">
+    <div class="huelle heute__inhalt">
+      <h2 id="heute-titel" class="vh">Heute</h2>
+      <p class="heute__fest zahlen">Mi–So · 12–14 und 18–22 Uhr · Mo und Di Ruhetag</p>
+      <Statusband mitKonfiguration />
+    </div>
+  </section>
+
+  {/* --- 3. Zwei Küchen --------------------------------------------------- */}
+  <section class="kuechen" aria-labelledby="kuechen-titel">
+    <div class="huelle">
+      <h2 id="kuechen-titel" class="vh">Zwei Küchen unter einem Dach</h2>
+      <div class="kuechen__raster">
+        <article class="kueche">
+          <h3 class="kueche__titel">Aus Spanien</h3>
+          <p class="kueche__text">
+            Gambas al Ajillo, Crema Catalana, spanische Weine. Die Gründungsküche des Hauses — sie
+            ist geblieben, weil sie zum Grill passt.
+          </p>
+          <p><a class="kueche__link" href="/speisekarte/#vorspeisen">Zur Karte</a></p>
+        </article>
+
+        <article class="kueche">
+          <h3 class="kueche__titel">Vom Grill</h3>
+          <p class="kueche__text">
+            Rumpsteak, Filet, Lammkoteletts, Kalbskotelett. Über offener Glut gegrillt — daran
+            entscheidet sich alles.
+          </p>
+          <p><a class="kueche__link" href="/speisekarte/#steaks">Zur Karte</a></p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  {/* --- 4. La Morocha — das einzige dunkle Kapitel ----------------------- */}
+  <GlutKapitel />
+
+  {/* --- 5. Aus der Karte ------------------------------------------------- */}
+  <section class="auszug" aria-labelledby="auszug-titel">
+    <div class="huelle auszug__inhalt">
+      <h2 id="auszug-titel">Die Karte, ganz gelesen.</h2>
+      <p class="auszug__notiz mikro leise">
+        Ein Auszug. Alle 38 Gerichte, Preise und Kennzeichnungen stehen auf der Speisekarte.
+      </p>
+      <ul class="auszug__liste liste-schlicht">
+        {auszug.map((gericht) => <Gerichtszeile gericht={gericht} />)}
+      </ul>
+      <p class="auszug__weiter">
+        <a href="/speisekarte/">Zur vollständigen Speisekarte</a>
+      </p>
+    </div>
+  </section>
+
+  {/* --- 6. Seit 1975 ----------------------------------------------------- */}
+  <section class="historie" aria-labelledby="historie-titel">
+    <div class="huelle">
+      <h2 id="historie-titel" class="vh">Seit 1975</h2>
+      <ol class="historie__jahre liste-schlicht">
+        {
+          historie.stationen.slice(0, 3).map((station) => (
+            <li class="historie__jahr">
+              <p class="historie__zahl zahlen">{station.jahr}</p>
+              <p class="historie__text mikro">{station.titel}</p>
+            </li>
+          ))
+        }
+      </ol>
+      <Gaestestimme />
+    </div>
+  </section>
+
+  {/* --- 7. Der Tisch ----------------------------------------------------- */}
+  <section class="tisch" aria-labelledby="tisch-titel">
+    <div class="huelle tisch__raster">
+      <div>
+        <h2 id="tisch-titel">Mittwoch bis Sonntag. Zweimal am Tag.</h2>
+        <p class="satz tisch__text">
+          Reservierungen nehmen wir am Telefon entgegen. Wenn Sie lieber schreiben, geht das
+          genauso — wir bestätigen Ihren Tisch dann schriftlich.
+        </p>
+        <p class="tisch__wege">
+          <a class="tisch__nummer zahlen" href={`tel:${restaurant.telefon_e164}`} data-ziel>
+            {restaurant.telefon_anzeige}
+          </a>
+          <a href={`mailto:${restaurant.email}`} data-ziel>{restaurant.email}</a>
+        </p>
+      </div>
+
+      <div class="tisch__ort">
+        <h3>Wo Sie uns finden</h3>
+        <address class="tisch__adresse">
+          {restaurant.adresse.strasse}<br />
+          {restaurant.adresse.plz} {restaurant.adresse.ort}
+        </address>
+        <p class="mikro leise">{restaurant.parken.hinweis}</p>
+        <p><a href="/kontakt/">Anfahrt und Öffnungszeiten</a></p>
+      </div>
+    </div>
+  </section>
+</Basis>
+
+<style>
+  /* --- 1. Hero ---------------------------------------------------------- */
+  .hero__raster {
+    display: grid;
+    gap: var(--raum-6);
+    padding-block: var(--raum-8);
+    align-items: center;
+  }
+
+  @media (min-width: 64rem) {
+    .hero__raster {
+      /* 5/7 — Text links, Bild rechts. Text steht nie über dem Bild. */
+      grid-template-columns: 5fr 7fr;
+      gap: var(--raum-8);
+      min-block-size: 88svh;
+    }
+  }
+
+  .hero__text .lead {
+    margin-block-start: var(--raum-5);
+  }
+
+  .hero__ruf {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--raum-3) var(--raum-4);
+    margin-block-start: var(--raum-6);
+  }
+
+  .hero__nummer {
+    font-family: var(--schrift-display);
+    font-size: var(--t-telefon);
+    line-height: 1;
+    text-decoration: none;
+    border-block-end: 3px solid currentColor;
+  }
+
+  /* --- 2. Heute ---------------------------------------------------------- */
+  .heute {
+    background-color: var(--espresso);
+    color: var(--kalk-auf-dunkel);
+    padding-block: var(--raum-5);
+  }
+
+  .heute__inhalt {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--raum-4);
+  }
+
+  .heute__fest {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+    letter-spacing: 0.04em;
+  }
+
+  /* Im dunklen Band gelten die aufgehellten Token — Ochsenblut trägt hier nicht. */
+  .heute :global(.status) {
+    border-color: color-mix(in oklab, var(--kalk) 34%, transparent);
+    color: var(--kalk-auf-dunkel);
+  }
+
+  /* --- 3. Zwei Küchen ---------------------------------------------------- */
+  .kuechen {
+    padding-block: var(--raum-9);
+  }
+
+  .kuechen__raster {
+    display: grid;
+    gap: var(--raum-7);
+  }
+
+  @media (min-width: 48rem) {
+    .kuechen__raster {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .kueche {
+    padding-block-start: var(--raum-5);
+    border-block-start: 2px solid var(--linie);
+  }
+
+  .kueche__titel {
+    font-family: var(--schrift-display);
+    font-size: var(--t-h2);
+    font-weight: 400;
+  }
+
+  .kueche__text {
+    margin-block-start: var(--raum-4);
+    max-inline-size: 42ch;
+  }
+
+  .kueche__link {
+    display: inline-block;
+    margin-block-start: var(--raum-4);
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* --- 5. Auszug --------------------------------------------------------- */
+  .auszug {
+    padding-block: var(--raum-9);
+  }
+
+  .auszug__inhalt {
+    max-inline-size: 52rem;
+  }
+
+  .auszug__notiz {
+    margin-block-start: var(--raum-3);
+  }
+
+  .auszug__liste {
+    margin-block-start: var(--raum-6);
+  }
+
+  .auszug__weiter {
+    margin-block-start: var(--raum-6);
+  }
+
+  /* --- 6. Historie ------------------------------------------------------- */
+  .historie {
+    padding-block: var(--raum-9);
+    border-block-start: 1px solid var(--linie);
+  }
+
+  .historie__jahre {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--raum-6) var(--raum-8);
+  }
+
+  .historie__zahl {
+    font-family: var(--schrift-display);
+    /* Weit über 24px — Voraussetzung dafür, dass Messing hier Schriftfarbe sein darf. */
+    font-size: clamp(3rem, 2rem + 5vw, 5.5rem);
+    line-height: 1;
+    color: var(--akzent-gross);
+  }
+
+  .historie__text {
+    color: var(--text-leise);
+  }
+
+  /* --- 7. Der Tisch ------------------------------------------------------ */
+  .tisch {
+    padding-block: var(--raum-9);
+    border-block-start: 1px solid var(--linie);
+  }
+
+  .tisch__raster {
+    display: grid;
+    gap: var(--raum-7);
+  }
+
+  @media (min-width: 62rem) {
+    .tisch__raster {
+      grid-template-columns: 3fr 2fr;
+      gap: var(--raum-8);
+    }
+  }
+
+  .tisch__text {
+    margin-block-start: var(--raum-4);
+  }
+
+  .tisch__wege {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--raum-3) var(--raum-6);
+    margin-block-start: var(--raum-6);
+  }
+
+  .tisch__nummer {
+    font-family: var(--schrift-display);
+    font-size: var(--t-telefon);
+    line-height: 1;
+    text-decoration: none;
+    border-block-end: 3px solid currentColor;
+  }
+
+  .tisch__adresse {
+    font-style: normal;
+    margin-block: var(--raum-4);
+  }
+
+  .tisch__ort p {
+    margin-block-start: var(--raum-3);
+  }
+</style>

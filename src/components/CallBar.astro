@@ -1,0 +1,75 @@
+---
+/**
+ * Feste Anrufleiste am unteren Rand, ausschließlich unter 768px.
+ *
+ * Auf dem Telefon ist die Telefonnummer die eigentliche Konversion. Sie
+ * darf nie mehr als eine Daumenbewegung entfernt sein.
+ *
+ * Damit sie kein fokussiertes Element verdeckt (2.4.11), setzt sie im selben
+ * Zug --callbar, was in scroll-padding-bottom einfließt.
+ */
+import { restaurant } from '../lib/daten.ts'
+---
+
+{/*
+  <nav> statt <div>: Als fest eingeblendete Leiste liegt sie außerhalb von
+  Kopf, Inhalt und Fuß. Ohne eigene Landmark-Rolle wäre ihr Inhalt in keinem
+  Bereich enthalten — axe meldet das zu Recht, und Screenreader-Nutzer, die
+  über Landmarken navigieren, finden sie sonst gar nicht.
+*/}
+<nav class="callbar" aria-label="Schnellkontakt">
+  <a class="callbar__link" href={`tel:${restaurant.telefon_e164}`} data-ziel>
+    <span aria-hidden="true" class="callbar__zeichen">✆</span>
+    <span>Anrufen · {restaurant.telefon_anzeige}</span>
+  </a>
+</nav>
+
+<style>
+  .callbar {
+    display: none;
+  }
+
+  /* --callbar und der Innenabstand des Body stehen global in tokens.css bzw.
+     basis.css — in einem gescopten Astro-Style würde :root zu
+     :root[data-astro-cid-…] und damit nie greifen. */
+  @media (max-width: 47.99rem) {
+    .callbar {
+      display: block;
+      position: fixed;
+      inset-inline: 0;
+      inset-block-end: 0;
+      z-index: 90;
+      background-color: var(--ochsenblut);
+      /* Rand oben, damit die Leiste sich vom Inhalt löst, auch wenn
+         darunter zufällig eine ochsenblutfarbene Fläche endet. */
+      border-block-start: 1px solid color-mix(in oklab, var(--ochsenblut) 70%, black);
+    }
+
+    .callbar__link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--raum-3);
+      min-block-size: 3.5rem;
+      /* Kalk auf Ochsenblut = 5,24:1 */
+      color: var(--kalk);
+      font-family: var(--schrift-mikro);
+      font-size: var(--t-basis);
+      text-decoration: none;
+      font-variant-numeric: tabular-nums;
+      /* Rand für Geräte mit Home-Indikator. */
+      padding-block-end: env(safe-area-inset-bottom, 0);
+    }
+
+    .callbar__zeichen {
+      font-size: 1.2em;
+    }
+  }
+
+  /* Beim Drucken hat eine Anrufleiste nichts verloren. */
+  @media print {
+    .callbar {
+      display: none;
+    }
+  }
+</style>

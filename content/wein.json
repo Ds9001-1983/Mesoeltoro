@@ -1,0 +1,26 @@
+{
+  "$schema": "./schema/wein.schema.json",
+  "//": "Kein Feld für Preis, Jahrgang, Rebsorte, Alkoholgehalt oder Flaschengröße. Strukturell unmöglich gemacht, damit die Grundpreisangabe nach § 4 PAngV, die erweiterten LMIV-Weinangaben nach VO (EU) 2021/2117, das Fernabsatzrecht und die Altersverifikation nach JuSchG gar nicht erst ausgelöst werden können.",
+  "zahlen": {
+    "rot": 15,
+    "weiss": 15
+  },
+  "merkmale": [
+    {
+      "id": "partnerschaften",
+      "titel": "Langjährige Partnerschaften",
+      "text": "Unsere Weine kommen von spanischen Weingütern. Mit vielen von ihnen arbeiten wir seit Jahren zusammen."
+    },
+    {
+      "id": "beratung",
+      "titel": "Persönliche Beratung",
+      "text": "Im Haus oder telefonisch. Sagen Sie uns, wozu der Wein passen soll — wir suchen etwas aus."
+    },
+    {
+      "id": "ausser-haus",
+      "titel": "Auch für zuhause",
+      "text": "Ausgewählte Weine geben wir außer Haus ab."
+    }
+  ],
+  "rahmen": "Kein Versand, kein Onlineverkauf. Abgabe ausschließlich bei uns im Haus."
+}

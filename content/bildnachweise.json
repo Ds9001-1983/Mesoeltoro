@@ -1,0 +1,73 @@
+{
+  "$schema": "./schema/bildnachweise.schema.json",
+
+  "//": "Register aller verwendbaren Bilder. Zugleich Build-Gate: Bild.astro nimmt einen Schlüssel aus dieser Datei entgegen, NIEMALS einen Dateipfad. Fehlt der Eintrag, fehlt die Freigabe oder ist eine Person ohne Einwilligung abgebildet, bricht der Build ab. Dieselbe Datei erzeugt /bildnachweise/ — Register und öffentliche Liste können damit nicht auseinanderlaufen.",
+
+  "//rechtslage": "Die Fotos stammen vom Fotografen J. Schumacher und wurden für die Vorgängerseite erstellt. Ob die Nutzungsrechte beim Betreiberwechsel 2023 auf die heutige GmbH übergegangen sind (§ 34 UrhG), ist noch nicht nachgewiesen. Deshalb steht 'urheber_nachweis' überall auf false und 'freigabe' auf false — es geht kein einziges Foto live, bevor der Nachweis vorliegt. Siehe docs/BILDRECHTE.md.",
+
+  "sperrliste": [
+    "JSchumacher_Theos_",
+    "Claudios",
+    "Simerilab",
+    "pexels-",
+    "220519_JS_",
+    "video-latulipe"
+  ],
+
+  "//sperrliste": "Dateinamen-Präfixe aus FREMDEN Projekten, die im Medienverzeichnis der alten WordPress-Installation liegen. Sie gehören nicht zum Mesón el Toro und dürfen unter keinen Umständen ausgeliefert werden.",
+
+  "bilder": {
+    "steak-teller": {
+      "datei": "meson_el_toro_steak.jpg",
+      "motiv": "Gegrilltes Steak auf hellem Teller",
+      "alt": "Ein gegrilltes Steak mit deutlichen Grillstreifen auf einem hellen Teller, daneben drei Kirschtomaten und Kräuteröl",
+      "urheber": "J. Schumacher",
+      "urheber_nachweis": false,
+      "nachweis_fundstelle": null,
+      "personen_abgebildet": false,
+      "personen_einwilligung": null,
+      "freigabe": false,
+      "freigabe_datum": null,
+      "verwendung": ["/", "/speisekarte/"]
+    },
+    "haus-abendlicht": {
+      "datei": "meson_el_toro_header_restaurant.jpg",
+      "motiv": "Außenansicht des Restaurants im Abendlicht",
+      "alt": "Das Restaurantgebäude mit spitzem Giebel und rotem Balkongeländer im warmen Abendlicht, darüber das Schild „Restaurant Meson el Toro“",
+      "urheber": "J. Schumacher",
+      "urheber_nachweis": false,
+      "nachweis_fundstelle": null,
+      "personen_abgebildet": false,
+      "personen_einwilligung": null,
+      "freigabe": false,
+      "freigabe_datum": null,
+      "verwendung": ["/", "/kontakt/"]
+    },
+    "wein-service": {
+      "datei": "JS_Meson_el_Toro_104.jpg",
+      "motiv": "Servicekraft mit Rotweinglas vor dem Weinregal",
+      "alt": "Eine Servicekraft trägt ein Glas Rotwein auf einem Tablett; im Hintergrund ein hölzernes Weinregal mit spanischen Flaschen",
+      "urheber": "J. Schumacher",
+      "urheber_nachweis": false,
+      "nachweis_fundstelle": null,
+      "personen_abgebildet": true,
+      "personen_einwilligung": null,
+      "freigabe": false,
+      "freigabe_datum": null,
+      "verwendung": ["/weinfachhandel/"]
+    },
+    "gastraum": {
+      "datei": "meson_el_toro_header_restaurant_steak.jpg",
+      "motiv": "Gastraum",
+      "alt": "Blick in den Gastraum mit eingedeckten Tischen",
+      "urheber": "J. Schumacher",
+      "urheber_nachweis": false,
+      "nachweis_fundstelle": null,
+      "personen_abgebildet": false,
+      "personen_einwilligung": null,
+      "freigabe": false,
+      "freigabe_datum": null,
+      "verwendung": ["/philosophie/"]
+    }
+  }
+}

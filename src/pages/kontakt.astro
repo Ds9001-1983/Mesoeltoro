@@ -1,0 +1,236 @@
+---
+/**
+ * Kontakt und Anfahrt.
+ *
+ * Die langweiligste Seite des Projekts — und das ist die Anforderung. Wer
+ * hier landet, will anrufen oder hinfinden, nicht bewundert werden.
+ *
+ * Telefon und E-Mail stehen gleichrangig. Das ist keine Symmetrie um der
+ * Symmetrie willen: Reservierung nur per Telefon schließt gehörlose und
+ * stark hörbeeinträchtigte Gäste aus. Solange es keinen schriftlichen
+ * Buchungsweg gibt, ist die E-Mail-Adresse dieser Weg.
+ */
+import Anfahrtskarte from '../components/Anfahrtskarte.astro'
+import Oeffnungszeiten from '../components/Oeffnungszeiten.astro'
+import JsonLd from '../components/JsonLd.astro'
+import Statusband from '../components/Statusband.astro'
+import Basis from '../layouts/Basis.astro'
+import faq from '../../content/faq.json'
+import { restaurant } from '../lib/daten.ts'
+---
+
+<Basis
+  titel="Kontakt & Anfahrt"
+  beschreibung="Mesón el Toro, Brölbahnstraße 71 in Waldbröl. Reservierung unter 02291 4347. Öffnungszeiten, Anfahrt aus Gummersbach, Siegen, Hennef und Köln sowie kostenfreie Parkplätze gegenüber."
+>
+  <JsonLd
+    slot="kopf"
+    faq={faq.fragen}
+    brotkrumen={[
+      { name: 'Restaurant', pfad: '/' },
+      { name: 'Kontakt & Anfahrt', pfad: '/kontakt/' },
+    ]}
+  />
+  <div class="huelle kontakt">
+    <header class="kontakt__kopf">
+      <p class="eyebrow">Waldbröl · Bröltal</p>
+      <h1>Kontakt und Anfahrt</h1>
+      <Statusband mitKonfiguration klasse="kontakt__status" />
+    </header>
+
+    {/* --- Zwei gleichrangige Wege -------------------------------------- */}
+    <section class="wege" aria-labelledby="wege-titel">
+      <h2 id="wege-titel" class="vh">So erreichen Sie uns</h2>
+
+      <div class="weg">
+        <p class="weg__rubrik">Anrufen</p>
+        <a class="weg__ziel weg__ziel--gross zahlen" href={`tel:${restaurant.telefon_e164}`} data-ziel>
+          {restaurant.telefon_anzeige}
+        </a>
+        <p class="weg__notiz mikro leise">
+          Reservierungen nehmen wir am Telefon entgegen. So klären wir gleich, ob Ihre Wunschzeit
+          passt.
+        </p>
+      </div>
+
+      <div class="weg">
+        <p class="weg__rubrik">Schreiben</p>
+        <a class="weg__ziel" href={`mailto:${restaurant.email}`} data-ziel>{restaurant.email}</a>
+        <p class="weg__notiz mikro leise">
+          Sie hören nicht gut oder telefonieren nicht gern? Schreiben Sie uns — wir bestätigen
+          Ihren Tisch schriftlich.
+        </p>
+      </div>
+    </section>
+
+    {/* --- Öffnungszeiten ------------------------------------------------ */}
+    <section class="block" aria-labelledby="zeiten-titel">
+      <h2 id="zeiten-titel">Öffnungszeiten</h2>
+      <div class="block__inhalt block__inhalt--schmal">
+        <Oeffnungszeiten />
+      </div>
+    </section>
+
+    {/* --- Anfahrt -------------------------------------------------------- */}
+    <section class="block" aria-labelledby="anfahrt-titel">
+      <h2 id="anfahrt-titel">Anfahrt und Parken</h2>
+      <div class="anfahrt-raster">
+        <Anfahrtskarte />
+      </div>
+    </section>
+
+    {/* --- Zugänglichkeit des Hauses --------------------------------------
+        Ehrlicher Platzhalter statt Behauptung. Wer im Rollstuhl anreist und
+        vor Stufen steht, weil eine Website „barrierefrei“ behauptet hat, ist
+        schlechter dran als jemand, der vorher angerufen hat.              */}
+    <section class="block" aria-labelledby="zugang-titel">
+      <h2 id="zugang-titel">Zugänglichkeit des Hauses</h2>
+      <div class="block__inhalt">
+        <p class="satz">
+          Verlässliche Angaben zu Stufen am Eingang, zur Erreichbarkeit der Toiletten und zu den
+          Abständen zwischen den Tischen erheben wir gerade. Bis sie belastbar sind, steht hier
+          bewusst nichts — eine falsche Zusage wäre schlimmer als gar keine.
+        </p>
+        <p class="satz">
+          Rufen Sie uns bitte unter <a href={`tel:${restaurant.telefon_e164}`} data-ziel>
+            {restaurant.telefon_anzeige}</a> an. Wir sagen Ihnen genau, was Sie vor Ort erwartet,
+          und richten uns nach Ihnen.
+        </p>
+      </div>
+    </section>
+
+    {/* --- Häufige Fragen -------------------------------------------------
+        Kein Akkordeon: Zugeklappte Antworten findet weder die Suchfunktion
+        des Browsers noch eine Suchmaschine.                              */}
+    <section class="block" aria-labelledby="faq-titel">
+      <h2 id="faq-titel">Häufige Fragen</h2>
+      <div class="faq">
+        {
+          faq.fragen.map((eintrag) => (
+            <div class="faq__eintrag">
+              <h3 class="faq__frage">{eintrag.frage}</h3>
+              <p class="faq__antwort">{eintrag.antwort}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+  </div>
+</Basis>
+
+<style>
+  .kontakt {
+    padding-block: var(--raum-8) var(--raum-9);
+  }
+
+  .kontakt__kopf {
+    padding-block-end: var(--raum-6);
+  }
+
+  .kontakt__status {
+    margin-block-start: var(--raum-5);
+  }
+
+  /* --- Die zwei Wege --------------------------------------------------- */
+  .wege {
+    display: grid;
+    gap: var(--raum-5);
+    padding-block: var(--raum-6);
+    border-block: 2px solid var(--linie);
+  }
+
+  @media (min-width: 48rem) {
+    .wege {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--raum-7);
+    }
+  }
+
+  .weg__rubrik {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    font-weight: 600;
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    color: var(--text-leise);
+    margin-block-end: var(--raum-3);
+  }
+
+  .weg__ziel {
+    display: inline-block;
+    font-family: var(--schrift-display);
+    font-size: clamp(1.5rem, 1rem + 2vw, 2.25rem);
+    text-decoration: none;
+    border-block-end: 2px solid currentColor;
+    /* Lange Adressen dürfen umbrechen statt zu überlaufen. */
+    overflow-wrap: anywhere;
+  }
+
+  .weg__ziel--gross {
+    font-size: var(--t-telefon);
+    line-height: 1.05;
+  }
+
+  .weg__notiz {
+    margin-block-start: var(--raum-3);
+    max-inline-size: 40ch;
+  }
+
+  /* --- Blöcke ----------------------------------------------------------- */
+  .block {
+    padding-block: var(--raum-8);
+    border-block-end: 1px solid var(--linie);
+  }
+
+  .block:last-of-type {
+    border-block-end: none;
+  }
+
+  .block__inhalt {
+    margin-block-start: var(--raum-5);
+    display: grid;
+    gap: var(--raum-4);
+  }
+
+  .block__inhalt--schmal {
+    max-inline-size: 34rem;
+  }
+
+  .anfahrt-raster {
+    display: grid;
+    gap: var(--raum-6);
+    margin-block-start: var(--raum-5);
+  }
+
+  @media (min-width: 62rem) {
+    .anfahrt-raster {
+      grid-template-columns: 3fr 2fr;
+      gap: var(--raum-7);
+      align-items: start;
+    }
+  }
+
+  /* --- FAQ --------------------------------------------------------------- */
+  .faq {
+    margin-block-start: var(--raum-5);
+    display: grid;
+    gap: var(--raum-5);
+  }
+
+  @media (min-width: 48rem) {
+    .faq {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--raum-6) var(--raum-7);
+    }
+  }
+
+  .faq__frage {
+    font-size: var(--t-basis);
+  }
+
+  .faq__antwort {
+    margin-block-start: var(--raum-2);
+    font-size: var(--t-mikro);
+    max-inline-size: 46ch;
+  }
+</style>

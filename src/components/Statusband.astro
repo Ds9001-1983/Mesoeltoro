@@ -1,0 +1,89 @@
+---
+/**
+ * Die Öffnungsstatus-Pille.
+ *
+ * Im Markup `hidden` mit reservierter Höhe — sie erscheint erst, wenn
+ * JavaScript den Zustand berechnet hat. Ohne JavaScript bleibt sie weg, und
+ * die vollständige Zeitentabelle daneben trägt die Auskunft allein.
+ *
+ * Die Zeitkonfiguration reist als JSON mit. Sie stammt aus derselben Datei
+ * wie die sichtbare Tabelle — es gibt keine zweite Wahrheit, die auseinander-
+ * laufen könnte.
+ */
+import { restaurant, zeitenKonfiguration } from '../lib/daten.ts'
+
+interface Props {
+  /** Nur einmal pro Seite true — sonst liegt die Konfiguration mehrfach im HTML. */
+  readonly mitKonfiguration?: boolean
+  readonly klasse?: string
+}
+
+const { mitKonfiguration = false, klasse } = Astro.props
+---
+
+<p class:list={['status', klasse]} data-oeffnungsstatus hidden>
+  <span class="status__punkt" aria-hidden="true" data-anim="zeit" data-dekor></span>
+  <span data-oeffnungsstatus-text></span>
+</p>
+
+{
+  mitKonfiguration && (
+    <>
+      <script type="application/json" id="zeiten-konfiguration" set:html={JSON.stringify(zeitenKonfiguration)} />
+      <script src="../islands/oeffnungsstatus.ts"></script>
+    </>
+  )
+}
+
+{/* Ohne JavaScript trägt dieser Satz die Auskunft — immer wahr, weil statisch. */}
+<noscript>
+  <p class="status status--statisch">{restaurant.ruhetage_text} Mittwoch bis Sonntag von 12:00 bis 14:00 und von 18:00 bis 22:00 Uhr.</p>
+</noscript>
+
+<style>
+  .status {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--raum-3);
+    /* Höhe reservieren, damit beim Einblenden nichts springt (CLS). */
+    min-block-size: 2.5rem;
+    padding: var(--raum-2) var(--raum-4);
+    border: 1px solid var(--linie);
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+  }
+
+  .status[hidden] {
+    /* hidden allein würde durch display:inline-flex überschrieben. */
+    display: none;
+  }
+
+  .status__punkt {
+    inline-size: 0.6rem;
+    block-size: 0.6rem;
+    border-radius: 50%;
+    background-color: var(--text-leise);
+    flex: 0 0 auto;
+  }
+
+  /* Der Zustand steht immer als Volltext daneben — die Farbe ist Zugabe,
+     nie die Information selbst (1.4.1). */
+  .status[data-zustand='geoeffnet'] .status__punkt {
+    background-color: var(--ember);
+    animation: glutpuls 4s ease-in-out infinite;
+  }
+
+  @keyframes glutpuls {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.45;
+    }
+  }
+
+  .status--statisch {
+    display: inline-block;
+  }
+</style>
