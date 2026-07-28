@@ -15,15 +15,19 @@
   /* --- Text und Akzent auf Kalk ------------------------------------------ */
   --espresso: #2b2521; /* Fließtext auf Kalk      → 13,20:1   AAA        OK   */
   --espresso-70: #5a5049; /* Sekundärtext auf Kalk →  6,85:1   AA         OK   */
-  --ochsenblut: #b3372b; /* Links/CTA auf Kalk     →  5,24:1   AA         OK   */
+  --ochsenblut: #551213; /* Links/CTA auf Kalk     → 12,37:1   AAA        OK   */
   --messing: #8f7400; /* auf Kalk                 →  3,93:1   NICHT AA-Text  */
   --ember: #c1440e; /* auf Kalk                   →  4,47:1   NICHT AA-Text  */
 
-  /*  WARNUNGEN, die im Code gelten und nicht verhandelbar sind:
+  /*  --ochsenblut ist das ECHTE Markenrot des Hauses, am 28.07.2026 aus den
+   *  Logodateien ausgelesen (Logo-red.png, Schriftzug-red.png,
+   *  SchriftzugNEU-red.png — drei Quellen, ein Wert). Der frühere Wert
+   *  #B3372B war eine Erfindung der Entwurfsphase.
    *
-   *  --ochsenblut  auf --espresso  =  2,52:1  → PROJEKTWEIT ALS TEXT VERBOTEN.
-   *                auf --leinen    =  4,26:1  → unter 4,5 → NICHT für Fließtext.
-   *                Ochsenblut ist ausschließlich Text/Fläche auf --kalk.
+   *  WARNUNGEN, die im Code gelten und nicht verhandelbar sind:
+   *
+   *  --ochsenblut  auf --espresso  =  1,07:1  → PROJEKTWEIT ALS TEXT VERBOTEN.
+   *                auf --leinen    = 10,04:1  → zulässig, auch für Fließtext.
    *  --messing     3,93:1 auf Kalk → NUR ≥24px oder ≥18.7px fett, Linien,
    *                UI-Ränder (1.4.11 ≥3:1). NIE Fließtext, NIE Bildunterschrift,
    *                NIE Kicker, NIE Preise.
@@ -33,7 +37,7 @@
 
   /* --- Dunkles Kapitel: eigenes Token-Set --------------------------------
    * Kein Alpha-Trick, keine Farbinterpolation zwischen hell und dunkel.
-   * Auf Espresso tragen Ochsenblut (2,52:1) und Messing (3,36:1) NICHT.
+   * Auf Espresso tragen Ochsenblut (1,07:1) und Messing (3,36:1) NICHT.
    * Deshalb existieren aufgehellte Geschwister — sonst gäbe es keinen
    * konformen Link im dunklen Kapitel.                                     */
   --kalk-auf-dunkel: #f4efe6; /* Text auf Espresso   → 13,20:1   AAA      OK   */
@@ -67,6 +71,10 @@
   --t-h1: clamp(2.25rem, 1.6rem + 3.2vw, 4.5rem); /*  36 → 72 */
   --t-display: clamp(2.75rem, 1.7rem + 5.2vw, 6rem); /*  44 → 96 */
   --t-telefon: clamp(2.5rem, 1.6rem + 4.5vw, 5.5rem); /*  40 → 88 */
+  /* Nur für die Hero-Zeile. Der Skill fordert ≥200px Display im Hero; das
+     kostet keine Barrierefreiheit, solange die Zeile auf ruhiger Fläche steht
+     und bei 320px sauber umbricht (Reflow 1.4.10 wird dort gemessen). */
+  --t-mega: clamp(2.75rem, 0.25rem + 12vw, 12.5rem); /*  44 → 200 */
 
   --zeile-eng: 1.12; /* Display                        */
   --zeile-h: 1.18; /* Überschriften                  */
@@ -139,7 +147,7 @@
   --flaeche: var(--espresso);
   --text: var(--kalk-auf-dunkel);
   --text-leise: color-mix(in oklab, var(--kalk) 78%, var(--espresso));
-  --akzent: var(--ember-hell); /* NICHT --ochsenblut: 2,52:1 */
+  --akzent: var(--ember-hell); /* NICHT --ochsenblut: 1,07:1 */
   --akzent-gross: var(--messing-hell); /* NICHT --messing:    3,36:1 */
   --linie: color-mix(in oklab, var(--kalk) 22%, transparent);
 

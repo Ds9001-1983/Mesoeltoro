@@ -23,8 +23,20 @@ const { aktuellerPfad } = Astro.props
 <header class="kopfzeile">
   <div class="kopfzeile__huelle huelle">
     <a class="wortmarke" href="/" aria-label={`${restaurant.name} — zur Startseite`}>
-      <span class="wortmarke__name">Mesón el Toro</span>
-      <span class="wortmarke__ort">Waldbröl · seit {restaurant.zahlen.gegruendet}</span>
+      {/*
+        Das Signet ist eine Maske, kein <img>: Die Farbe kommt aus
+        `currentColor`, damit dieselbe Datei auf Kalk im Markenrot und im
+        dunklen Fuß in Kalk erscheint. Ein zweites Logo für Dunkel — und
+        damit eine zweite Wahrheit — entfällt.
+
+        Der Name daneben ist ECHTE SCHRIFT, kein Bild. Er bleibt damit
+        durchsuchbar, übersetzbar und lesbar, auch wenn die Maske nicht lädt.
+      */}
+      <span class="wortmarke__signet" aria-hidden="true"></span>
+      <span class="wortmarke__text">
+        <span class="wortmarke__name">Mesón el Toro</span>
+        <span class="wortmarke__ort">Waldbröl · seit {restaurant.zahlen.gegruendet}</span>
+      </span>
     </a>
 
     <nav class="hauptnav" aria-label="Hauptnavigation">
@@ -77,11 +89,42 @@ const { aktuellerPfad } = Astro.props
   /* --- Wortmarke ---------------------------------------------------------- */
   .wortmarke {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: var(--raum-3);
     margin-inline-end: auto;
     color: var(--espresso);
     text-decoration: none;
     line-height: 1.1;
+  }
+
+  .wortmarke__text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Das Signet trägt die Hausfarbe, der Name daneben bleibt Espresso —
+     sonst konkurrieren zwei rote Flächen mit dem Telefon-Button. */
+  .wortmarke__signet {
+    flex: none;
+    inline-size: clamp(2.25rem, 1.9rem + 1.6vw, 3rem);
+    aspect-ratio: 2572 / 1195;
+    background-color: var(--ochsenblut);
+    -webkit-mask-image: url('/marke/signet.png');
+    mask-image: url('/marke/signet.png');
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+    -webkit-mask-position: center;
+    mask-position: center;
+  }
+
+  /* Im Windows-Kontrastmodus werden Hintergrundfarben verworfen — die Maske
+     wäre dann unsichtbar. Systemfarbe setzen, sonst fehlt das Zeichen ganz. */
+  @media (forced-colors: active) {
+    .wortmarke__signet {
+      background-color: LinkText;
+    }
   }
 
   .wortmarke__name {
@@ -154,7 +197,7 @@ const { aktuellerPfad } = Astro.props
     min-block-size: var(--ziel-min);
     padding: var(--raum-2) var(--raum-5);
     background-color: var(--ochsenblut);
-    /* Kalk auf Ochsenblut = 5,24:1 — AA auch für Fließtextgrößen. */
+    /* Kalk auf Ochsenblut = 12,37:1 — AAA, das echte Markenrot ist sehr dunkel. */
     color: var(--kalk);
     font-family: var(--schrift-mikro);
     text-decoration: none;

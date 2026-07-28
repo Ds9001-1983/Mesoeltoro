@@ -1,10 +1,37 @@
 # Bildrechte
 
-**Stand:** 28.07.2026 · **Status:** ungeklärt — kein Foto ist freigegeben
+**Stand:** 28.07.2026 · **Status:** **freigegeben** — 16 Motive live
 
 ---
 
-## Worum es geht
+## Freigabe vom 28.07.2026
+
+Der Auftraggeber hat gegenüber SUPERBRAND.marketing erklärt, dass
+
+* die Nutzungsrechte an den Aufnahmen von **J. Schumacher** vorliegen und auf
+  die heutige Meson el Toro GmbH übergegangen sind (§ 34 UrhG), und
+* die **Einwilligungen der abgebildeten Personen** vorliegen
+  (§ 22 KunstUrhG, Art. 6 Abs. 1 lit. a DSGVO).
+
+Auf dieser Erklärung beruht jede Freigabe in `content/bildnachweise.json`;
+sie steht dort in jedem Eintrag unter `nachweis_fundstelle`.
+
+> **Was noch fehlt und nachgereicht werden sollte:** das zugrunde liegende
+> Dokument selbst — Vertrag, Rechnung oder schriftliche Bestätigung des
+> Fotografen. Die Erklärung des Auftraggebers trägt die Entscheidung, aber im
+> Streitfall ist der Beleg das, was zählt. Er gehört in die Ablage Recht, und
+> die Fundstelle gehört dann in jeden Registereintrag.
+
+**16 Motive** sind kuratiert und freigegeben. Ausgewählt wurden sie am
+geöffneten Bild, nicht nach Dateinamen — mit Folgen: Die vier Dateien
+`IMG_6596_1`, `IMG_6611`, `IMG_6897_2_1` und `IMG_7401`, die dem Namen nach
+wie Handyaufnahmen aussehen, sind die stärksten Aufnahmen des ganzen
+Bestands. Sie sind allerdings nur 1500 px breit; eine höher aufgelöste Fassung
+wäre beim Fotografen zu erfragen.
+
+---
+
+## Worum es ursprünglich ging
 
 Die Fotografien der Vorgängerseite stammen von **J. Schumacher**. Sie sind
 handwerklich gut und wären für die neue Seite ideal. Ob sie verwendet werden
@@ -58,11 +85,38 @@ dokumentiert sind. Das ist keine Selbstdisziplin, sondern eine Sperre im Code:
 - `scripts/pruefe-bildrechte.mjs` prüft nach dem Bauen, dass in `dist/`
   wirklich nur freigegebene Dateien liegen.
 
-Zusätzlich gilt eine **Sperrliste**: Im Medienverzeichnis der alten
-WordPress-Installation liegen Fotos aus fremden Projekten
-(`JSchumacher_Theos_*`, `Claudios*`, `Simerilab*`, `pexels-*`). Sie gehören
-nicht zum Mesón el Toro. Jeder Versuch, eine davon einzubinden, bricht den
-Build ab — auf zwei Ebenen, in der Komponente und in der Nachprüfung.
+Zusätzlich gilt eine **Sperrliste**. Im Medienverzeichnis der alten
+WordPress-Installation liegen zwei Sorten Fremdmaterial:
+
+1. **Fotos aus anderen Kundenprojekten** desselben Fotografen —
+   `JSchumacher_Theos_*`, `Claudios*`, `Simerilab*`, `pexels-*`, `220519_JS_*`.
+2. **Das komplette Demo-Material des gekauften Themes `latulipe`** —
+   `food-menu-1…17`, `top-img-1…10`, `team-1…8`, `portfolio-1…5`, `blog-1…9`,
+   `menu-img*`, `page-p*`, `pricing-*`, `video-prev*`. Fremde Stockfotos, die
+   aussehen, als gehörten sie zum Haus.
+
+**Gruppe 2 stand bis zum 28.07.2026 nicht auf der Liste.** Der Guard hätte
+`food-menu-3.jpg` anstandslos durchgelassen. Die Lücke fiel bei der
+vollständigen Auswertung der Medienbibliothek auf (173 Dateien) und ist
+geschlossen; `tests/unit/bildregister.test.ts` hält sie geschlossen.
+
+Jeder Versuch, eine gesperrte Datei einzubinden, bricht den Build ab — auf
+zwei Ebenen, in der Komponente und in der Nachprüfung.
+
+---
+
+## Die Bildmarke
+
+`public/marke/signet.png` ist **kein Foto**, sondern das eigene Zeichen des
+Auftraggebers. Es steht deshalb nicht im Fotoregister, sondern in der Liste
+`EIGENE_GRAFIKEN` in `scripts/pruefe-bildrechte.mjs`. Die Rechtefrage ist eine
+andere: nicht „dürfen wir ein fremdes Werk nutzen", sondern „führt der
+Auftraggeber sein eigenes Zeichen". Offen bleibt, wer das Logo gestaltet hat
+und ob dafür eine Vektordatei existiert.
+
+Das Markenrot ist mit **`#551213`** belegt — ausgelesen aus `Logo-red.png`,
+`Schriftzug-red.png` und `SchriftzugNEU-red.png`, drei unabhängige Dateien mit
+identischem Wert.
 
 ---
 

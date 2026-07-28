@@ -10,7 +10,7 @@ describe('kontrast', () => {
   })
 
   it('ist symmetrisch — die Reihenfolge der Farben ändert nichts', () => {
-    expect(kontrast('#B3372B', '#F4EFE6')).toBeCloseTo(kontrast('#F4EFE6', '#B3372B'), 10)
+    expect(kontrast('#551213', '#F4EFE6')).toBeCloseTo(kontrast('#F4EFE6', '#551213'), 10)
   })
 
   it('versteht Kurzschreibweise und akzeptiert fehlende Raute', () => {
@@ -74,9 +74,10 @@ describe('Farbpaarungen', () => {
     // Diese vier Zahlen stehen so in tokens.css, im Plan und in der
     // Kundendokumentation. Wenn sich hier etwas ändert, muss es dort auch.
     expect(gerundet(kontrast(PALETTE.espresso, PALETTE.kalk))).toBe(13.2)
-    expect(gerundet(kontrast(PALETTE.ochsenblut, PALETTE.kalk))).toBe(5.24)
+    expect(gerundet(kontrast(PALETTE.ochsenblut, PALETTE.kalk))).toBe(12.37)
+    expect(gerundet(kontrast(PALETTE.ochsenblut, PALETTE.leinen))).toBe(10.04)
     expect(gerundet(kontrast(PALETTE.messing, PALETTE.kalk))).toBe(3.93)
-    expect(gerundet(kontrast(PALETTE.ochsenblut, PALETTE.espresso))).toBe(2.52)
+    expect(gerundet(kontrast(PALETTE.ochsenblut, PALETTE.espresso))).toBe(1.07)
   })
 
   it('lässt den Fokusring auf hellem UND dunklem Grund tragen', () => {

@@ -18,10 +18,15 @@ Gründe sprechen dagegen:
    die man bei jeder Änderung neu absichern muss. Auf Kalk steht der Fließtext
    bei 13,20 : 1 — da kann nichts kippen.
 
-2. **Das Markenrot trägt auf Dunkel nicht.** Ochsenblut `#B3372B` erreicht auf
-   Espresso nur 2,52 : 1. Eine durchgehend dunkle Seite müsste die Marke
-   überall durch einen aufgehellten Ersatzton vertreten — die Marke wäre dann
-   nirgends im Original zu sehen.
+2. **Das Markenrot trägt auf Dunkel nicht.** Das echte Ochsenblut des Hauses,
+   `#551213`, erreicht auf Espresso nur 1,07 : 1 — es ist selbst fast so dunkel
+   wie der Grund. Eine durchgehend dunkle Seite müsste die Marke überall durch
+   einen aufgehellten Ersatzton vertreten; die Marke wäre dann nirgends im
+   Original zu sehen. Auf Kalk steht dieselbe Farbe dagegen bei 12,37 : 1.
+
+   *(Nachtrag 28.07.2026: Diese Entscheidung wurde ursprünglich mit dem Wert
+   `#B3372B` begründet — einer Erfindung aus der Entwurfsphase. Die Prüfung
+   des echten Logos hat den Befund nicht widerlegt, sondern verschärft.)*
 
 3. **Ab dem dritten Mal ist Glut ein Muster, keine Dramaturgie.** Der Wechsel
    wirkt genau deshalb, weil er einmal passiert.

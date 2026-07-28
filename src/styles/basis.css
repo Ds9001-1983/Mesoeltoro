@@ -33,9 +33,14 @@ html {
   scroll-behavior: auto;
 }
 
+/* Die Grundfläche hängt am <html>, nicht am <body>. Nur so kann die
+   Korn-Textur (Move 6, weiter unten) zwischen Fläche und Inhalt liegen. */
+html {
+  background-color: var(--flaeche);
+}
+
 body {
   min-height: 100svh;
-  background-color: var(--flaeche);
   color: var(--text);
   font-family: var(--schrift-text);
   font-size: var(--t-basis);
@@ -188,6 +193,55 @@ label[data-ziel] {
   margin-block-start: var(--raum-4);
 }
 
+/* --- Signature Move 6: „Das Papier“ ------------------------------------------
+   Eine nahtlos gekachelte Faserstruktur über der gesamten hellen Fläche.
+   Sie macht aus Papierweiß ein Material.
+
+   Warum kein KI-Bild: Eine abstrakte Textur wäre nach Art. 50 AI Act zwar
+   nicht kennzeichnungspflichtig, aber sie wäre auch nicht besser — und sie
+   wäre ein weiteres Asset ohne nachweisbare Herkunft. Diese Kachel ist
+   gerechnet, 6,2 KB, erzeugt von scripts/korn-erzeugen.mjs.
+
+   Die erste Fassung hatte eine zu niedrige Grundfrequenz und zu viel
+   Kontrast — bei 96px Kachel las sie sich als Fleckenmuster statt als
+   Faser. Nachgebessert am 28.07.2026 anhand eines Screenshots.
+
+   Deckkraft 3,5 %, und der Kontrastverlust ist NACHGEMESSEN statt behauptet.
+   Die Zahlen unten gelten für den ungünstigeren Fall von 4 %; bei 3,5 % ist
+   der Abstand noch größer. Im schlimmsten Fall (Texturwert 0, also volles
+   Multiplizieren) sinkt die Kalkfläche von #F4EFE6 auf #EAE5DD:
+
+     Espresso     13,20 → 12,06   weiterhin AAA
+     Espresso-70   6,85 →  6,25   weiterhin AA
+     Ochsenblut   12,37 → 11,30   weiterhin AAA
+     Messing       3,93 →  3,59   weiterhin ≥3, Größenregel gilt unverändert
+
+   Alle Schwellen halten mit Abstand. Wer die Deckkraft erhöht, rechnet das
+   hier neu nach — bei 10 % fällt Messing unter 3:1 und die Jahreszahlen im
+   Historienband wären ein 1.4.3-Verstoß.
+
+   Die Textur liegt HINTER dem Inhalt (z-index: -1), nicht darüber. Über dem
+   Inhalt läge sie auch auf Fotos, auf der klebenden Kopfzeile und auf den
+   Fokusringen — drei Stellen, an denen sie nichts verbessert.              */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: url('/marke/korn.png');
+  background-repeat: repeat;
+  background-size: 96px 96px;
+  opacity: 0.035;
+  mix-blend-mode: multiply;
+}
+
+@media print {
+  body::before {
+    display: none;
+  }
+}
+
 /* --- Hoher Kontrast (Windows) ----------------------------------------------
    Dekor verschwindet folgenlos, Fokus bleibt sichtbar. Ohne diese Regel
    zeichnet Windows den Doppelring weg.                                     */
@@ -198,6 +252,11 @@ label[data-ziel] {
   }
 
   [data-dekor] {
+    display: none;
+  }
+
+  /* Die Textur wäre im Kontrastmodus ein reiner Störer. */
+  body::before {
     display: none;
   }
 }

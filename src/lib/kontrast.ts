@@ -17,7 +17,7 @@ export interface Farbe {
   readonly b: number
 }
 
-/** "#B3372B" oder "b3372b" → Kanäle 0–255. */
+/** "#551213" oder "551213" → Kanäle 0–255. */
 export function ausHex(hex: string): Farbe {
   const bereinigt = hex.trim().replace(/^#/, '')
   const voll =

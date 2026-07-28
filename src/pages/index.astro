@@ -8,6 +8,7 @@
  * Dramaturgie — und jede dunkle Fläche verdoppelt die Kontrast-Prüffläche.
  */
 import Anschnitt from '../components/Anschnitt.astro'
+import Bild from '../components/Bild.astro'
 import Gaestestimme from '../components/Gaestestimme.astro'
 import GlutKapitel from '../components/GlutKapitel.astro'
 import JsonLd from '../components/JsonLd.astro'
@@ -33,13 +34,24 @@ const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((ger
   <JsonLd slot="kopf" />
   {/* --- 1. Der Anschnitt ------------------------------------------------ */}
   <section class="hero" aria-labelledby="hero-titel">
-    <div class="huelle hero__raster">
-      <div class="hero__text">
-        <p class="eyebrow">
-          {restaurant.adresse.ort} · {restaurant.adresse.strasse} · seit {restaurant.zahlen.gegruendet}
-        </p>
-        <h1 id="hero-titel">Mesón el Toro — spanische Küche und Grill.</h1>
-        <p class="lead">
+    <div class="huelle hero__kopf">
+      <p class="eyebrow">
+        {restaurant.adresse.ort} · {restaurant.adresse.strasse} · seit {restaurant.zahlen.gegruendet}
+      </p>
+      {/*
+        Die Überschrift bleibt EIN Satz — sie wird nur zweistufig gesetzt.
+        Zwei <span> statt buchstabenweisem Splitting: Screenreader lesen die
+        Zeile weiterhin als eine Überschrift, Strg+F findet sie, und die
+        Übersetzung bricht nicht. Buchstabenweises Aufteilen steht in
+        CLAUDE.md auf der Verbotsliste, und zwar aus genau diesem Grund.
+      */}
+      <h1 id="hero-titel" class="hero__titel">
+        <span class="hero__marke">Mesón el Toro —</span>
+        <span class="hero__zusatz">spanische Küche und Grill.</span>
+      </h1>
+
+      <div class="hero__fuss">
+        <p class="lead hero__lead">
           Ein Haus, das seit einem halben Jahrhundert dasselbe tut: gut kochen und gut bedienen.
         </p>
         <p class="hero__ruf">
@@ -49,10 +61,15 @@ const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((ger
           <span class="mikro leise">Tisch reservieren</span>
         </p>
       </div>
+    </div>
 
-      <div class="hero__bild">
-        <Anschnitt obenSchluessel="steak-teller" untenSchluessel="haus-abendlicht" />
-      </div>
+    {/*
+      Drei Ebenen, zwei Schnitte: Glut → Teller → Tisch.
+      Die Folge ist die Dramaturgie des Hauses — Feuer, Gericht, Gedeck — und
+      sie endet genau dort, wo der Handlungsaufruf steht: am gedeckten Tisch.
+    */}
+    <div class="hero__bild">
+      <Anschnitt ebenen={['glut-grill', 'steak-teller', 'tafel-gedeckt']} />
     </div>
   </section>
 
@@ -71,6 +88,14 @@ const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((ger
       <h2 id="kuechen-titel" class="vh">Zwei Küchen unter einem Dach</h2>
       <div class="kuechen__raster">
         <article class="kueche">
+          <div class="kueche__bild">
+            <Bild
+              schluessel="fisch-teller"
+              breite={1200}
+              hoehe={900}
+              sizes="(min-width: 48rem) 45vw, 100vw"
+            />
+          </div>
           <h3 class="kueche__titel">Aus Spanien</h3>
           <p class="kueche__text">
             Gambas al Ajillo, Crema Catalana, spanische Weine. Die Gründungsküche des Hauses — sie
@@ -80,6 +105,14 @@ const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((ger
         </article>
 
         <article class="kueche">
+          <div class="kueche__bild">
+            <Bild
+              schluessel="steak-grillmuster"
+              breite={1200}
+              hoehe={900}
+              sizes="(min-width: 48rem) 45vw, 100vw"
+            />
+          </div>
           <h3 class="kueche__titel">Vom Grill</h3>
           <p class="kueche__text">
             Rumpsteak, Filet, Lammkoteletts, Kalbskotelett. Über offener Glut gegrillt — daran
@@ -114,6 +147,9 @@ const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((ger
   <section class="historie" aria-labelledby="historie-titel">
     <div class="huelle">
       <h2 id="historie-titel" class="vh">Seit 1975</h2>
+      <div class="historie__bild">
+        <Bild schluessel="schild-haus" breite={1600} hoehe={800} sizes="100vw" />
+      </div>
       <ol class="historie__jahre liste-schlicht">
         {
           historie.stationen.slice(0, 3).map((station) => (
@@ -159,25 +195,58 @@ const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((ger
 </Basis>
 
 <style>
-  /* --- 1. Hero ---------------------------------------------------------- */
-  .hero__raster {
-    display: grid;
-    gap: var(--raum-6);
-    padding-block: var(--raum-8);
-    align-items: center;
+  /* --- 1. Hero ----------------------------------------------------------
+   * Vollbreite Schrift über vollbreitem Bild — nicht nebeneinander.
+   * Projektregel 2 bleibt gewahrt: Der Text steht auf reinem Kalk
+   * (13,20:1), das Bild beginnt darunter. Es gibt keinen Punkt, an dem
+   * Schrift auf bewegtem Grund liegt.                                     */
+  .hero__kopf {
+    padding-block: var(--raum-8) var(--raum-7);
   }
 
-  @media (min-width: 64rem) {
-    .hero__raster {
-      /* 5/7 — Text links, Bild rechts. Text steht nie über dem Bild. */
-      grid-template-columns: 5fr 7fr;
+  .hero__titel {
+    display: flex;
+    flex-direction: column;
+    margin-block-start: var(--raum-4);
+    font-family: var(--schrift-display);
+    font-weight: 400;
+    line-height: 0.94;
+    /* Optischer Randausgleich: Große Versalien wirken sonst eingerückt. */
+    margin-inline-start: -0.02em;
+    text-wrap: balance;
+  }
+
+  .hero__marke {
+    font-size: var(--t-mega);
+    letter-spacing: -0.02em;
+  }
+
+  .hero__zusatz {
+    /* Deutlich kleiner — sonst wird aus der Marke eine Aufzählung. */
+    font-size: clamp(1.5rem, 0.9rem + 3vw, 4.25rem);
+    letter-spacing: -0.01em;
+    color: var(--text-leise);
+    margin-block-start: 0.12em;
+  }
+
+  .hero__fuss {
+    display: grid;
+    gap: var(--raum-6);
+    margin-block-start: var(--raum-7);
+    padding-block-start: var(--raum-5);
+    border-block-start: 1px solid var(--linie);
+  }
+
+  @media (min-width: 62rem) {
+    .hero__fuss {
+      grid-template-columns: 1fr auto;
+      align-items: end;
       gap: var(--raum-8);
-      min-block-size: 88svh;
     }
   }
 
-  .hero__text .lead {
-    margin-block-start: var(--raum-5);
+  .hero__lead {
+    max-inline-size: 44ch;
   }
 
   .hero__ruf {
@@ -185,7 +254,6 @@ const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((ger
     flex-wrap: wrap;
     align-items: baseline;
     gap: var(--raum-3) var(--raum-4);
-    margin-block-start: var(--raum-6);
   }
 
   .hero__nummer {
@@ -244,6 +312,22 @@ const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((ger
     border-block-start: 2px solid var(--linie);
   }
 
+  /* Hochformat: Zwei stehende Bilder nebeneinander lesen sich als Paar,
+     zwei liegende als abgeschnittene Panoramen. */
+  .kueche__bild {
+    margin-block-end: var(--raum-5);
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+  }
+
+  .kueche__bild :global(.bild),
+  .kueche__bild :global(.bild img),
+  .kueche__bild :global(.platzhalter) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
   .kueche__titel {
     font-family: var(--schrift-display);
     font-size: var(--t-h2);
@@ -289,6 +373,23 @@ const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((ger
   .historie {
     padding-block: var(--raum-9);
     border-block-start: 1px solid var(--linie);
+  }
+
+  .historie__bild {
+    /* Flaches Band: Das Schild sitzt in der oberen Bildhälfte, ein hohes
+       Format zeigte vor allem Sträucher. */
+    aspect-ratio: 21 / 9;
+    overflow: hidden;
+    margin-block-end: var(--raum-8);
+  }
+
+  .historie__bild :global(.bild),
+  .historie__bild :global(.bild img),
+  .historie__bild :global(.platzhalter) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: center 38%;
   }
 
   .historie__jahre {

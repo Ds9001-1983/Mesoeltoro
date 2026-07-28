@@ -21,7 +21,8 @@
     "pruefen:recht": "pnpm pruefen:dist",
     "bilder": "node scripts/bilder-aufbereiten.mjs",
     "test": "vitest run",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "korn": "node scripts/korn-erzeugen.mjs"
   },
   "dependencies": {
     "astro": "7.1.4",

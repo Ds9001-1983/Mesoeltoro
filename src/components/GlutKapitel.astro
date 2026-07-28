@@ -25,13 +25,23 @@
  */
 import { restaurant } from '../lib/daten.ts'
 import { KATEGORIEN, preiszeile } from '../lib/karte.ts'
+import Bild from './Bild.astro'
 import Pausetaste from './Pausetaste.astro'
 
 const steaks = KATEGORIEN.find((kategorie) => kategorie.id === 'steaks')
 ---
 
-{/* Textfreier Übergangskorridor. Hier darf nie Inhalt hinein. */}
-<div class="korridor" aria-hidden="true" data-korridor data-dekor></div>
+{/*
+  Textfreier Übergangskorridor. Hier darf nie Inhalt hinein.
+
+  Zwei Lagen: unten der Verlauf als Rückfall, darüber die Vollfläche, die
+  scroll-getrieben von unten hochwächst. Ohne Unterstützung für
+  scroll-getriebene Animationen bleibt der Verlauf allein stehen — er sieht
+  fertig aus, nicht kaputt.
+*/}
+<div class="korridor" aria-hidden="true" data-korridor data-dekor>
+  <div class="korridor__fuellung"></div>
+</div>
 
 <section class="glut" data-flaeche="glut" aria-labelledby="glut-titel">
   {
@@ -43,32 +53,44 @@ const steaks = KATEGORIEN.find((kategorie) => kategorie.id === 'steaks')
     )
   }
 
-  <div class="huelle glut__inhalt">
-    <p class="glut__eyebrow">Vom Feuer</p>
-    <h2 id="glut-titel" class="glut__titel">La Morocha. Über offener Glut.</h2>
-    <p class="glut__text">
-      Zwei Schnitte, zwei Größen, kein Beiwerk. Was hier zählt, ist der Punkt, an dem das Fleisch
-      vom Rost kommt.
-    </p>
+  <div class="huelle glut__raster">
+    <div class="glut__inhalt">
+      <p class="glut__eyebrow">Vom Feuer</p>
+      <h2 id="glut-titel" class="glut__titel">La Morocha. Über offener Glut.</h2>
+      <p class="glut__text">
+        Zwei Schnitte, zwei Größen, kein Beiwerk. Was hier zählt, ist der Punkt, an dem das Fleisch
+        vom Rost kommt.
+      </p>
 
-    {
-      steaks && (
-        <dl class="preise">
-          {steaks.gerichte.map((gericht) => (
-            <div class="preise__zeile">
-              <dt>{gericht.name}</dt>
-              <dd class="preis">{preiszeile(gericht)}</dd>
-            </div>
-          ))}
-        </dl>
-      )
-    }
+      {
+        steaks && (
+          <dl class="preise">
+            {steaks.gerichte.map((gericht) => (
+              <div class="preise__zeile">
+                <dt>{gericht.name}</dt>
+                <dd class="preis">{preiszeile(gericht)}</dd>
+              </div>
+            ))}
+          </dl>
+        )
+      }
 
-    <p class="glut__weiter">
-      <a href="/speisekarte/#steaks">Alle Gerichte vom Grill</a>
-    </p>
+      <p class="glut__weiter">
+        <a href="/speisekarte/#steaks">Alle Gerichte vom Grill</a>
+      </p>
 
-    <Pausetaste klasse="glut__pause" />
+      <Pausetaste klasse="glut__pause" />
+    </div>
+
+    {/* Steht NEBEN dem Text, nicht dahinter — Projektregel 2. */}
+    <div class="glut__bild">
+      <Bild
+        schluessel="dampf-kueche"
+        breite={1200}
+        hoehe={1600}
+        sizes="(min-width: 62rem) 38vw, 100vw"
+      />
+    </div>
   </div>
 </section>
 
@@ -77,8 +99,21 @@ const steaks = KATEGORIEN.find((kategorie) => kategorie.id === 'steaks')
      40svh hoch, garantiert textfrei. Die dunkle Fläche wächst hier hoch,
      bevor der erste Buchstabe erscheint. */
   .korridor {
+    position: relative;
     block-size: 40svh;
-    background: linear-gradient(to bottom, var(--kalk) 0%, var(--espresso) 100%);
+    /* In oklab interpolieren, nicht in sRGB. Der direkte Weg von Kalk nach
+       Espresso führt in sRGB durch ein totes Grau — die Fläche sieht dann
+       schmutzig aus statt warm. */
+    background: linear-gradient(in oklab, var(--kalk) 0%, var(--espresso) 100%);
+  }
+
+  .korridor__fuellung {
+    position: absolute;
+    inset: 0;
+    background-color: var(--espresso);
+    /* Ausgangszustand: vollständig weggeschnitten. Sichtbar ist der Verlauf
+       darunter. Erst die Animation lässt die Fläche hochwachsen. */
+    clip-path: inset(100% 0 0 0);
   }
 
   /* --- Kapitel ------------------------------------------------------------- */
@@ -99,8 +134,34 @@ const steaks = KATEGORIEN.find((kategorie) => kategorie.id === 'steaks')
     pointer-events: none;
   }
 
+  .glut__raster {
+    position: relative;
+    display: grid;
+    gap: var(--raum-8);
+  }
+
+  @media (min-width: 62rem) {
+    .glut__raster {
+      grid-template-columns: 1fr 0.62fr;
+      align-items: center;
+    }
+  }
+
   .glut__inhalt {
     position: relative;
+  }
+
+  .glut__bild {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+
+  .glut__bild :global(.bild),
+  .glut__bild :global(.bild img),
+  .glut__bild :global(.platzhalter) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
   }
 
   .glut__eyebrow {
@@ -162,7 +223,7 @@ const steaks = KATEGORIEN.find((kategorie) => kategorie.id === 'steaks')
   }
 
   .glut__weiter a {
-    /* ember-hell: 7,08:1 auf Espresso. Ochsenblut läge bei 2,52:1. */
+    /* ember-hell: 7,08:1 auf Espresso. Ochsenblut läge bei 1,07:1. */
     color: var(--akzent);
   }
 
@@ -190,6 +251,44 @@ const steaks = KATEGORIEN.find((kategorie) => kategorie.id === 'steaks')
     .korridor,
     .glut__canvas {
       display: none;
+    }
+  }
+</style>
+
+<style is:global>
+  /* --- Signature Move 2: „Der Temperaturwechsel“ --------------------------
+   *
+   * Die Espresso-Fläche wächst von unten hoch, während der Korridor ins Bild
+   * fährt. Bei `entry 100%` — also sobald der Korridor vollständig sichtbar
+   * ist — steht sie. Das dunkle Kapitel darunter beginnt damit auf einer
+   * Fläche, die bereits fertig ist; es gibt keinen Zustand, in dem Text auf
+   * halb aufgebautem Grund liegt.
+   *
+   * `view()` ist hier richtig (anders als beim Anschnitt): Der Korridor steht
+   * beim Laden NICHT im Bild, also beginnt die Zeitachse garantiert bei 0.
+   *
+   * Nur Langformen — `animation` zusammen mit `animation-timeline` wird von
+   * den Minifiern zusammengefaltet und damit ungültig. Nachgemessen am
+   * 28.07.2026, steht auf der Verbotsliste in CLAUDE.md.
+   */
+  @supports (animation-timeline: view()) {
+    :root[data-motion='full'] .korridor__fuellung {
+      animation-name: temperatur-steigt;
+      animation-duration: 1s;
+      animation-timing-function: linear;
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range-start: entry 0%;
+      animation-range-end: entry 100%;
+    }
+  }
+
+  @keyframes temperatur-steigt {
+    from {
+      clip-path: inset(100% 0 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
     }
   }
 </style>

@@ -55,7 +55,20 @@ const erlaubteStaemme = new Set(
 
 // Eigene Grafiken, die nicht aus dem Fotobestand stammen und deshalb keinen
 // Registereintrag brauchen. Bewusst kurz gehalten.
-const EIGENE_GRAFIKEN = ['favicon.svg', 'apple-touch-icon.png', 'karte-anfahrt.svg', 'korn.png', 'glut-standbild.webp']
+//
+// `signet.png` ist die Bildmarke des Hauses — kein Foto, sondern das eigene
+// Zeichen des Auftraggebers, das er selbst führt. Die Rechtefrage ist damit
+// eine andere als bei den Aufnahmen (dort: Nutzungsrecht am fremden Werk),
+// und sie gehört nicht in ein Register, das Fotografennachweise führt.
+// Vermerk dazu in docs/BILDRECHTE.md.
+const EIGENE_GRAFIKEN = [
+  'favicon.svg',
+  'apple-touch-icon.png',
+  'karte-anfahrt.svg',
+  'korn.png',
+  'glut-standbild.webp',
+  'signet.png',
+]
 
 for (const datei of alle) {
   const endung = extname(datei).toLowerCase()

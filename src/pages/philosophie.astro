@@ -62,6 +62,15 @@ import { restaurant } from '../lib/daten.ts'
           des Hauses und ist geblieben, weil sie zu dem passt, was hier gegrillt wird.
         </p>
       </div>
+
+      <figure class="text__bild">
+        <Bild
+          schluessel="koechin-herd"
+          breite={1200}
+          hoehe={1600}
+          sizes="(min-width: 62rem) 34vw, 100vw"
+        />
+      </figure>
     </section>
 
     <section class="zahlen-band" aria-labelledby="zahlen-titel">
@@ -111,9 +120,39 @@ import { restaurant } from '../lib/daten.ts'
     border-block-start: 1px solid var(--linie);
   }
 
+  @media (min-width: 62rem) {
+    .text {
+      display: grid;
+      grid-template-columns: 1fr 0.5fr;
+      gap: var(--raum-8);
+      align-items: start;
+    }
+
+    /* Die Überschrift läuft über beide Spalten, der Fließtext nur über die
+       linke — sonst stünde das Bild neben der Überschrift statt neben dem
+       Absatz, auf den es sich bezieht. */
+    .text > h2 {
+      grid-column: 1 / -1;
+    }
+  }
+
   .text__spalte {
     margin-block-start: var(--raum-5);
     max-inline-size: 66ch;
+  }
+
+  .text__bild {
+    margin: var(--raum-5) 0 0;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+
+  .text__bild :global(.bild),
+  .text__bild :global(.bild img),
+  .text__bild :global(.platzhalter) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
   }
 
   /* --- Zahlenband -------------------------------------------------------- */

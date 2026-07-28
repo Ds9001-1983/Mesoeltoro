@@ -11,6 +11,7 @@
  * Buchungsweg gibt, ist die E-Mail-Adresse dieser Weg.
  */
 import Anfahrtskarte from '../components/Anfahrtskarte.astro'
+import Bild from '../components/Bild.astro'
 import Oeffnungszeiten from '../components/Oeffnungszeiten.astro'
 import JsonLd from '../components/JsonLd.astro'
 import Statusband from '../components/Statusband.astro'
@@ -37,6 +38,12 @@ import { restaurant } from '../lib/daten.ts'
       <h1>Kontakt und Anfahrt</h1>
       <Statusband mitKonfiguration klasse="kontakt__status" />
     </header>
+
+    {/* Wiedererkennung vor der Anfahrt: Wer das Haus einmal gesehen hat,
+        findet es im Dunkeln. Das leistet ein Foto besser als jede Karte. */}
+    <div class="kontakt__haus">
+      <Bild schluessel="haus-abendlicht" breite={1600} hoehe={900} sizes="100vw" />
+    </div>
 
     {/* --- Zwei gleichrangige Wege -------------------------------------- */}
     <section class="wege" aria-labelledby="wege-titel">
@@ -121,6 +128,21 @@ import { restaurant } from '../lib/daten.ts'
 <style>
   .kontakt {
     padding-block: var(--raum-8) var(--raum-9);
+  }
+
+  .kontakt__haus {
+    aspect-ratio: 16 / 9;
+    max-block-size: 26rem;
+    overflow: hidden;
+    margin-block-end: var(--raum-8);
+  }
+
+  .kontakt__haus :global(.bild),
+  .kontakt__haus :global(.bild img),
+  .kontakt__haus :global(.platzhalter) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
   }
 
   .kontakt__kopf {

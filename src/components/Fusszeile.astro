@@ -21,6 +21,9 @@ const jahr = 2026
 <footer class="fuss">
   <div class="huelle fuss__raster">
     <section class="fuss__block">
+      {/* Dieselbe Maske wie in der Kopfzeile — hier in Kalk, weil die Fläche
+          dunkel ist. Eine Datei, zwei Farben, keine zweite Wahrheit. */}
+      <span class="fuss__signet" aria-hidden="true"></span>
       <h2 class="fuss__titel">{restaurant.name_lang}</h2>
       <address class="fuss__adresse">
         {restaurant.adresse.strasse}<br />
@@ -105,7 +108,7 @@ const jahr = 2026
     color: var(--kalk-auf-dunkel);
   }
 
-  /* Im dunklen Fuß trägt Ochsenblut nicht (2,52:1). Links laufen über
+  /* Im dunklen Fuß trägt Ochsenblut nicht (1,07:1). Links laufen über
      Ember-hell (7,08:1). Das ist derselbe Mechanismus wie im Glut-Kapitel. */
   .fuss a {
     color: var(--ember-hell);
@@ -121,6 +124,26 @@ const jahr = 2026
     .fuss__raster {
       grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: var(--raum-6);
+    }
+  }
+
+  .fuss__signet {
+    display: block;
+    inline-size: 4.5rem;
+    aspect-ratio: 2572 / 1195;
+    margin-block-end: var(--raum-5);
+    background-color: var(--kalk-auf-dunkel);
+    -webkit-mask-image: url('/marke/signet.png');
+    mask-image: url('/marke/signet.png');
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+  }
+
+  @media (forced-colors: active) {
+    .fuss__signet {
+      background-color: CanvasText;
     }
   }
 

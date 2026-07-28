@@ -3,7 +3,7 @@
  * Speisekarte — rechtlich heikelste und meistgesuchte Seite.
  *
  * Technisch bewusst die langweiligste des ganzen Projekts:
- *   · null JavaScript
+ *   · JavaScript nur der seitenweite Zeiger (~1,3 KB), sonst nichts
  *   · Sprungnavigation aus reinen <a href="#…">
  *   · alle Kategorien immer offen (sonst bricht Strg+F)
  *   · Legende auf derselben Seite, nicht dahinter
@@ -12,6 +12,7 @@
  * 320px-Ansicht verteidigen. Der Gewinn wäre null: Eine Speisekarte wird
  * gelesen, nicht bedient.
  */
+import Bild from '../components/Bild.astro'
 import Legende from '../components/Legende.astro'
 import Gerichtszeile from '../components/Gerichtszeile.astro'
 import JsonLd from '../components/JsonLd.astro'
@@ -42,6 +43,13 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
   />
   <div class="karte">
     {/* --- Kopf ------------------------------------------------------------ */}
+    {/* Genau ein Bild auf dieser Seite. Mehr würde die Karte in eine
+        Bildergalerie verwandeln — und wer die Karte aufruft, sucht Preise
+        und Kennzeichnung, nicht Appetitanregung. */}
+    <div class="karte__band">
+      <Bild schluessel="fisch-safran" breite={1600} hoehe={700} sizes="100vw" />
+    </div>
+
     <section class="huelle karte__kopf">
       <h1>Speisekarte</h1>
 
@@ -147,6 +155,27 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
      (2.4.11 Focus Not Obscured). */
   .karte {
     --ankerleiste: 3.25rem;
+  }
+
+  .karte__band {
+    aspect-ratio: 21 / 9;
+    max-block-size: 22rem;
+    overflow: hidden;
+  }
+
+  .karte__band :global(.bild),
+  .karte__band :global(.bild img),
+  .karte__band :global(.platzhalter) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
+  /* Auf Papier ist das Band verlorener Toner — die Karte wird gedruckt. */
+  @media print {
+    .karte__band {
+      display: none;
+    }
   }
 
   .karte__kopf {

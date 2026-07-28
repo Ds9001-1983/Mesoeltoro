@@ -60,6 +60,18 @@ import { restaurant } from '../lib/daten.ts'
       </div>
     </section>
 
+    {/* Zwei Formate nebeneinander: das Etikett des Hauses und der Einschank.
+        Kein Jahrgang, kein Preis, kein Alkoholgehalt — das Schema kennt diese
+        Felder gar nicht, damit PAngV und LMIV strukturell nicht auslösen. */}
+    <div class="weinbilder">
+      <figure class="weinbilder__eins">
+        <Bild schluessel="wein-flasche" breite={1200} hoehe={1200} sizes="(min-width: 48rem) 48vw, 100vw" />
+      </figure>
+      <figure class="weinbilder__zwei">
+        <Bild schluessel="wein-einschank" breite={1200} hoehe={800} sizes="(min-width: 48rem) 48vw, 100vw" />
+      </figure>
+    </div>
+
     <section class="beratung" aria-labelledby="beratung-titel">
       <h2 id="beratung-titel">Wir beraten Sie persönlich</h2>
       <p class="satz beratung__text">
@@ -135,6 +147,40 @@ import { restaurant } from '../lib/daten.ts'
   }
 
   /* --- Beratung ----------------------------------------------------------- */
+  .weinbilder {
+    display: grid;
+    gap: var(--raum-5);
+    margin-block: var(--raum-8);
+  }
+
+  @media (min-width: 48rem) {
+    .weinbilder {
+      grid-template-columns: 0.9fr 1.1fr;
+      align-items: end;
+    }
+  }
+
+  .weinbilder figure {
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .weinbilder__eins {
+    aspect-ratio: 1 / 1;
+  }
+
+  .weinbilder__zwei {
+    aspect-ratio: 3 / 2;
+  }
+
+  .weinbilder :global(.bild),
+  .weinbilder :global(.bild img),
+  .weinbilder :global(.platzhalter) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+  }
+
   .beratung {
     padding-block: var(--raum-8);
     border-block-start: 1px solid var(--linie);

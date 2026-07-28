@@ -111,6 +111,8 @@ const bauzeitpunkt = new Date(Number(process.env['SOURCE_DATE_EPOCH'] ?? 0) * 10
     <CallBar />
 
     <script src="../islands/bewegung.ts"></script>
+    <script src="../islands/vorhang.ts"></script>
+    <script src="../islands/zeiger.ts"></script>
   </body>
 </html>
 
@@ -135,5 +137,90 @@ const bauzeitpunkt = new Date(Number(process.env['SOURCE_DATE_EPOCH'] ?? 0) * 10
     /* Das Sprungziel bekommt keinen Ring — es ist kein Bedienelement.
        Der Fokus sitzt trotzdem korrekt, was der Test prüft. */
     outline: none;
+  }
+
+  /* --- „Der Vorhang“ -------------------------------------------------------
+     Liegt ÜBER bereits gerendertem Inhalt und blockiert nichts. Ohne
+     JavaScript existiert er nicht — das Element wird erst zur Laufzeit
+     angelegt. Deshalb gibt es hier auch keinen Startzustand im Markup, der
+     ohne Skript stehen bliebe und die Seite dauerhaft verdecken würde.     */
+  .vorhang {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    background-color: var(--kalk);
+    display: grid;
+    place-items: center;
+    /* Kein Fade der Fläche, sondern ein Aufzug nach oben: Die Seite liegt
+       darunter fertig da, der Vorhang gibt sie frei. */
+    transform: translateY(0);
+    transition: transform var(--dauer-lang) var(--ease);
+  }
+
+  :root[data-vorhang='faellt'] .vorhang {
+    transform: translateY(-101%);
+  }
+
+  .vorhang__strich {
+    display: block;
+    inline-size: min(12rem, 40vw);
+    block-size: 2px;
+    background-color: color-mix(in oklab, var(--espresso) 18%, transparent);
+    overflow: hidden;
+  }
+
+  .vorhang__fuellung {
+    display: block;
+    block-size: 100%;
+    background-color: var(--ochsenblut);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--dauer-mittel) var(--ease);
+  }
+
+  /* --- „Der Zeiger“ --------------------------------------------------------
+     Reine Dekoration. Der System-Cursor bleibt sichtbar — hier wird nirgends
+     `cursor: none` gesetzt. Der Ring läuft mit, mehr nicht.                */
+  .zeiger {
+    position: fixed;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
+    margin-block-start: -1.125rem;
+    margin-inline-start: -1.125rem;
+    border: 1px solid var(--ochsenblut);
+    border-radius: 50%;
+    pointer-events: none;
+    /* Unter der Kopfzeile (100) und unter dem Vorhang (9000) — der Ring darf
+       niemals einen Fokusring oder ein Bedienelement überdecken. */
+    z-index: 40;
+    opacity: 0;
+    transition:
+      opacity var(--dauer-schnell) var(--ease),
+      scale var(--dauer-mittel) var(--ease);
+  }
+
+  .zeiger[data-sichtbar='ja'] {
+    opacity: 0.55;
+  }
+
+  .zeiger[data-gross='ja'] {
+    scale: 1.7;
+    opacity: 0.8;
+  }
+
+  /* Im Windows-Kontrastmodus ist ein zusätzlicher Ring nur Störung. */
+  @media (forced-colors: active) {
+    .zeiger {
+      display: none;
+    }
+  }
+
+  @media print {
+    .vorhang,
+    .zeiger {
+      display: none;
+    }
   }
 </style>

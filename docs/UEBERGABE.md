@@ -10,19 +10,32 @@ wie ändert man Inhalte, und was darf man auf keinen Fall tun.
 
 ## 1. Was noch fehlt — bevor die Seite live gehen kann
 
-Diese sechs Punkte sind **blockierend**. Ohne sie geht die Seite nicht online.
+Diese vier Punkte sind **blockierend**. Ohne sie geht die Seite nicht online.
 
 | # | Was | Warum | Wer |
 |---|-----|-------|-----|
 | 1 | **Allergen- und Zusatzstoffmatrix** für alle 38 Gerichte | Art. 44 LMIV, § 4 LMIDV. Vorlage liegt bei: `docs/ALLERGEN-ERHEBUNG.md` | Küchenleitung |
-| 2 | **Fotorechte J. Schumacher** — Vertrag oder Rechnung mit Rechteumfang, und ob die Lizenz beim Betreiberwechsel 2023 auf die heutige GmbH übergegangen ist (§ 34 UrhG) | Ohne Nachweis geht kein Foto live | Geschäftsführung |
-| 3 | **Einwilligungen abgebildeter Personen** (§ 22 KunstUrhG) | Betrifft mindestens das Weinregal-Motiv | Geschäftsführung |
 | 4 | **Bestätigung der Registerdaten** — HRB 16767, Amtsgericht Siegburg, USt-IdNr. DE 348118893 | Übernommen aus dem alten Impressum, nicht gegengeprüft | Geschäftsführung |
 | 5 | **Beleg für „Weidehaltung“** und für die argentinische Herkunft, falls diese Aussagen zurück auf die Seite sollen | § 5 UWG — ohne Beleg gesperrt | Geschäftsführung |
 | 6 | **Erhebung „Zugänglichkeit des Hauses“** — Stufen am Eingang, WC, Tischabstände | Damit auf `/kontakt/` keine Behauptung steht, die nicht stimmt | Geschäftsführung |
 
+### Erledigt am 28.07.2026
+
+| # | Was | Stand |
+|---|-----|-------|
+| 2 | Fotorechte J. Schumacher | Der Auftraggeber hat die Rechtelage erklärt. **16 Motive sind freigegeben und eingebunden.** Der zugrunde liegende Beleg — Vertrag oder Bestätigung des Fotografen — sollte noch in die Ablage Recht. Siehe `docs/BILDRECHTE.md`. |
+| 3 | Einwilligungen abgebildeter Personen | Vom Auftraggeber erklärt. Betrifft fünf Motive. |
+
 Nicht blockierend, aber vor dem Livegang zu erledigen:
 
+- **Beleg zu den Fotorechten** ablegen und die Fundstelle in
+  `content/bildnachweise.json` eintragen (steht dort derzeit als Verweis auf
+  die Erklärung vom 28.07.2026)
+- **Stier-Logo als Vektordatei** — das Signet läuft als 12-KB-PNG-Maske
+- **Höher aufgelöste Fassungen** von `IMG_6596_1`, `IMG_6611`, `IMG_6897_2_1`
+  und `IMG_7401` beim Fotografen anfragen. Es sind die vier stärksten
+  Aufnahmen des Bestands, liegen aber nur mit 1500 px Breite vor.
+- **PEAT-Protokoll** des Glut-Kapitels — ohne das geht der Shader nicht live
 - **Auftragsverarbeitungsvertrag mit Vercel** abschließen und ablegen
 - **Jahresumsatz 2025** dokumentieren — er belegt zusammen mit der
   Mitarbeiterzahl die Kleinstunternehmen-Ausnahme nach § 3 Abs. 3 BFSG
@@ -127,7 +140,7 @@ Der Build prüft vor jeder Veröffentlichung:
 pnpm pruefen        Typen, Zeitlogik, Preisformate, Kontraste, Pflichtangaben
 pnpm build          erzeugt die Seite und prüft danach Claims, Bildrechte,
                     Fremdanfragen
-pnpm test:e2e       117 Prüfungen im echten Browser
+pnpm test:e2e       213 Prüfungen im echten Browser
 ```
 
 **Schlägt eine Prüfung fehl, wird nicht veröffentlicht.** Die alte Fassung

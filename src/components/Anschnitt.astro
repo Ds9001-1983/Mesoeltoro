@@ -2,15 +2,20 @@
 /**
  * Signature Move 1 — „Der Anschnitt“.
  *
- * Zwei Bilder liegen übereinander. Beim Scrollen wandert eine gerissene
- * Maske über das obere Bild, sodass das untere durchkommt — und an der
+ * Mehrere Bilder liegen übereinander. Beim Scrollen wandert je eine gerissene
+ * Maske über die obere Ebene, sodass die nächste durchkommt — und an der
  * Schnittkante läuft ein glühender Saum mit, als verbrenne ein Negativ.
+ *
+ * Mit drei Ebenen entsteht daraus eine Folge statt eines einzelnen Schnitts:
+ * Glut → Teller → Tisch. Das ist die Dramaturgie des Hauses in einer Geste,
+ * und es ist zugleich die Antwort auf die Video-Hero-Forderung des Skills:
+ * eine scroll-gesteuerte Bildfolge (SM-02/SM-04) aus ECHTEN Aufnahmen, ohne
+ * Video, ohne KI, ohne Kennzeichnungsfrage.
  *
  * Warum das kein Ken Burns ist: Ken Burns behauptet eine Kamerabewegung, die
  * es nie gab. Das Auge erkennt in unter einer Sekunde, dass keine Parallaxe
  * entsteht, und stuft das Ganze als Diashow ein. Hier bewegt sich das Bild
- * überhaupt nicht — die MASKE bewegt sich. Das ist ein Montageereignis, kein
- * Schwenk.
+ * überhaupt nicht — die MASKE bewegt sich. Das ist ein Montageereignis.
  *
  * WCAG-seitig ist das die billigste aller Lösungen:
  *  - Die Bewegung startet nicht von selbst, sondern folgt dem Scrollen.
@@ -27,11 +32,40 @@ import Bild from './Bild.astro'
 import Pausetaste from './Pausetaste.astro'
 
 interface Props {
-  readonly obenSchluessel: string
-  readonly untenSchluessel: string
+  /**
+   * Registerschlüssel von oben nach unten. Der erste liegt zuoberst und wird
+   * zuerst aufgeschnitten, der letzte bleibt stehen. Mindestens zwei.
+   */
+  readonly ebenen: readonly string[]
+  /** Gesamte Scrollstrecke, über die sich alle Schnitte verteilen. */
+  readonly strecke?: string
 }
 
-const { obenSchluessel, untenSchluessel } = Astro.props
+const { ebenen, strecke = '110vh' } = Astro.props
+
+if (ebenen.length < 2) {
+  throw new Error(
+    `Der Anschnitt braucht mindestens zwei Ebenen, bekommen hat er ${ebenen.length}. ` +
+      'Mit einer Ebene gibt es nichts aufzuschneiden — dann ist ein einfaches <Bild> richtig.',
+  )
+}
+
+/**
+ * Jede geschnittene Ebene bekommt ihr eigenes Stück der Scrollstrecke.
+ * Bei drei Ebenen sind das zwei Schnitte: 0–50 % und 50–100 % der Strecke.
+ * Die Anteile stehen als calc() im style-Attribut, weil animation-range
+ * pro Ebene verschieden ist und Astro-Styles nicht parametrisierbar sind.
+ */
+const schnitte = ebenen.length - 1
+const geschnitten = ebenen.slice(0, -1).map((schluessel, index) => ({
+  schluessel,
+  // z-index von oben nach unten absteigend, unterste Ebene bekommt 1.
+  ebene: ebenen.length - index,
+  von: `calc(${strecke} * ${index} / ${schnitte})`,
+  bis: `calc(${strecke} * ${index + 1} / ${schnitte})`,
+}))
+
+const unterste = ebenen[ebenen.length - 1] as string
 ---
 
 <div class="anschnitt">
@@ -60,31 +94,52 @@ const { obenSchluessel, untenSchluessel } = Astro.props
   </svg>
 
   <div class="anschnitt__rahmen">
-    {/* Untere Ebene — kommt beim Scrollen zum Vorschein. */}
-    <div class="anschnitt__ebene anschnitt__ebene--unten">
-      <Bild schluessel={untenSchluessel} breite={1200} hoehe={1500} sizes="(min-width: 64rem) 46vw, 100vw" />
+    {/* Unterste Ebene — kommt zuletzt zum Vorschein und bleibt stehen. */}
+    <div class="anschnitt__ebene" style="z-index: 1">
+      <Bild schluessel={unterste} breite={1600} hoehe={1000} sizes="100vw" />
     </div>
 
-    {/*
-      Obere Ebene, zweistufig — und das muss so sein.
+    {
+      /*
+        Geschnittene Ebenen, jede zweistufig — und das muss so sein.
 
-      clip-path wirkt im lokalen Koordinatensystem des Elements, transform
-      verschiebt danach das FERTIG BESCHNITTENE Element als Ganzes. Wer beides
-      auf denselben Knoten legt, verschiebt also auch das Bild mit: Das Motiv
-      wandert nach unten aus dem Rahmen, statt stehen zu bleiben.
-      Am 28.07.2026 genau so beobachtet.
+        clip-path wirkt im lokalen Koordinatensystem des Elements, transform
+        verschiebt danach das FERTIG BESCHNITTENE Element als Ganzes. Wer beides
+        auf denselben Knoten legt, verschiebt also auch das Bild mit: Das Motiv
+        wandert nach unten aus dem Rahmen, statt stehen zu bleiben.
+        Am 28.07.2026 genau so beobachtet.
 
-      Deshalb außen die Maske samt Verschiebung, innen der exakte Gegenzug.
-      Ergebnis: Die Maske wandert, das Bild steht.
-    */}
-    <div class="anschnitt__ebene anschnitt__ebene--oben">
-      <div class="anschnitt__gegenzug">
-        <Bild schluessel={obenSchluessel} breite={1200} hoehe={1500} vorrang sizes="(min-width: 64rem) 46vw, 100vw" />
-      </div>
-    </div>
+        Deshalb außen die Maske samt Verschiebung, innen der exakte Gegenzug.
+        Ergebnis: Die Maske wandert, das Bild steht.
+      */
+      geschnitten.map((lage, index) => (
+        <>
+          <div
+            class="anschnitt__ebene anschnitt__ebene--schnitt"
+            style={`z-index: ${lage.ebene}; --von: ${lage.von}; --bis: ${lage.bis}`}
+          >
+            <div class="anschnitt__gegenzug">
+              <Bild
+                schluessel={lage.schluessel}
+                breite={1600}
+                hoehe={1000}
+                vorrang={index === 0}
+                sizes="100vw"
+              />
+            </div>
+          </div>
 
-    {/* Glutsaum an der Schnittkante. */}
-    <span class="anschnitt__saum" aria-hidden="true" data-anim="zeit" data-dekor></span>
+          {/* Glutsaum an genau dieser Schnittkante. */}
+          <span
+            class="anschnitt__saum"
+            aria-hidden="true"
+            data-anim="zeit"
+            data-dekor
+            style={`z-index: ${lage.ebene}; --von: ${lage.von}; --bis: ${lage.bis}`}
+          />
+        </>
+      ))
+    }
 
     <Pausetaste klasse="anschnitt__pause" />
   </div>
@@ -93,8 +148,8 @@ const { obenSchluessel, untenSchluessel } = Astro.props
 <style>
   .anschnitt {
     /* Passepartout: Das Bild sitzt in einer Kalkfläche wie im Museum.
-       Nebenwirkung mit Absicht — es rechtfertigt Text NEBEN statt ÜBER dem
-       Bild und löst das Kontrastproblem gestalterisch statt technisch. */
+       Nebenwirkung mit Absicht — es rechtfertigt Text NEBEN oder ÜBER statt
+       AUF dem Bild und löst das Kontrastproblem gestalterisch. */
     padding: var(--rahmen);
     background-color: var(--kalk);
   }
@@ -107,11 +162,22 @@ const { obenSchluessel, untenSchluessel } = Astro.props
 
   .anschnitt__rahmen {
     position: relative;
-    /* Quadratisch statt 4:5. Die Vorlagen sind Querformate; ein hochkantes
-       Fenster hätte beim Steak den halben Teller abgeschnitten. */
-    aspect-ratio: 1 / 1;
+    /* Breite und Höhe getrennt setzen statt über aspect-ratio.
+       Mit `aspect-ratio` plus `max-block-size` gewinnt die Höhenbegrenzung
+       und rechnet die BREITE herunter — das Band stand dann links angeschlagen
+       statt vollbreit. Am 28.07.2026 im Screenshot gesehen. */
+    inline-size: 100%;
+    block-size: min(76svh, 52vw);
+    min-block-size: 20rem;
     overflow: hidden;
     background-color: color-mix(in oklab, var(--espresso) 8%, var(--kalk));
+  }
+
+  @media (max-width: 47.99rem) {
+    .anschnitt__rahmen {
+      /* Hochformat auf schmalen Schirmen — sonst bleibt vom Motiv ein Streifen. */
+      block-size: min(70svh, 118vw);
+    }
   }
 
   .anschnitt__ebene {
@@ -132,11 +198,11 @@ const { obenSchluessel, untenSchluessel } = Astro.props
     object-fit: cover;
   }
 
-  /* Ausgangszustand: Das obere Bild deckt vollständig. Erst wenn der Browser
-     scroll-getriebene Animationen kann UND der Nutzer volle Bewegung erlaubt,
-     wandert die Maske. Ohne Unterstützung sieht man ein sauber komponiertes
-     Standbild — keine kaputte Halbfassung. */
-  .anschnitt__ebene--oben {
+  /* Ausgangszustand: Die oberste Ebene deckt vollständig. Erst wenn der
+     Browser scroll-getriebene Animationen kann UND der Nutzer volle Bewegung
+     erlaubt, wandern die Masken. Ohne Unterstützung sieht man ein sauber
+     komponiertes Standbild — keine kaputte Halbfassung. */
+  .anschnitt__ebene--schnitt {
     clip-path: none;
   }
 
@@ -160,16 +226,18 @@ const { obenSchluessel, untenSchluessel } = Astro.props
     position: absolute;
     inset-block-end: var(--raum-3);
     inset-inline-end: var(--raum-3);
-    z-index: 2;
+    z-index: 20;
   }
 </style>
 
 <style is:global>
   @supports (animation-timeline: view()) {
-    :root[data-motion='full'] .anschnitt__ebene--oben {
+    :root[data-motion='full'] .anschnitt__ebene--schnitt {
       clip-path: url(#riss);
       /* Nur Langformen — Minifier falten die Kurzschreibweise sonst mit
-         animation-timeline zusammen und machen sie damit ungültig. */
+         animation-timeline zusammen und machen sie damit ungültig.
+         Auch animation-range wird als Langform gesetzt, damit die Regel
+         nicht bei der nächsten Ergänzung wieder aufweicht. */
       animation-name: riss-wandern;
       animation-duration: 1s;
       animation-timing-function: linear;
@@ -187,17 +255,19 @@ const { obenSchluessel, untenSchluessel } = Astro.props
        * ist die Animation garantiert bei 0 — das Bild steht ganz.
        */
       animation-timeline: scroll(root block);
-      animation-range: 0 90vh;
+      animation-range-start: var(--von);
+      animation-range-end: var(--bis);
     }
 
     /* Der Gegenzug hebt die Verschiebung der Maske für das Bild wieder auf. */
-    :root[data-motion='full'] .anschnitt__gegenzug {
+    :root[data-motion='full'] .anschnitt__ebene--schnitt .anschnitt__gegenzug {
       animation-name: gegenzug;
       animation-duration: 1s;
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-timeline: scroll(root block);
-      animation-range: 0 90vh;
+      animation-range-start: var(--von);
+      animation-range-end: var(--bis);
     }
 
     :root[data-motion='full'] .anschnitt__saum {
@@ -206,7 +276,8 @@ const { obenSchluessel, untenSchluessel } = Astro.props
       animation-timing-function: linear;
       animation-fill-mode: both;
       animation-timeline: scroll(root block);
-      animation-range: 0 90vh;
+      animation-range-start: var(--von);
+      animation-range-end: var(--bis);
     }
   }
 

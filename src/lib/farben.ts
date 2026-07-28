@@ -14,7 +14,17 @@ export const PALETTE = {
   leinen: '#E3D8C4',
   espresso: '#2B2521',
   'espresso-70': '#5A5049',
-  ochsenblut: '#B3372B',
+  /**
+   * Das echte Markenrot des Hauses, nicht erfunden: am 28.07.2026 aus
+   * Logo-red.png, Schriftzug-red.png und SchriftzugNEU-red.png ausgelesen —
+   * drei unabhängige Markendateien, identischer Wert. Ein tiefes Burgunder,
+   * kein Signalrot.
+   *
+   * Der Vorgängerwert #B3372B war eine Erfindung aus der Entwurfsphase und
+   * erreichte auf Kalk nur 5,24:1. Die Hausfarbe ist mit 12,37:1 deutlich
+   * besser — sie trägt sogar Fließtext.
+   */
+  ochsenblut: '#551213',
   messing: '#8F7400',
   ember: '#C1440E',
   'kalk-auf-dunkel': '#F4EFE6',
@@ -56,7 +66,13 @@ export const PAARUNGEN: readonly Paarung[] = [
     vordergrund: 'ochsenblut',
     hintergrund: 'kalk',
     verwendung: 'fliesstext',
-    einsatz: 'Links und aktive Navigation auf heller Fläche',
+    einsatz: 'Links, aktive Navigation und Markenschriftzug auf heller Fläche',
+  },
+  {
+    vordergrund: 'ochsenblut',
+    hintergrund: 'leinen',
+    verwendung: 'fliesstext',
+    einsatz: 'Markenrot auf abgesetzter Fläche — seit dem echten Wert zulässig',
   },
   {
     vordergrund: 'kalk',
@@ -118,16 +134,17 @@ export const PAARUNGEN: readonly Paarung[] = [
     vordergrund: 'ochsenblut',
     hintergrund: 'espresso',
     verwendung: 'fliesstext',
-    einsatz: 'VERBOTEN — Markenrot trägt auf dunkler Fläche nicht',
+    einsatz: 'VERBOTEN — Markenrot trägt auf dunkler Fläche nicht (1,07:1)',
     verboten: true,
   },
-  {
-    vordergrund: 'ochsenblut',
-    hintergrund: 'leinen',
-    verwendung: 'fliesstext',
-    einsatz: 'VERBOTEN — Markenrot auf Leinen verfehlt 4,5:1 knapp',
-    verboten: true,
-  },
+  /*
+   * Früher stand hier zusätzlich „ochsenblut auf leinen“ als verboten, mit
+   * der Begründung, es verfehle 4,5:1 knapp (4,26:1). Das galt für den
+   * erfundenen Wert #B3372B. Das echte Markenrot erreicht auf Leinen
+   * 10,04:1. Das Verbot ist damit gegenstandslos und gestrichen — ein
+   * unbegründetes Verbot wird beim nächsten Aufräumen ohnehin ignoriert und
+   * beschädigt die Glaubwürdigkeit der übrigen.
+   */
   {
     vordergrund: 'ember',
     hintergrund: 'espresso',
