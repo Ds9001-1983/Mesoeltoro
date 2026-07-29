@@ -12,20 +12,25 @@
 
    Die echten Namen sind hinter Aliassen gekapselt. Ein Wechsel auf eine
    Kauflizenz ist damit eine Änderung in DIESER Datei — nicht im ganzen Projekt.
-     MesonDisplay = Instrument Serif   (Überschriften)
-     MesonText    = Newsreader         (Fließtext)
-     MesonMikro   = Instrument Sans    (Codes, Labels, Zahlen)
+     MesonDisplay = Archivo 900   (Überschriften, Versalien)
+     MesonText    = Newsreader    (Fließtext, regulär/fett/kursiv)
+     MesonMikro   = Geist Mono    (Rubriken, Codes, Ziffern)
+
+   Stand 29.07.2026: Display wechselte von Instrument Serif auf Archivo,
+   Mikro von Instrument Sans auf Geist Mono, Kursiv kam dazu. Grund ist der
+   Wechsel auf die dunkle Gestaltung — dort trägt eine schwere Grotesk in
+   Versalien, keine Serife.
    ============================================================================ */
 
-/* --- Display ---------------------------------------------------------------
-   Instrument Serif hat genau einen Schnitt. Das ist Absicht: Die Auszeichnung
-   in Überschriften läuft über Größe und Raum, nicht über Fettung.           */
+/* --- Display ----------------------------------------------------------------
+   Genau ein Schnitt, und zwar der schwerste. Die Auszeichnung läuft über
+   Größe, Versalien und Raum — nicht über eine Fettungsachse.               */
 @font-face {
   font-family: 'MesonDisplay';
   font-style: normal;
-  font-weight: 400;
+  font-weight: 900;
   font-display: swap;
-  src: url('/fonts/meson-display-400.woff2') format('woff2');
+  src: url('/fonts/meson-display-900.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
     U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -35,9 +40,9 @@
 @font-face {
   font-family: 'MesonDisplay';
   font-style: normal;
-  font-weight: 400;
+  font-weight: 900;
   font-display: swap;
-  src: url('/fonts/meson-display-400-ext.woff2') format('woff2');
+  src: url('/fonts/meson-display-900-ext.woff2') format('woff2');
   unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308,
     U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
     U+2C60-2C7F, U+A720-A7FF;
@@ -86,6 +91,29 @@
     U+2C60-2C7F, U+A720-A7FF;
 }
 
+/* Kursiv trägt die spanischen Begriffe — „Estancia“, „Parrilla“, „seit 1975“.
+   Das ist ein Stilmittel der Gestaltung, keine Verzierung. */
+@font-face {
+  font-family: 'MesonText';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/meson-text-400i.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304,
+    U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: 'MesonText';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/meson-text-400i-ext.woff2') format('woff2');
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308,
+    U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113,
+    U+2C60-2C7F, U+A720-A7FF;
+}
+
 /* --- Mikrotypografie -------------------------------------------------------- */
 @font-face {
   font-family: 'MesonMikro';
@@ -117,12 +145,12 @@
    die Sorte, die Nutzer beim Lesen aus der Zeile wirft.
 
    Die Werte unten sind NICHT geschätzt. Sie stammen aus den head-, hhea- und
-   OS/2-Tabellen der ausgelieferten woff2-Dateien, gemessen am 28.07.2026:
+   OS/2-Tabellen der ausgelieferten woff2-Dateien, gemessen am 29.07.2026:
 
      Datei                    upm   ascender  descender  x-Höhe
-     meson-display-400       1000     0,9900    -0,3100   0,5100
-     meson-text-400/600      2000     0,7350    -0,2650   0,4260
-     meson-mikro-400         1000     0,9700    -0,2500   0,5100
+     meson-display-900       1000     0,8780    -0,2100   0,5260
+     meson-text-400/600/i    2000     0,7350    -0,2650   0,4260
+     meson-mikro-400         1000     1,0050    -0,2950   0,5300
 
      Georgia   (Referenz)    2048     0,9170    -0,2192   0,4814
      Helvetica (Referenz)    2048     0,7700    -0,2300   0,5186
@@ -133,10 +161,10 @@
 
 @font-face {
   font-family: 'MesonDisplay-Ersatz';
-  src: local('Georgia'), local('Times New Roman'), local('Times');
-  size-adjust: 105.93%;
-  ascent-override: 93.46%;
-  descent-override: 29.26%;
+  src: local('Helvetica Neue'), local('Helvetica'), local('Arial');
+  size-adjust: 101.43%;
+  ascent-override: 86.56%;
+  descent-override: 20.7%;
   line-gap-override: 0%;
 }
 
@@ -149,12 +177,19 @@
   line-gap-override: 0%;
 }
 
+/*
+ * Geist Mono fällt auf eine PROPORTIONALE Schrift zurück. Die Dickte lässt
+ * sich damit nicht angleichen — das kann kein Ersatz leisten. Angeglichen
+ * werden x-Höhe und Zeilenkasten, also das, was die Zeilen springen ließe.
+ * Die Mikrotexte sind kurz und stehen in eigenen Zeilen; ein Restversatz in
+ * der Breite verschiebt dort kein Layout.
+ */
 @font-face {
   font-family: 'MesonMikro-Ersatz';
   src: local('Helvetica Neue'), local('Helvetica'), local('Arial');
-  size-adjust: 98.35%;
-  ascent-override: 98.63%;
-  descent-override: 25.42%;
+  size-adjust: 102.2%;
+  ascent-override: 98.34%;
+  descent-override: 28.87%;
   line-gap-override: 0%;
 }
 

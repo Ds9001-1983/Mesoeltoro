@@ -152,8 +152,8 @@ label[data-ziel] {
   z-index: 1000;
   display: inline-block;
   padding: var(--raum-3) var(--raum-5);
-  background-color: var(--espresso);
-  color: var(--kalk);
+  background-color: var(--elfenbein);
+  color: var(--grund);
   font-family: var(--schrift-mikro);
   text-decoration: none;
   transform: translateY(calc(-100% - var(--raum-6)));

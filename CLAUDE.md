@@ -23,9 +23,15 @@ strukturell erledigt statt mühsam gemessen. Der Hero setzt die Mega-Typo auf
 reinen Kalk und beginnt den Bildstapel erst darunter — das ist keine
 Layoutlaune, sondern die Umsetzung dieser Regel.
 
-**3. Was nicht belegt ist, steht nicht auf der Seite.**
-Werbeaussagen laufen über `content/claims.json`, Bilder über
-`content/bildnachweise.json`. Beide sind Build-Gates, keine Dokumentation.
+**3. Über Werbeaussagen entscheidet der Auftraggeber, nicht der Code.**
+Die Sperrliste in `content/claims.json` ist seit dem 29.07.2026 **leer** —
+so entschieden. Der Wächter läuft weiter und ist mit einem Eintrag sofort
+wieder scharf; `blockliste_bewusst_leer` unterscheidet die Entscheidung vom
+Versehen. `entscheidungen` bleibt als Akte: was geprüft wurde, auf welcher
+Grundlage, wann entschieden.
+
+Bilder laufen unverändert über `content/bildnachweise.json` — dort ist das
+Gate hart, weil es um fremde Rechte geht, nicht um eigene Aussagen.
 
 ---
 
@@ -42,6 +48,11 @@ Werbeaussagen laufen über `content/claims.json`, Bilder über
 | Ein Steuersatz im Sichttext der Karte | 7 % auf Speisen, 19 % auf Getränke — eine Zahl wäre für die halbe Karte falsch |
 | `aggregateRating` oder Review-Markup | Erzeugt keine Sterne und verschärft § 5b Abs. 3 UWG |
 | Bilder per Dateipfad einbinden | Nur über `Bild.astro` mit Registerschlüssel |
+| `--bordeaux` als Linie, Rand oder Schrift auf `--grund` | 1,90:1. Bordeaux ist Vollfläche, nie Kontur. Darauf trägt nur Elfenbein (9,20:1) |
+| `--gold` als Fließtext auf `--bordeaux` | 4,13:1 — dort nur Großschrift und UI. Auf `--grund` dagegen 7,85:1 und uneingeschränkt |
+| Sekundärtext als Deckkraft statt als eigener Hexwert | Die Vorschau setzt `#ece0cc/50` — das sind 4,37:1 und verfehlt 4,5. Ein fester Ton ist nachrechenbar, eine Alpha-Angabe prüft niemand |
+| Rasterzellen ohne `min-inline-size: 0` | Voreingestellt ist `min-width: auto`; eine einzige lange Zeile zieht dann die ganze Seite waagerecht (1.4.10) |
+| Endlos laufende Bewegung ohne Pausetaste | 2.2.2. Genau daran scheitert die Vorschau mit Laufband und Glutpuls |
 | `cursor: none` | Der eigene Zeiger ist Zugabe, kein Ersatz. Wer den System-Cursor ausblendet, nimmt Nutzern mit vergrößertem Zeiger oder Bildschirmvergrößerer die Orientierung. Ein Test sucht die Deklaration im ganzen Dokument. |
 | Eine Ladeanzeige mit künstlicher Mindestdauer | *Das* wäre der 2.2.1-Verstoß, den man dem Preloader fälschlich pauschal unterstellt. Fertig ist fertig. |
 | Alternativtexte aus dem Dateinamen ableiten | Am 28.07.2026 beschrieb der Eintrag `gastraum` einen Gastraum und zeigte ein Steak — die Datei hieß `header_restaurant_steak.jpg`. Alt-Texte werden am geöffneten Bild geschrieben. |
@@ -67,12 +78,16 @@ durchgesetzt, nicht bloß dokumentiert.
 
 | # | Move | Ort |
 |---|------|-----|
-| 1 | Der Anschnitt — drei Bildebenen, zwei gerissene Masken | Startseite, Hero |
-| 2 | Der Temperaturwechsel — `clip-path: inset()` im textfreien Korridor | vor dem Glut-Kapitel |
-| 3 | Die Glut — WebGL-Fragment-Shader (OGL) | Glut-Kapitel, genau einmal |
-| 4 | Der Küchenpass — echter Öffnungsstatus | Startseite, Kontakt |
-| 5 | Der Satz der Karte — Leader-Linie zeichnet sich | Speisekarte |
-| 6 | Das Papier — gerechnete Faserkachel + `@view-transition` | global |
+| 1 | Der Anschnitt — gerissene Masken über mehreren Bildebenen | Kapitel VI |
+| 2 | Die Rubrik — römische Ziffer, spanische Zeile, Überschrift zieht auf | I–VI |
+| 3 | Die Glut — WebGL-Fragment-Shader (OGL) | Kapitel III, genau einmal |
+| 4 | Der Küchenpass — echter Öffnungsstatus | Kapitel VI, Kontakt |
+| 5 | Der Satz der Karte — Leader-Linie zeichnet sich | Speisekarte, Kapitel II |
+| 6 | Das Laufband — Begriffsband mit Pausetaste | zwischen Vorspann und I |
+| 7 | Das Papier — gerechnete Faserkachel + `@view-transition` | global |
+
+Der frühere Move „Der Temperaturwechsel“ ist entfallen: Seit die ganze Seite
+dunkel ist, gibt es keine Temperatur mehr zu wechseln.
 
 Wer einen siebten hinzufügt, streicht einen anderen. Der Skill setzt die
 Obergrenze bei sieben, und sie ist gut begründet: Ab da wird Handschrift zu
@@ -90,10 +105,15 @@ Fehlermeldungen. Das ist kein Selbstzweck: Der Kunde pflegt die Inhalte selbst
 **Ansprache auf der Website: Sie.** Bewusst abweichend vom SUPERBRAND-Standard
 — der gilt für die Agenturmarke, nicht für Kundenmarken.
 
-**Markenrot ist `#551213`**, ausgelesen aus den Logodateien des Hauses. Der
-frühere Wert `#B3372B` war eine Erfindung der Entwurfsphase. Wer die Farbe
-anfasst, ändert sie in `src/lib/farben.ts` **und** `tokens.css` — der
-Kontrastwächter vergleicht beide und rechnet jeden Kommentar nach.
+**Die Seite ist durchgehend dunkel** (`--grund: #14110D`). Akzent ist Gold
+`#C9A24B` (7,85:1), Fließtext Creme `#ECE0CC` (14,43:1).
+
+Das echte Markenrot `#551213` steht auf dem dunklen Grund bei 1,07:1 und ist
+deshalb **nicht mehr auf der Seite**. Es überlebt als Bordeaux `#7B2233`, aber
+nur als Vollfläche. Begründung in `docs/adr/0009-dunkle-gestaltung.md`.
+
+Wer eine Farbe anfasst, ändert sie in `src/lib/farben.ts` **und** `tokens.css`
+— der Kontrastwächter vergleicht beide und rechnet jeden Kommentar nach.
 
 **Commits und PRs auf Deutsch.** Kein `Co-Authored-By`-Trailer.
 
@@ -102,13 +122,17 @@ Kontrastwächter vergleicht beide und rechnet jeden Kommentar nach.
 ## Vor jedem Commit
 
 ```
-pnpm pruefen      Typen, 72 Einheitentests, Inhalte, Kontraste
+pnpm pruefen      Typen, 74 Einheitentests, Inhalte, Kontraste
 pnpm build        baut und prüft danach Claims, Bildrechte, Fremdanfragen
-pnpm test:e2e     213 Prüfungen im Browser, 4 Projekte
+pnpm test:e2e     236 Prüfungen im Browser, 4 Projekte
 ```
 
 Bild geändert? `pnpm bilder` erzeugt die Ableitungen neu.
 Papierkorn geändert? `pnpm korn`. Beide Ergebnisse werden eingecheckt.
+
+Am Hero etwas verschoben? `tests/verhalten/hero-grund.spec.ts` misst den
+tatsächlich gerenderten Kontrast hinter jedem Textknoten — Bildpixel unter
+Schrift brechen den Lauf.
 
 Neue Seite gebaut? Dann in `tests/routen.ts` eintragen — sonst wird sie
 ungeprüft ausgeliefert.

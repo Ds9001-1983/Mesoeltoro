@@ -1,11 +1,16 @@
 ---
 /**
- * Startseite — genau sieben Sektionen.
+ * Startseite.
  *
- * Dramaturgie: hell, hell, hell, DUNKEL, hell, hell, hell. Das dunkle
- * Kapitel („La Morocha“) wird auf der gesamten Website genau einmal
- * gespielt. Ab dem zweiten Mal wäre Glut ein Muster statt einer
- * Dramaturgie — und jede dunkle Fläche verdoppelt die Kontrast-Prüffläche.
+ * Gliederung nach dem Vorbild der SUPERBRAND-Vorschau: römische Ziffern,
+ * spanische Rubriken, dunkle Grundfläche durchgehend. Sechs nummerierte
+ * Kapitel zwischen Hero und Fuß.
+ *
+ * Der Hero ist die einzige Stelle, an der die Vorschau eine Projektregel
+ * bricht — dort liegt die Headline auf dem scroll-skalierten Bild. Hier
+ * steht das Bild still, und die Schrift sitzt in dem Bereich, in dem die
+ * Verläufe die Fläche auf reines --grund ausgelaufen haben. Ein Test misst
+ * die tatsächliche Hintergrundfarbe hinter jedem Textknoten des Heros.
  */
 import Anschnitt from '../components/Anschnitt.astro'
 import Bild from '../components/Bild.astro'
@@ -13,11 +18,16 @@ import Gaestestimme from '../components/Gaestestimme.astro'
 import GlutKapitel from '../components/GlutKapitel.astro'
 import JsonLd from '../components/JsonLd.astro'
 import Gerichtszeile from '../components/Gerichtszeile.astro'
+import Laufband from '../components/Laufband.astro'
+import Rubrik from '../components/Rubrik.astro'
 import Statusband from '../components/Statusband.astro'
 import Basis from '../layouts/Basis.astro'
 import historie from '../../content/historie.json'
+import stimmen from '../../content/stimmen.json'
 import { restaurant } from '../lib/daten.ts'
-import { KATEGORIEN } from '../lib/karte.ts'
+import { KATEGORIEN, preiszeile } from '../lib/karte.ts'
+
+const steaks = KATEGORIEN.find((kategorie) => kategorie.id === 'steaks')
 
 // Fünf Zeilen als Auszug — die Karte selbst hat eine eigene Route.
 const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((gericht) =>
@@ -25,435 +35,605 @@ const auszug = KATEGORIEN.flatMap((kategorie) => kategorie.gerichte).filter((ger
     gericht.id,
   ),
 )
+
+const BEGRIFFE = [
+  'La Morocha',
+  'Parrilla',
+  'Bodega',
+  'Asado',
+  'Estancia',
+  'Aberdeen Angus',
+  'Pampa',
+]
 ---
 
 <Basis
   titel="Spanisches Restaurant & Steakhouse"
-  beschreibung="Seit 1975 spanische Küche und Grill in Waldbröl. Mittwoch bis Sonntag, mittags und abends geöffnet. Reservierung unter 02291 4347."
+  beschreibung="Seit 1975 argentinischer Grill und spanische Küche in Waldbröl. Mittwoch bis Sonntag, mittags und abends geöffnet. Reservierung unter 02291 4347."
 >
   <JsonLd slot="kopf" />
-  {/* --- 1. Der Anschnitt ------------------------------------------------ */}
-  <section class="hero" aria-labelledby="hero-titel">
-    <div class="huelle hero__kopf">
-      <p class="eyebrow">
-        {restaurant.adresse.ort} · {restaurant.adresse.strasse} · seit {restaurant.zahlen.gegruendet}
-      </p>
-      {/*
-        Die Überschrift bleibt EIN Satz — sie wird nur zweistufig gesetzt.
-        Zwei <span> statt buchstabenweisem Splitting: Screenreader lesen die
-        Zeile weiterhin als eine Überschrift, Strg+F findet sie, und die
-        Übersetzung bricht nicht. Buchstabenweises Aufteilen steht in
-        CLAUDE.md auf der Verbotsliste, und zwar aus genau diesem Grund.
-      */}
-      <h1 id="hero-titel" class="hero__titel">
-        <span class="hero__marke">Mesón el Toro —</span>
-        <span class="hero__zusatz">spanische Küche und Grill.</span>
-      </h1>
 
-      <div class="hero__fuss">
-        <p class="lead hero__lead">
-          Ein Haus, das seit einem halben Jahrhundert dasselbe tut: gut kochen und gut bedienen.
-        </p>
-        <p class="hero__ruf">
-          <a class="hero__nummer zahlen" href={`tel:${restaurant.telefon_e164}`} data-ziel>
-            {restaurant.telefon_anzeige}
-          </a>
-          <span class="mikro leise">Tisch reservieren</span>
-        </p>
-      </div>
+  {/* --- Hero ------------------------------------------------------------- */}
+  <section class="hero" aria-labelledby="hero-titel">
+    <div class="hero__bild">
+      <Bild schluessel="glut-grill" breite={1600} hoehe={1067} vorrang sizes="100vw" />
     </div>
 
     {/*
-      Drei Ebenen, zwei Schnitte: Glut → Teller → Tisch.
-      Die Folge ist die Dramaturgie des Hauses — Feuer, Gericht, Gedeck — und
-      sie endet genau dort, wo der Handlungsaufruf steht: am gedeckten Tisch.
+      Vier gestapelte Verläufe, wie in der Vorschau. Der unterste bringt die
+      Fläche unter der Schrift auf reines --grund — dort steht die Headline
+      also auf einfarbigem Grund, nicht auf Bildinhalt.
     */}
-    <div class="hero__bild">
-      <Anschnitt ebenen={['glut-grill', 'steak-teller', 'tafel-gedeckt']} />
-    </div>
-  </section>
+    <div class="hero__grade" aria-hidden="true" data-dekor></div>
+    <div class="hero__vignette" aria-hidden="true" data-dekor></div>
+    <div class="hero__pool" aria-hidden="true" data-dekor></div>
+    <div class="hero__sockel" aria-hidden="true" data-dekor></div>
 
-  {/* --- 2. Heute --------------------------------------------------------- */}
-  <section class="heute" aria-labelledby="heute-titel">
-    <div class="huelle heute__inhalt">
-      <h2 id="heute-titel" class="vh">Heute</h2>
-      <p class="heute__fest zahlen">Mi–So · 12–14 und 18–22 Uhr · Mo und Di Ruhetag</p>
-      <Statusband mitKonfiguration />
-    </div>
-  </section>
+    <div class="hero__inhalt">
+      <p class="hero__kicker">
+        <span lang="es">Mesón el Toro — Parrilla Argentina</span> · Waldbröl · <span lang="es"
+          >Desde</span
+        > {restaurant.zahlen.gegruendet}
+      </p>
 
-  {/* --- 3. Zwei Küchen --------------------------------------------------- */}
-  <section class="kuechen" aria-labelledby="kuechen-titel">
-    <div class="huelle">
-      <h2 id="kuechen-titel" class="vh">Zwei Küchen unter einem Dach</h2>
-      <div class="kuechen__raster">
-        <article class="kueche">
-          <div class="kueche__bild">
-            <Bild
-              schluessel="fisch-teller"
-              breite={1200}
-              hoehe={900}
-              sizes="(min-width: 48rem) 45vw, 100vw"
-            />
-          </div>
-          <h3 class="kueche__titel">Aus Spanien</h3>
-          <p class="kueche__text">
-            Gambas al Ajillo, Crema Catalana, spanische Weine. Die Gründungsküche des Hauses — sie
-            ist geblieben, weil sie zum Grill passt.
-          </p>
-          <p><a class="kueche__link" href="/speisekarte/#vorspeisen">Zur Karte</a></p>
-        </article>
+      <div class="hero__unten">
+        <h1 id="hero-titel" class="hero__titel">
+          Feuer, Fleisch<br />&amp; <span class="hero__gold">spanischer</span><br />Wein.
+        </h1>
 
-        <article class="kueche">
-          <div class="kueche__bild">
-            <Bild
-              schluessel="steak-grillmuster"
-              breite={1200}
-              hoehe={900}
-              sizes="(min-width: 48rem) 45vw, 100vw"
-            />
-          </div>
-          <h3 class="kueche__titel">Vom Grill</h3>
-          <p class="kueche__text">
-            Rumpsteak, Filet, Lammkoteletts, Kalbskotelett. Über offener Glut gegrillt — daran
-            entscheidet sich alles.
-          </p>
-          <p><a class="kueche__link" href="/speisekarte/#steaks">Zur Karte</a></p>
-        </article>
+        <p class="hero__lead">
+          Seit {restaurant.zahlen.gegruendet} die kulinarische Instanz im Bergischen Land — argentinisches
+          Premiumfleisch von der <span class="spanisch" lang="es">Estancia</span>, spanische Feinkost
+          und ein eigener Weinkeller.
+        </p>
+
+        <div class="wege">
+          <a class="ruf-block" href={`tel:${restaurant.telefon_e164}`} data-ziel>
+            <span class="ruf-block__wort">Reservierung</span>
+            <span class="ruf-block__nummer zahlen">{restaurant.telefon_anzeige}</span>
+          </a>
+          <a class="weiter" href="/speisekarte/">Speisekarte ansehen</a>
+        </div>
       </div>
     </div>
   </section>
 
-  {/* --- 4. La Morocha — das einzige dunkle Kapitel ----------------------- */}
+  {/* --- Positionierung ---------------------------------------------------- */}
+  <section class="haltung" aria-labelledby="haltung-titel">
+    <h2 id="haltung-titel" class="vh">Was dieses Haus ausmacht</h2>
+    <p class="huelle haltung__satz">
+      Tradition aus dem <span class="spanisch">Bergischen Land</span>, argentinisches Premiumfleisch,
+      spanische Feinkost und moderne Küche — an einem Tisch vereint.
+    </p>
+  </section>
+
+  <Laufband begriffe={BEGRIFFE} />
+
+  {/* --- I · La Parrilla ---------------------------------------------------- */}
+  <section class="kapitel" aria-labelledby="parrilla-titel">
+    <div class="huelle kapitel__raster">
+      <div class="kapitel__text">
+        <Rubrik ziffer="I" spanisch="La Parrilla — El Corazón" id="parrilla-titel">
+          Argentinische Steaks »La Morocha«
+        </Rubrik>
+
+        <p class="kapitel__vorspann">
+          Aberdeen Angus von der <span class="spanisch" lang="es">Pampa</span>, über offener Glut
+          gegrillt. Zwei Schnitte, zwei Größen, kein Beiwerk — was zählt, ist der Punkt, an dem das
+          Fleisch vom Rost kommt.
+        </p>
+
+        {
+          steaks && (
+            <dl class="preise">
+              {steaks.gerichte.map((gericht) => (
+                <div class="preise__zeile">
+                  <dt>{gericht.name}</dt>
+                  <dd class="preis">{preiszeile(gericht)}</dd>
+                </div>
+              ))}
+            </dl>
+          )
+        }
+
+        <p class="kapitel__weiter">
+          <a class="weiter" href="/speisekarte/#steaks">Alle Gerichte vom Grill</a>
+        </p>
+      </div>
+
+      <div class="kapitel__bild kapitel__bild--hoch">
+        <Bild
+          schluessel="steak-grillmuster"
+          breite={1200}
+          hoehe={1600}
+          sizes="(min-width: 62rem) 38vw, 100vw"
+        />
+      </div>
+    </div>
+  </section>
+
+  {/* --- II · La Carta ------------------------------------------------------ */}
+  <section class="kapitel" aria-labelledby="carta-titel">
+    <div class="huelle kapitel__raster kapitel__raster--gedreht">
+      <div class="kapitel__bild">
+        <Bild
+          schluessel="fisch-teller"
+          breite={1200}
+          hoehe={1200}
+          sizes="(min-width: 62rem) 38vw, 100vw"
+        />
+      </div>
+
+      <div class="kapitel__text">
+        <Rubrik ziffer="II" spanisch="La Carta" id="carta-titel">Aus unserer Speisekarte</Rubrik>
+
+        <p class="kapitel__vorspann">
+          Gambas al Ajillo, Seezunge, Crema Catalana. Die spanische Seite des Hauses kommt aus der
+          Gründungszeit und ist geblieben, weil sie zum Grill passt.
+        </p>
+
+        <ul class="auszug__liste liste-schlicht">
+          {auszug.map((gericht) => <Gerichtszeile gericht={gericht} />)}
+        </ul>
+
+        <p class="kapitel__weiter">
+          <a class="weiter" href="/speisekarte/">Zur vollständigen Speisekarte</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* --- III · Sobre la brasa ----------------------------------------------- */}
   <GlutKapitel />
 
-  {/* --- 5. Aus der Karte ------------------------------------------------- */}
-  <section class="auszug" aria-labelledby="auszug-titel">
-    <div class="huelle auszug__inhalt">
-      <h2 id="auszug-titel">Die Karte, ganz gelesen.</h2>
-      <p class="auszug__notiz mikro leise">
-        Ein Auszug. Alle 38 Gerichte, Preise und Kennzeichnungen stehen auf der Speisekarte.
-      </p>
-      <ul class="auszug__liste liste-schlicht">
-        {auszug.map((gericht) => <Gerichtszeile gericht={gericht} />)}
-      </ul>
-      <p class="auszug__weiter">
-        <a href="/speisekarte/">Zur vollständigen Speisekarte</a>
-      </p>
-    </div>
-  </section>
-
-  {/* --- 6. Seit 1975 ----------------------------------------------------- */}
-  <section class="historie" aria-labelledby="historie-titel">
+  {/* --- IV · La Filosofía --------------------------------------------------- */}
+  <section class="kapitel" aria-labelledby="filosofia-titel">
     <div class="huelle">
-      <h2 id="historie-titel" class="vh">Seit 1975</h2>
-      <div class="historie__bild">
-        <Bild schluessel="schild-haus" breite={1600} hoehe={800} sizes="100vw" />
+      <Rubrik ziffer="IV" spanisch="La Filosofía" id="filosofia-titel">
+        Qualität, Herkunft &amp; Historie
+      </Rubrik>
+
+      <div class="filosofia__raster">
+        <div>
+          <p class="kapitel__vorspann">
+            Ein Haus überlebt fünfzig Jahre nicht durch Ankündigungen, sondern dadurch, dass die
+            Gäste wiederkommen.
+          </p>
+
+          <ol class="historie__jahre liste-schlicht">
+            {
+              historie.stationen.slice(0, 3).map((station) => (
+                <li class="historie__jahr">
+                  <p class="historie__zahl zahlen">{station.jahr}</p>
+                  <p class="historie__text mikro leise">{station.titel}</p>
+                </li>
+              ))
+            }
+          </ol>
+
+          <p class="kapitel__weiter">
+            <a class="weiter" href="/philosophie/">Die ganze Geschichte</a>
+          </p>
+        </div>
+
+        <div class="kapitel__bild">
+          <Bild
+            schluessel="schild-haus"
+            breite={1200}
+            hoehe={1200}
+            sizes="(min-width: 62rem) 42vw, 100vw"
+          />
+        </div>
       </div>
-      <ol class="historie__jahre liste-schlicht">
-        {
-          historie.stationen.slice(0, 3).map((station) => (
-            <li class="historie__jahr">
-              <p class="historie__zahl zahlen">{station.jahr}</p>
-              <p class="historie__text mikro">{station.titel}</p>
-            </li>
-          ))
-        }
-      </ol>
-      <Gaestestimme />
     </div>
   </section>
 
-  {/* --- 7. Der Tisch ----------------------------------------------------- */}
-  <section class="tisch" aria-labelledby="tisch-titel">
-    <div class="huelle tisch__raster">
-      <div>
-        <h2 id="tisch-titel">Mittwoch bis Sonntag. Zweimal am Tag.</h2>
-        <p class="satz tisch__text">
-          Reservierungen nehmen wir am Telefon entgegen. Wenn Sie lieber schreiben, geht das
-          genauso — wir bestätigen Ihren Tisch dann schriftlich.
-        </p>
-        <p class="tisch__wege">
-          <a class="tisch__nummer zahlen" href={`tel:${restaurant.telefon_e164}`} data-ziel>
-            {restaurant.telefon_anzeige}
-          </a>
-          <a href={`mailto:${restaurant.email}`} data-ziel>{restaurant.email}</a>
-        </p>
-      </div>
+  {/* --- V · Los Huéspedes ---------------------------------------------------
+      Vier Stimmen aus dem öffentlichen Google-Profil. Jede trägt den
+      Prüfhinweis nach § 5b Abs. 3 UWG — Gaestestimme.astro rendert ihn
+      zwingend mit, es gibt keinen Schalter dagegen.                        */}
+  <section class="kapitel" aria-labelledby="huespedes-titel">
+    <div class="huelle">
+      <Rubrik ziffer="V" spanisch="Los Huéspedes" id="huespedes-titel">
+        Das sagen unsere Gäste
+      </Rubrik>
 
-      <div class="tisch__ort">
-        <h3>Wo Sie uns finden</h3>
-        <address class="tisch__adresse">
+      <div class="stimmen__raster">
+        {stimmen.stimmen.map((zitat) => <Gaestestimme zitat={zitat} />)}
+      </div>
+    </div>
+  </section>
+
+  {/* --- VI · La Reserva ------------------------------------------------------ */}
+  <section class="kapitel kapitel--schluss" aria-labelledby="reserva-titel">
+    <div class="huelle kapitel__raster">
+      <div class="kapitel__text">
+        <Rubrik ziffer="VI" spanisch="La Reserva" id="reserva-titel">
+          Kontakt &amp; Reservierung
+        </Rubrik>
+
+        <p class="kapitel__vorspann">
+          Mittwoch bis Sonntag, zweimal am Tag. Reservierungen nehmen wir am Telefon entgegen —
+          wenn Sie lieber schreiben, bestätigen wir Ihren Tisch schriftlich.
+        </p>
+
+        <Statusband mitKonfiguration klasse="kapitel__status" />
+
+        <div class="wege">
+          <a class="ruf-block" href={`tel:${restaurant.telefon_e164}`} data-ziel>
+            <span class="ruf-block__wort">Reservierung</span>
+            <span class="ruf-block__nummer zahlen">{restaurant.telefon_anzeige}</span>
+          </a>
+          <a class="weiter" href={`mailto:${restaurant.email}`} data-ziel>{restaurant.email}</a>
+        </div>
+
+        <address class="reserva__adresse">
           {restaurant.adresse.strasse}<br />
           {restaurant.adresse.plz} {restaurant.adresse.ort}
         </address>
-        <p class="mikro leise">{restaurant.parken.hinweis}</p>
-        <p><a href="/kontakt/">Anfahrt und Öffnungszeiten</a></p>
+        <p class="mikro leise reserva__parken">{restaurant.parken.hinweis}</p>
+        <p class="kapitel__weiter">
+          <a class="weiter" href="/kontakt/">Anfahrt und Öffnungszeiten</a>
+        </p>
+      </div>
+
+      <div class="kapitel__bild kapitel__bild--hoch">
+        <Anschnitt ebenen={['tafel-gedeckt', 'haus-abendlicht']} strecke="70vh" />
       </div>
     </div>
   </section>
 </Basis>
 
 <style>
-  /* --- 1. Hero ----------------------------------------------------------
-   * Vollbreite Schrift über vollbreitem Bild — nicht nebeneinander.
-   * Projektregel 2 bleibt gewahrt: Der Text steht auf reinem Kalk
-   * (13,20:1), das Bild beginnt darunter. Es gibt keinen Punkt, an dem
-   * Schrift auf bewegtem Grund liegt.                                     */
-  .hero__kopf {
-    padding-block: var(--raum-8) var(--raum-7);
-  }
-
-  .hero__titel {
+  /* --- Hero ---------------------------------------------------------------- */
+  .hero {
+    position: relative;
+    isolation: isolate;
+    min-block-size: 92svh;
     display: flex;
-    flex-direction: column;
-    margin-block-start: var(--raum-4);
-    font-family: var(--schrift-display);
-    font-weight: 400;
-    line-height: 0.94;
-    /* Optischer Randausgleich: Große Versalien wirken sonst eingerückt. */
-    margin-inline-start: -0.02em;
-    text-wrap: balance;
-  }
-
-  .hero__marke {
-    font-size: var(--t-mega);
-    letter-spacing: -0.02em;
-  }
-
-  .hero__zusatz {
-    /* Deutlich kleiner — sonst wird aus der Marke eine Aufzählung. */
-    font-size: clamp(1.5rem, 0.9rem + 3vw, 4.25rem);
-    letter-spacing: -0.01em;
-    color: var(--text-leise);
-    margin-block-start: 0.12em;
-  }
-
-  .hero__fuss {
-    display: grid;
-    gap: var(--raum-6);
-    margin-block-start: var(--raum-7);
-    padding-block-start: var(--raum-5);
-    border-block-start: 1px solid var(--linie);
-  }
-
-  @media (min-width: 62rem) {
-    .hero__fuss {
-      grid-template-columns: 1fr auto;
-      align-items: end;
-      gap: var(--raum-8);
-    }
-  }
-
-  .hero__lead {
-    max-inline-size: 44ch;
-  }
-
-  .hero__ruf {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--raum-3) var(--raum-4);
-  }
-
-  .hero__nummer {
-    font-family: var(--schrift-display);
-    font-size: var(--t-telefon);
-    line-height: 1;
-    text-decoration: none;
-    border-block-end: 3px solid currentColor;
-  }
-
-  /* --- 2. Heute ---------------------------------------------------------- */
-  .heute {
-    background-color: var(--espresso);
-    color: var(--kalk-auf-dunkel);
-    padding-block: var(--raum-5);
-  }
-
-  .heute__inhalt {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--raum-4);
-  }
-
-  .heute__fest {
-    font-family: var(--schrift-mikro);
-    font-size: var(--t-mikro);
-    letter-spacing: 0.04em;
-  }
-
-  /* Im dunklen Band gelten die aufgehellten Token — Ochsenblut trägt hier nicht. */
-  .heute :global(.status) {
-    border-color: color-mix(in oklab, var(--kalk) 34%, transparent);
-    color: var(--kalk-auf-dunkel);
-  }
-
-  /* --- 3. Zwei Küchen ---------------------------------------------------- */
-  .kuechen {
-    padding-block: var(--raum-9);
-  }
-
-  .kuechen__raster {
-    display: grid;
-    gap: var(--raum-7);
-  }
-
-  @media (min-width: 48rem) {
-    .kuechen__raster {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  .kueche {
-    padding-block-start: var(--raum-5);
-    border-block-start: 2px solid var(--linie);
-  }
-
-  /* Hochformat: Zwei stehende Bilder nebeneinander lesen sich als Paar,
-     zwei liegende als abgeschnittene Panoramen. */
-  .kueche__bild {
-    margin-block-end: var(--raum-5);
-    aspect-ratio: 4 / 5;
     overflow: hidden;
   }
 
-  .kueche__bild :global(.bild),
-  .kueche__bild :global(.bild img),
-  .kueche__bild :global(.platzhalter) {
+  .hero__bild,
+  .hero__grade,
+  .hero__vignette,
+  .hero__pool,
+  .hero__sockel {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero__bild :global(.bild),
+  .hero__bild :global(.bild img),
+  .hero__bild :global(.platzhalter) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: 55% 42%;
+  }
+
+  /* Warme Gradierung — dämpft das helle Tellerweiß zu Glut, damit die Marke
+     schon im ersten Bild trägt. */
+  .hero__grade {
+    mix-blend-mode: multiply;
+    background: linear-gradient(155deg, #efc084 0%, #b06a38 46%, #47240e 100%);
+  }
+
+  .hero__vignette {
+    background: radial-gradient(
+      ellipse 96% 86% at 62% 34%,
+      transparent 34%,
+      color-mix(in srgb, var(--grund) 58%, transparent) 76%,
+      color-mix(in srgb, var(--grund) 92%, transparent) 100%
+    );
+  }
+
+  /* Dunkler Glutteich oben links — trägt die goldene Kickerzeile. */
+  .hero__pool {
+    background: radial-gradient(
+      ellipse 58% 50% at 10% 8%,
+      color-mix(in srgb, var(--grund) 90%, transparent) 0%,
+      color-mix(in srgb, var(--grund) 60%, transparent) 40%,
+      transparent 72%
+    );
+  }
+
+  /*
+   * Der Sockel ist die Bedingung dafür, dass die Headline zulässig ist:
+   * Bis 34 % Höhe steht die Fläche auf reinem --grund, ohne jede
+   * Bildinformation. Genau dort sitzt der Text. Ein Playwright-Test misst
+   * die effektive Hintergrundfarbe hinter jedem Textknoten.
+   */
+  .hero__sockel {
+    background: linear-gradient(
+      0deg,
+      var(--grund) 0%,
+      var(--grund) var(--sockel-voll, 52%),
+      color-mix(in srgb, var(--grund) 62%, transparent) calc(var(--sockel-voll, 52%) + 12%),
+      color-mix(in srgb, var(--grund) 22%, transparent) calc(var(--sockel-voll, 52%) + 24%),
+      transparent calc(var(--sockel-voll, 52%) + 34%)
+    );
+  }
+
+  /* Auf schmalen Schirmen braucht der Textblock mehr Höhe — die Headline
+     bricht dort auf mehr Zeilen um. Der volle Bereich wächst entsprechend
+     mit, sonst stünde die erste Zeile wieder auf Bildinhalt. */
+  @media (max-width: 47.99rem) {
+    .hero__sockel {
+      --sockel-voll: 66%;
+    }
+  }
+
+  .hero__inhalt {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    inline-size: min(100% - 2 * var(--rahmen), var(--breite-max));
+    margin-inline: auto;
+    padding-block: var(--raum-7) var(--raum-8);
+  }
+
+  .hero__kicker {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .hero__unten {
+    margin-block-start: auto;
+    padding-block-start: var(--raum-8);
+  }
+
+  .hero__titel {
+    font-size: var(--t-mega);
+    /* Keine Breitenbegrenzung: Die Umbrüche stehen als <br> im Markup, die
+       Zeilen sollen genau dort brechen und nirgendwo sonst. */
+  }
+
+  .hero__gold {
+    color: var(--gold);
+  }
+
+  .hero__lead {
+    margin-block-start: var(--raum-6);
+    max-inline-size: 46ch;
+    font-size: var(--t-lead);
+    line-height: 1.7;
+  }
+
+  .wege {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--raum-4) var(--raum-7);
+    margin-block-start: var(--raum-7);
+  }
+
+  /* --- Reservierungsblock -------------------------------------------------- */
+  .ruf-block {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    min-block-size: var(--ziel-min);
+    padding: var(--raum-3) var(--raum-6);
+    border: 1px solid var(--gold);
+    text-decoration: none;
+    transition:
+      background-color var(--dauer-mittel) var(--ease),
+      color var(--dauer-mittel) var(--ease);
+  }
+
+  .ruf-block__wort {
+    display: block;
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+
+  .ruf-block__nummer {
+    display: block;
+    font-family: var(--schrift-display);
+    font-size: 1.35rem;
+    line-height: 1.15;
+    color: var(--creme);
+  }
+
+  /* Gefüllter Zustand: Grund auf Gold = 7,85:1. */
+  .ruf-block:hover,
+  .ruf-block:focus-visible {
+    background-color: var(--gold);
+  }
+
+  .ruf-block:hover .ruf-block__wort,
+  .ruf-block:hover .ruf-block__nummer,
+  .ruf-block:focus-visible .ruf-block__wort,
+  .ruf-block:focus-visible .ruf-block__nummer {
+    color: var(--grund);
+  }
+
+  .weiter {
+    font-style: italic;
+    font-size: var(--t-lead);
+  }
+
+  /* --- Positionierung ------------------------------------------------------ */
+  .haltung {
+    padding-block: var(--raum-9);
+    border-block-end: 1px solid var(--linie);
+  }
+
+  .haltung__satz {
+    font-size: clamp(1.4rem, 0.9rem + 2.2vw, 2.4rem);
+    line-height: 1.4;
+    max-inline-size: 34ch;
+  }
+
+  /* --- Kapitel ------------------------------------------------------------- */
+  .kapitel {
+    padding-block: var(--raum-9);
+  }
+
+  .kapitel--schluss {
+    border-block-start: 1px solid var(--linie);
+  }
+
+  .kapitel__raster {
+    display: grid;
+    gap: var(--raum-8);
+  }
+
+  /* Rasterzellen haben von sich aus `min-width: auto` und schrumpfen damit
+     nicht unter ihren Mindestinhalt. Eine einzige lange Gerichtszeile hat so
+     am 29.07.2026 die ganze Seite auf 360px aufgezogen — bei 320px gemessen
+     ist das ein Reflow-Verstoß (1.4.10). Deshalb überall ausdrücklich 0. */
+  .kapitel__raster > *,
+  .filosofia__raster > * {
+    min-inline-size: 0;
+  }
+
+  @media (min-width: 62rem) {
+    .kapitel__raster {
+      grid-template-columns: 1fr 0.62fr;
+      align-items: center;
+    }
+
+    .kapitel__raster--gedreht {
+      grid-template-columns: 0.62fr 1fr;
+    }
+  }
+
+  .kapitel__vorspann {
+    margin-block-start: var(--raum-6);
+    max-inline-size: 46ch;
+    line-height: 1.7;
+  }
+
+  .kapitel__weiter {
+    margin-block-start: var(--raum-6);
+  }
+
+  .kapitel__status {
+    margin-block-start: var(--raum-6);
+  }
+
+  .kapitel__bild {
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+  }
+
+  .kapitel__bild--hoch {
+    aspect-ratio: 3 / 4;
+  }
+
+  .kapitel__bild :global(.bild),
+  .kapitel__bild :global(.bild img),
+  .kapitel__bild :global(.platzhalter) {
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
   }
 
-  .kueche__titel {
+  .kapitel__bild :global(.anschnitt) {
+    padding: 0;
+    block-size: 100%;
+  }
+
+  .kapitel__bild :global(.anschnitt__rahmen) {
+    block-size: 100%;
+    min-block-size: 0;
+  }
+
+  /* --- Preise -------------------------------------------------------------- */
+  .preise {
+    margin-block-start: var(--raum-7);
+    display: grid;
+    gap: var(--raum-4);
+    max-inline-size: 38rem;
+  }
+
+  .preise__zeile {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--raum-3);
+    padding-block-end: var(--raum-3);
+    border-block-end: 1px solid var(--linie);
+  }
+
+  .preise__zeile dt {
     font-family: var(--schrift-display);
-    font-size: var(--t-h2);
-    font-weight: 400;
+    font-size: var(--t-h3);
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
   }
 
-  .kueche__text {
-    margin-block-start: var(--raum-4);
-    max-inline-size: 42ch;
-  }
-
-  .kueche__link {
-    display: inline-block;
-    margin-block-start: var(--raum-4);
+  .preise__zeile dd {
+    margin: 0;
     font-family: var(--schrift-mikro);
     font-size: var(--t-mikro);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  /* --- 5. Auszug --------------------------------------------------------- */
-  .auszug {
-    padding-block: var(--raum-9);
-  }
-
-  .auszug__inhalt {
-    max-inline-size: 52rem;
-  }
-
-  .auszug__notiz {
-    margin-block-start: var(--raum-3);
+    color: var(--gold);
   }
 
   .auszug__liste {
     margin-block-start: var(--raum-6);
   }
 
-  .auszug__weiter {
-    margin-block-start: var(--raum-6);
+  /* --- IV Filosofía --------------------------------------------------------- */
+  .filosofia__raster {
+    display: grid;
+    gap: var(--raum-8);
+    margin-block-start: var(--raum-2);
   }
 
-  /* --- 6. Historie ------------------------------------------------------- */
-  .historie {
-    padding-block: var(--raum-9);
-    border-block-start: 1px solid var(--linie);
-  }
-
-  .historie__bild {
-    /* Flaches Band: Das Schild sitzt in der oberen Bildhälfte, ein hohes
-       Format zeigte vor allem Sträucher. */
-    aspect-ratio: 21 / 9;
-    overflow: hidden;
-    margin-block-end: var(--raum-8);
-  }
-
-  .historie__bild :global(.bild),
-  .historie__bild :global(.bild img),
-  .historie__bild :global(.platzhalter) {
-    inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
-    object-position: center 38%;
+  @media (min-width: 62rem) {
+    .filosofia__raster {
+      grid-template-columns: 1fr 0.8fr;
+      align-items: start;
+    }
   }
 
   .historie__jahre {
     display: flex;
     flex-wrap: wrap;
     gap: var(--raum-6) var(--raum-8);
+    margin-block-start: var(--raum-7);
   }
 
   .historie__zahl {
     font-family: var(--schrift-display);
-    /* Weit über 24px — Voraussetzung dafür, dass Messing hier Schriftfarbe sein darf. */
-    font-size: clamp(3rem, 2rem + 5vw, 5.5rem);
+    font-size: clamp(2.5rem, 1.6rem + 4vw, 4.5rem);
     line-height: 1;
-    color: var(--akzent-gross);
+    color: var(--gold);
   }
 
-  .historie__text {
-    color: var(--text-leise);
-  }
-
-  /* --- 7. Der Tisch ------------------------------------------------------ */
-  .tisch {
-    padding-block: var(--raum-9);
-    border-block-start: 1px solid var(--linie);
-  }
-
-  .tisch__raster {
+  /* --- V Huéspedes ---------------------------------------------------------- */
+  .stimmen__raster {
     display: grid;
     gap: var(--raum-7);
+    margin-block-start: var(--raum-8);
   }
 
-  @media (min-width: 62rem) {
-    .tisch__raster {
-      grid-template-columns: 3fr 2fr;
-      gap: var(--raum-8);
+  @media (min-width: 48rem) {
+    .stimmen__raster {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  .tisch__text {
-    margin-block-start: var(--raum-4);
-  }
-
-  .tisch__wege {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: var(--raum-3) var(--raum-6);
-    margin-block-start: var(--raum-6);
-  }
-
-  .tisch__nummer {
-    font-family: var(--schrift-display);
-    font-size: var(--t-telefon);
-    line-height: 1;
-    text-decoration: none;
-    border-block-end: 3px solid currentColor;
-  }
-
-  .tisch__adresse {
+  /* --- VI Reserva ----------------------------------------------------------- */
+  .reserva__adresse {
+    margin-block-start: var(--raum-7);
     font-style: normal;
-    margin-block: var(--raum-4);
+    line-height: 1.6;
   }
 
-  .tisch__ort p {
+  .reserva__parken {
     margin-block-start: var(--raum-3);
   }
 </style>

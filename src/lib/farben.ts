@@ -5,31 +5,38 @@
  * tokens.css muss dieselben Hex-Werte tragen; das Skript vergleicht beide und
  * bricht bei Abweichung ab. Damit kann niemand eine Farbe im CSS ändern und
  * den Kommentar daneben stehen lassen.
+ *
+ * Stand 29.07.2026: Die Seite ist durchgehend dunkel. Vorher lief sie hell
+ * („Zwei Temperaturen“) mit genau einem dunklen Kapitel. Der Wechsel kommt
+ * aus der SUPERBRAND-Vorschau; die Palette ist von dort übernommen und hier
+ * nachgerechnet. Sie trägt mit großem Abstand — Creme auf Grund liegt bei
+ * 14,43:1, Gold bei 7,85:1.
  */
 
 import { type Verwendung } from './kontrast.ts'
 
 export const PALETTE = {
-  kalk: '#F4EFE6',
-  leinen: '#E3D8C4',
-  espresso: '#2B2521',
-  'espresso-70': '#5A5049',
+  /** Grundfläche der gesamten Website. */
+  grund: '#14110D',
+  /** Fließtext und Überschriften. */
+  creme: '#ECE0CC',
   /**
-   * Das echte Markenrot des Hauses, nicht erfunden: am 28.07.2026 aus
-   * Logo-red.png, Schriftzug-red.png und SchriftzugNEU-red.png ausgelesen —
-   * drei unabhängige Markendateien, identischer Wert. Ein tiefes Burgunder,
-   * kein Signalrot.
+   * Sekundärtext als eigener Hexwert, nicht als Deckkraft.
    *
-   * Der Vorgängerwert #B3372B war eine Erfindung aus der Entwurfsphase und
-   * erreichte auf Kalk nur 5,24:1. Die Hausfarbe ist mit 12,37:1 deutlich
-   * besser — sie trägt sogar Fließtext.
+   * Die Vorschau setzt Sekundärtext mit `text-[#ece0cc]/50` — das ergibt
+   * 4,37:1 und verfehlt 4,5 für Fließtextgröße. Ein fester Ton macht den
+   * Wert nachrechenbar, statt ihn von einer Alpha-Angabe abhängig zu machen,
+   * die niemand prüft.
    */
-  ochsenblut: '#551213',
-  messing: '#8F7400',
-  ember: '#C1440E',
-  'kalk-auf-dunkel': '#F4EFE6',
-  'ember-hell': '#E9A178',
-  'messing-hell': '#C9A227',
+  'creme-leise': '#A09889',
+  /** Akzent: Links, Rubriken, Ziffern, Haarlinien. */
+  gold: '#C9A24B',
+  /** Vollfläche für Mobilmenü und gefüllte Schaltflächen. Nie als Linie. */
+  bordeaux: '#7B2233',
+  /** Text auf Bordeaux. */
+  elfenbein: '#FAF6EF',
+  /** Ausschließlich Dekor: Glutsaum, Shader-Partikel. Nie Text. */
+  glut: '#C1440E',
 } as const
 
 export type Farbname = keyof typeof PALETTE
@@ -49,114 +56,88 @@ export interface Paarung {
 }
 
 export const PAARUNGEN: readonly Paarung[] = [
-  /* --- Helle Flächen ----------------------------------------------------- */
+  /* --- Auf der dunklen Grundfläche --------------------------------------- */
   {
-    vordergrund: 'espresso',
-    hintergrund: 'kalk',
+    vordergrund: 'creme',
+    hintergrund: 'grund',
     verwendung: 'fliesstext',
-    einsatz: 'Fließtext und Überschriften auf heller Grundfläche',
+    einsatz: 'Fließtext und Überschriften auf der Grundfläche',
   },
   {
-    vordergrund: 'espresso-70',
-    hintergrund: 'kalk',
+    vordergrund: 'creme-leise',
+    hintergrund: 'grund',
     verwendung: 'fliesstext',
-    einsatz: 'Sekundärtext, Eyebrow, Bildunterschriften',
+    einsatz: 'Sekundärtext, Bildunterschriften, Öffnungszeiten in der Kopfzeile',
   },
   {
-    vordergrund: 'ochsenblut',
-    hintergrund: 'kalk',
+    vordergrund: 'gold',
+    hintergrund: 'grund',
     verwendung: 'fliesstext',
-    einsatz: 'Links, aktive Navigation und Markenschriftzug auf heller Fläche',
+    einsatz: 'Links, spanische Rubriken, römische Ziffern, Preise',
   },
   {
-    vordergrund: 'ochsenblut',
-    hintergrund: 'leinen',
+    vordergrund: 'grund',
+    hintergrund: 'gold',
     verwendung: 'fliesstext',
-    einsatz: 'Markenrot auf abgesetzter Fläche — seit dem echten Wert zulässig',
-  },
-  {
-    vordergrund: 'kalk',
-    hintergrund: 'ochsenblut',
-    verwendung: 'fliesstext',
-    einsatz: 'Schrift auf dem Telefon-Button und der Anrufleiste',
-  },
-  {
-    vordergrund: 'messing',
-    hintergrund: 'kalk',
-    verwendung: 'grossschrift',
-    einsatz: 'Jahreszahlen, Linien, Rahmen — nie Fließtext',
-  },
-  {
-    vordergrund: 'ember',
-    hintergrund: 'kalk',
-    verwendung: 'dekor',
-    einsatz: 'Glutsaum an der Schnittkante — nie Text, nie Bedienelement',
+    einsatz: 'Schrift auf der gefüllten Schaltfläche im Hover-Zustand',
   },
 
-  /* --- Dunkles Kapitel und Fußzeile -------------------------------------- */
+  /* --- Bordeaux als Vollfläche ------------------------------------------- */
   {
-    vordergrund: 'kalk-auf-dunkel',
-    hintergrund: 'espresso',
+    vordergrund: 'elfenbein',
+    hintergrund: 'bordeaux',
     verwendung: 'fliesstext',
-    einsatz: 'Fließtext im Glut-Kapitel und in der Fußzeile',
+    einsatz: 'Mobilmenü — Navigationseinträge auf voller Bordeaux-Fläche',
   },
   {
-    vordergrund: 'ember-hell',
-    hintergrund: 'espresso',
+    vordergrund: 'creme',
+    hintergrund: 'bordeaux',
     verwendung: 'fliesstext',
-    einsatz: 'Links auf dunkler Fläche',
-  },
-  {
-    vordergrund: 'messing-hell',
-    hintergrund: 'espresso',
-    verwendung: 'fliesstext',
-    einsatz: 'Rubriken und Akzente auf dunkler Fläche',
+    einsatz: 'Fließtext auf Bordeaux-Flächen',
   },
 
   /* --- Fokusring: muss auf BEIDEN Flächen tragen ------------------------- */
   {
-    vordergrund: 'kalk',
-    hintergrund: 'espresso',
+    vordergrund: 'elfenbein',
+    hintergrund: 'grund',
     verwendung: 'ui',
-    einsatz: 'Innerer Fokusring gegen dunklen Untergrund',
+    einsatz: 'Innerer Fokusring gegen die dunkle Grundfläche',
   },
   {
-    vordergrund: 'espresso',
-    hintergrund: 'kalk',
+    vordergrund: 'elfenbein',
+    hintergrund: 'bordeaux',
     verwendung: 'ui',
-    einsatz: 'Äußerer Fokusring gegen helle Fläche',
+    einsatz: 'Innerer Fokusring gegen Bordeaux',
+  },
+  {
+    vordergrund: 'grund',
+    hintergrund: 'elfenbein',
+    verwendung: 'ui',
+    einsatz: 'Äußerer Fokusring gegen helle Flächen und Bilder',
   },
 
   /* --- Ausdrücklich verbotene Kombinationen ------------------------------
    * Diese stehen hier, damit der Test beweist, dass das Verbot berechtigt
    * ist. Wer sie doch benutzen will, sieht sofort die Zahl dahinter.       */
   {
-    vordergrund: 'ochsenblut',
-    hintergrund: 'espresso',
+    vordergrund: 'gold',
+    hintergrund: 'bordeaux',
     verwendung: 'fliesstext',
-    einsatz: 'VERBOTEN — Markenrot trägt auf dunkler Fläche nicht (1,07:1)',
+    einsatz: 'VERBOTEN als Fließtext — 4,13:1. Auf Bordeaux trägt nur Elfenbein oder Creme',
     verboten: true,
   },
-  /*
-   * Früher stand hier zusätzlich „ochsenblut auf leinen“ als verboten, mit
-   * der Begründung, es verfehle 4,5:1 knapp (4,26:1). Das galt für den
-   * erfundenen Wert #B3372B. Das echte Markenrot erreicht auf Leinen
-   * 10,04:1. Das Verbot ist damit gegenstandslos und gestrichen — ein
-   * unbegründetes Verbot wird beim nächsten Aufräumen ohnehin ignoriert und
-   * beschädigt die Glaubwürdigkeit der übrigen.
-   */
   {
-    vordergrund: 'ember',
-    hintergrund: 'espresso',
+    vordergrund: 'bordeaux',
+    hintergrund: 'grund',
     verwendung: 'ui',
-    einsatz: 'VERBOTEN als Bedienelement auf dunkler Fläche',
+    einsatz: 'VERBOTEN als Linie oder Rand — 1,90:1. Bordeaux ist Fläche, nie Kontur',
     verboten: true,
   },
   {
-    vordergrund: 'messing',
-    hintergrund: 'kalk',
+    vordergrund: 'glut',
+    hintergrund: 'grund',
     verwendung: 'fliesstext',
-    einsatz: 'VERBOTEN als Fließtext — nur Großschrift, Linien, UI',
+    einsatz: 'VERBOTEN als Text — 3,68:1. Ausschließlich Glutsaum und Shader',
     verboten: true,
   },
 ]

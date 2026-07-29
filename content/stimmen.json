@@ -1,0 +1,17 @@
+{
+  "//": "Gästestimmen aus dem öffentlichen Google-Unternehmensprofil. Wortlaut UNVERÄNDERT übernehmen — Kürzen oder Glätten wäre eine Bearbeitung fremder Äußerungen und macht aus dem Zitat eine eigene Werbeaussage. Jede Stimme wird über Gaestestimme.astro ausgegeben; das Bauteil hängt den Prüfhinweis nach § 5b Abs. 3 UWG zwingend an und lässt sich nicht ohne ihn verwenden.",
+
+  "//pflicht": "§ 5b Abs. 3 UWG verlangt die Angabe, OB und WIE sichergestellt wird, dass Bewertungen von echten Kunden stammen. Der Wortlaut dieser Angabe steht in content/restaurant.json unter 'bewertungen_pruefhinweis'. Wer hier Stimmen ergänzt, muss nichts weiter tun — der Hinweis kommt automatisch mit.",
+
+  "//kein_durchschnitt": "Bewusst KEINE Gesamtnote, keine Sternzahl, kein 'ausgezeichnet mit 4,8'. Ein selbst ausgespielter Durchschnitt erzeugt bei Google keine Sterne und verschärft nur die Prüfpflicht. Siehe auch: kein aggregateRating im JSON-LD.",
+
+  "erhoben_am": "2026-07-29",
+  "quelle": "Google-Unternehmensprofil Meson el Toro, Waldbröl",
+
+  "stimmen": [
+    "Sehr leckeres Essen. Super Fleischgerichte. Eine große Auswahl an Weinen. Sehr freundliche Bedienung und guter Service.",
+    "Perfekte Bedienung, gemütliches Ambiente, sehr gutes Essen. Hier kann man sich rundum wohlfühlen.",
+    "Top Service, sehr leckere Gerichte. Wir kommen gerne wieder.",
+    "Super, super Essen. Total lecker. Hervorragender Koch. Überaus nette Bedienung. Sehr sauberes, feines Lokal. Außenbereich auch schön gemacht."
+  ]
+}

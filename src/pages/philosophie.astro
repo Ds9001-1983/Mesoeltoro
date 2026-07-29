@@ -6,13 +6,12 @@
  * „reich an Vitamin E und Omega-3-Fettsäuren“ und „geringem
  * Cholesterinanteil“ — beides sind nährwert- und gesundheitsbezogene Angaben
  * nach VO (EG) 1924/2006, die für Rindfleisch nicht zulässig sind.
- * Sie sind ersatzlos gestrichen und stehen auf der Sperrliste in
- * content/claims.json; scripts/pruefe-claims.mjs bricht den Build ab, falls
- * sie je zurückkehren.
- *
- * Was bleibt, sind überprüfbare Tatsachen: seit wann es das Haus gibt, wie
- * gekocht wird, wie viele Menschen hier arbeiten. Das trägt weiter als jede
- * Nährwertaussage.
+ * Sie stehen hier nicht mehr. Die Sperrliste in content/claims.json ist seit
+ * dem 29.07.2026 auf Entscheidung des Auftraggebers leer — der Wächter läuft
+ * weiter, hat aber nichts mehr zu prüfen. Der Text bleibt trotzdem so, wie er
+ * ist: Was hier steht, sind überprüfbare Tatsachen — seit wann es das Haus
+ * gibt, wie gekocht wird, wie viele Menschen hier arbeiten. Das trägt weiter
+ * als jede Nährwertaussage, und es braucht keinen Beleg.
  */
 import Bild from '../components/Bild.astro'
 import Zeitstrahl from '../components/Zeitstrahl.astro'
@@ -101,6 +100,14 @@ import { restaurant } from '../lib/daten.ts'
     display: grid;
     gap: var(--raum-6);
     padding-block: var(--raum-8);
+  }
+
+  /* Rasterzellen haben von sich aus `min-width: auto` und schrumpfen damit
+     nicht unter ihren Mindestinhalt. Seit die Überschriften in Archivo 900
+     als Versalien laufen, reicht ein langes Kompositum, um die ganze Seite
+     waagerecht zu ziehen (1.4.10). Deshalb ausdrücklich 0. */
+  .aufmacher > * {
+    min-inline-size: 0;
   }
 
   @media (min-width: 62rem) {

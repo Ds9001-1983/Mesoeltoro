@@ -1,0 +1,143 @@
+---
+/**
+ * Rubrikkopf: römische Ziffer, spanische Rubrik, deutsche Überschrift.
+ *
+ * Der Griff, der die Seite ordnet. Die spanische Zeile ist kein Zierrat,
+ * sondern die Herkunftssprache des Hauses — und weil sie über der deutschen
+ * Überschrift steht, verstehen auch Gäste ohne Spanisch sofort, worum es geht.
+ *
+ * Barrierefreiheit:
+ *
+ *  · Ziffer und spanische Rubrik sind KEINE Überschrift. Sie stehen in
+ *    <p>-Elementen daneben, damit die Überschriftenliste eines Screenreaders
+ *    sauber bleibt — dort gehört „Argentinische Steaks“ hin, nicht
+ *    „I La Parrilla — El Corazón Argentinische Steaks“.
+ *  · Die spanische Zeile bekommt `lang="es"`. Ohne das liest eine deutsche
+ *    Stimme „La Parrilla“ als „La Parrilla“ mit deutschem Lautwert (3.1.2).
+ *  · Die Ziffer ist zusätzlich `aria-hidden`: Sie ist eine Gliederungshilfe
+ *    fürs Auge. Vorgelesen („römisch eins“) trägt sie nichts bei, was die
+ *    Überschrift nicht schon sagt.
+ *  · Die goldene Haarlinie darüber zeichnet sich beim Scrollen — reines
+ *    Dekor, ohne Zustandsbedeutung.
+ */
+
+interface Props {
+  /** Römische Ziffer, etwa „I“. */
+  readonly ziffer: string
+  /** Spanische Rubrik, etwa „La Parrilla — El Corazón“. */
+  readonly spanisch: string
+  /** Die Kennung, unter der die Sektion per aria-labelledby verweist. */
+  readonly id: string
+  readonly klasse?: string
+}
+
+const { ziffer, spanisch, id, klasse } = Astro.props
+---
+
+<div class:list={['rubrik', klasse]}>
+  <span class="rubrik__linie" aria-hidden="true" data-dekor></span>
+
+  <p class="rubrik__kopf">
+    <span class="rubrik__ziffer" aria-hidden="true">{ziffer}</span>
+    <span class="rubrik__spanisch" lang="es">{spanisch}</span>
+  </p>
+
+  <h2 class="rubrik__titel" id={id}>
+    <slot />
+  </h2>
+</div>
+
+<style>
+  .rubrik {
+    padding-block-start: var(--raum-2);
+  }
+
+  .rubrik__linie {
+    display: block;
+    block-size: 1px;
+    inline-size: 100%;
+    background-color: var(--linie);
+    transform-origin: left center;
+  }
+
+  .rubrik__kopf {
+    display: flex;
+    align-items: baseline;
+    gap: var(--raum-5);
+    margin-block-start: var(--raum-5);
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    /* Gold auf Grund = 7,85:1 — auch in dieser Größe unbedenklich. */
+    color: var(--gold);
+  }
+
+  .rubrik__ziffer {
+    flex: none;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rubrik__titel {
+    margin-block-start: var(--raum-4);
+    font-size: clamp(1.9rem, 1.1rem + 3.4vw, 4rem);
+    max-inline-size: 20ch;
+  }
+</style>
+
+<style is:global>
+  /*
+   * Die Haarlinie zeichnet sich von links, die Überschrift wächst von unten
+   * ins Bild — beides scroll-getrieben, beides rein dekorativ.
+   *
+   * Nur Langformen: `animation` zusammen mit `animation-timeline` wird von
+   * den Minifiern zusammengefaltet und damit ungültig. Steht auf der
+   * Verbotsliste in CLAUDE.md.
+   */
+  @supports (animation-timeline: view()) {
+    :root[data-motion='full'] .rubrik__linie {
+      animation-name: linie-zeichnen;
+      animation-duration: 1s;
+      animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range-start: entry 10%;
+      animation-range-end: entry 70%;
+    }
+
+    :root[data-motion='full'] .rubrik__titel {
+      animation-name: titel-aufziehen;
+      animation-duration: 1s;
+      animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
+      animation-fill-mode: both;
+      animation-timeline: view();
+      animation-range-start: entry 15%;
+      animation-range-end: entry 80%;
+    }
+  }
+
+  @keyframes linie-zeichnen {
+    from {
+      transform: scaleX(0);
+    }
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  /*
+   * clip-path statt opacity: Die Überschrift ist damit im Ausgangszustand
+   * beschnitten, aber vorhanden — sie steht im Textbaum, ist auffindbar und
+   * bleibt bei abgeschalteter Bewegung vollständig sichtbar. Ein Reveal über
+   * `opacity: 0` würde Inhalt dauerhaft verschwinden lassen, sobald die
+   * Animation nicht läuft.
+   */
+  @keyframes titel-aufziehen {
+    from {
+      clip-path: inset(100% 0 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+</style>

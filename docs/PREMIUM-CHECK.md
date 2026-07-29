@@ -1,6 +1,6 @@
 # Premium-Check
 
-Abgleich gegen den Skill `premium-10k-web` (V1.1), Stand **28.07.2026**.
+Abgleich gegen den Skill `premium-10k-web` (V1.1), Stand **29.07.2026**.
 
 Der Skill verlangt: *„Alle Punkte müssen ✓ sein, sonst kein Launch."*
 Wo das Projekt abweicht, steht die Begründung daneben — nicht als Ausrede,
@@ -22,7 +22,7 @@ Nachgeholt am 28.07.2026:
 | Phase | Ergebnis |
 |---|---|
 | 1 · Design-Brief | 9 Antworten, im Plan dokumentiert |
-| 2 · Moodboard | drei Richtungen („Carta" dunkel, „Zwei Temperaturen", „Brasa" material-first), Entscheidung: **B+ „Zwei Temperaturen"** |
+| 2 · Moodboard | drei Richtungen („Carta" dunkel, „Zwei Temperaturen", „Brasa" material-first). Erste Entscheidung 28.07.: „Zwei Temperaturen". **Am 29.07.2026 korrigiert auf „Carta"** — der Auftraggeber hat an der gebauten hellen Seite gesehen, dass die dunkle stärker ist. Siehe ADR 0009 |
 | 3 · Komponenten-Raster | 7 Sektionen der Startseite + Grundfläche |
 | 4 · Komposition | umgesetzt |
 | 5 · Polish | umgesetzt |
@@ -33,30 +33,46 @@ Nachgeholt am 28.07.2026:
 
 | Punkt | Stand | Anmerkung |
 |---|---|---|
-| Custom-Fonts, kein Inter/Roboto/System | ✓ | Instrument Serif · Newsreader · Instrument Sans, alle OFL, selbst gehostet, 119,4 KB gesamt |
-| Primärfarbe < 10 % Fläche | ✓ | Markenrot trägt Links, Telefon-Button und Signet |
+| Custom-Fonts, kein Inter/Roboto/System | ✓ | **Archivo 900** · Newsreader (regulär, fett, kursiv) · **Geist Mono**, alle OFL, selbst gehostet, 158,1 KB gesamt / 94,2 KB latin |
+| Primärfarbe < 10 % Fläche | ✓ | Gold trägt Rubriken, Links, Preise und Signet |
 | Kein Anti-Pattern aus der Liste | ✓ mit einer bewussten Ausnahme | **#13 „Siezen"** — die Website siezt. Der SUPERBRAND-Duz-Standard gilt für die Agenturmarke, nicht für Kundenmarken. Vom Auftraggeber entschieden. |
 | **#14 statische Hero-Images** | ✓ vermieden | Der Hero ist eine scroll-gesteuerte Bildfolge, kein Standbild |
 | **#15 kein WebGL** | ✓ vermieden | siehe unten |
 
-**Nachtrag zur Farbe.** Bis zum 28.07.2026 lief das Projekt auf einem
-erfundenen „Ochsenblut" `#B3372B` (5,24:1 auf Kalk). Das **echte** Markenrot
-wurde aus `Logo-red.png`, `Schriftzug-red.png` und `SchriftzugNEU-red.png`
-ausgelesen — drei unabhängige Markendateien, identischer Wert: **`#551213`**,
-ein tiefes Burgunder mit **12,37:1 auf Kalk (AAA)**. Es ist jetzt gesetzt.
+**Nachtrag zur Farbe.** Die Palette hat zwei Korrekturen hinter sich.
+
+Am 28.07.2026 wurde das **echte** Markenrot aus den Logodateien ausgelesen —
+`#551213` statt des erfundenen `#B3372B`.
+
+Am 29.07.2026 ist die Seite dunkel geworden. Auf `#14110D` steht `#551213` bei
+**1,07:1** und ist damit als Text- und Linienfarbe unbrauchbar. Die Rolle des
+Akzents übernimmt **Gold `#C9A24B` (7,85:1)**, die Hausfarbe überlebt als
+Bordeaux `#7B2233` — aber nur als Vollfläche. Begründung in ADR 0009.
+
+| Paar | Verhältnis | |
+|---|---|---|
+| Creme `#ECE0CC` auf Grund `#14110D` | 14,43:1 | AAA |
+| Gold `#C9A24B` auf Grund | 7,85:1 | AAA |
+| Creme-leise `#A09889` auf Grund | 6,59:1 | AA |
+| Elfenbein `#FAF6EF` auf Bordeaux | 9,20:1 | AAA |
 
 ---
 
-## Signature Moves — 6 von geforderten 5–7
+## Signature Moves — 7 von geforderten 5–7
 
 | # | Move | Ort | Technik |
 |---|---|---|---|
-| 1 | **Der Anschnitt** | Startseite, Hero | Drei Ebenen, zwei gerissene Masken, scroll-getrieben. Glut → Teller → Tisch |
-| 2 | **Der Temperaturwechsel** | vor dem dunklen Kapitel | `clip-path: inset()` auf `view()`-Zeitachse, textfreier 40-svh-Korridor |
-| 3 | **Die Glut** | dunkles Kapitel | WebGL-Fragment-Shader (OGL ≈ 10 KB gzip) |
-| 4 | **Der Küchenpass** | Startseite, Kontakt | Echter Öffnungsstatus, `Intl.DateTimeFormat` auf `Europe/Berlin` |
-| 5 | **Der Satz der Karte** | Speisekarte | Leader-Linie zeichnet sich zeilenweise, `scaleX()` auf `view()` |
-| 6 | **Das Papier** | global | Gerechnete Faserkachel bei 3,5 % + nativer `@view-transition` |
+| 1 | **Der Anschnitt** | Kapitel VI | Gerissene Masken über mehreren Bildebenen, scroll-getrieben |
+| 2 | **Die Rubrik** | I–VI | Goldene Haarlinie zeichnet sich, Überschrift zieht per `clip-path` auf |
+| 3 | **Die Glut** | Kapitel III | WebGL-Fragment-Shader (OGL ≈ 10 KB gzip) |
+| 4 | **Der Küchenpass** | Kapitel VI, Kontakt | Echter Öffnungsstatus, `Intl.DateTimeFormat` auf `Europe/Berlin` |
+| 5 | **Der Satz der Karte** | Speisekarte, Kapitel II | Leader-Linie zeichnet sich zeilenweise, `scaleX()` auf `view()` |
+| 6 | **Das Laufband** | zwischen Vorspann und I | Begriffsband, CSS-Animation, **mit Pausetaste** |
+| 7 | **Das Papier** | global | Gerechnete Faserkachel bei 3,5 % + nativer `@view-transition` |
+
+Sieben Moves — die Obergrenze des Skills. Der frühere „Temperaturwechsel" ist
+entfallen, weil es seit der dunklen Grundfläche keine Temperatur mehr zu
+wechseln gibt.
 
 | Anforderung | Stand |
 |---|---|
@@ -113,9 +129,10 @@ Videomaterial des Hauses existiert nicht.
 
 Umgesetzt ist stattdessen die vom Skill selbst genannte Gleichwertigkeit
 (Regel 3, SM-02/SM-04): eine **scroll-gesteuerte Bildfolge**. „Der Anschnitt"
-schneidet über zwei Masken drei echte Aufnahmen nacheinander auf —
-Glut → Teller → gedeckter Tisch. Nutzergesteuert, kein Autoplay, kein `<video>`,
-keine Kennzeichnungsfrage, 0 KB JavaScript.
+schneidet echte Aufnahmen nacheinander auf. Dazu kommt seit dem 29.07.2026 der
+Vollbild-Hero: ein stehendes Foto unter vier Verläufen, wie in der Vorschau —
+aber ohne deren Scroll-Skalierung, weil die Schrift darüber liegt.
+Nutzergesteuert, kein Autoplay, kein `<video>`, keine Kennzeichnungsfrage.
 
 Die Skill-Absicht „kein statischer Hero" ist damit erfüllt.
 **Offen als Angebot an den Kunden:** ein halber Drehtag für echtes
@@ -139,7 +156,7 @@ Website ist kein einziges Asset KI-generiert:
 
 - Fotografie: J. Schumacher, echte Aufnahmen des Hauses
 - Signet und Schriftzug: die eigene Marke des Auftraggebers
-- Papierkorn (Move 6): gerechnet, `scripts/korn-erzeugen.mjs`
+- Papierkorn (Move 7): gerechnet, `scripts/korn-erzeugen.mjs`
 - Glut (Move 3): GLSL-Shader, `src/shaders/glut.frag.glsl`
 
 Ein Badge wäre hier eine falsche Aussage.
@@ -150,7 +167,7 @@ Ein Badge wäre hier eine falsche Aussage.
 
 | Punkt | Ziel | Stand |
 |---|---|---|
-| JavaScript auf `/` | ≤ 32 KB gzip | **18,0 KB** |
+| JavaScript auf `/` | ≤ 32 KB gzip | **17,9 KB** |
 | LCP | < 2,5 s | geprüft in `tests/verhalten/dekor.spec.ts` |
 | CLS | < 0,1 | Schriftmetriken angeglichen, alle Bilder mit Maßen |
 | WebGL 60 fps auf Mittelklasse | — | 30-fps-Deckel, `IntersectionObserver`, Notausschalter in `restaurant.json` |
@@ -196,5 +213,10 @@ vor. Umgesetzt ist:
 - **Stier-Logo als Vektordatei.** Das Signet läuft derzeit als
   CSS-Maske aus einem 480 px breiten PNG (12 KB). Das trägt bis 3 rem sauber,
   ein Vektor wäre besser.
+- **Der Hero-Grund ist gemessen, nicht abgeleitet.**
+  `tests/verhalten/hero-grund.spec.ts` schaltet den Text unsichtbar, nimmt den
+  Hero auf und rechnet für jeden Textknoten den schlechtesten Pixel gegen die
+  Textfarbe — bei 320, 768 und 1440 px. Die Gegenprobe ist gelaufen: ohne die
+  Verlaufsebenen fällt der Test auf 1,00:1. Er kann also rot werden.
 - **Kunden-Pflegetest:** eine Preisänderung über github.dev, absichtlicher
   Formatfehler, Lesen der deutschsprachigen Meldung.

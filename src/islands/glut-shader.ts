@@ -99,8 +99,8 @@ function baueAuf(): boolean {
     uniforms: {
       uZeit: { value: 0 },
       uAufloesung: { value: [1, 1] },
-      uGlut: { value: alsRgb('--ember', [0.757, 0.267, 0.055]) },
-      uGrund: { value: alsRgb('--espresso', [0.169, 0.145, 0.129]) },
+      uGlut: { value: alsRgb('--glut', [0.757, 0.267, 0.055]) },
+      uGrund: { value: alsRgb('--grund', [0.078, 0.067, 0.051]) },
     },
   })
 

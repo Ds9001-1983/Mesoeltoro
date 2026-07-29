@@ -2,9 +2,9 @@
 /**
  * Weinfachhandel — Information, kein Shop.
  *
- * Diese Seite bleibt HELL. Das Glut-Motiv wird auf der ganzen Website genau
- * einmal gespielt; ab dem zweiten Mal ist es ein Muster statt einer
- * Dramaturgie.
+ * Seit dem 29.07.2026 ist die gesamte Seite dunkel; die frühere Regel „genau
+ * ein Glut-Kapitel“ ist damit gegenstandslos. Der WebGL-Shader läuft
+ * weiterhin nur an einer Stelle — im Kapitel III der Startseite.
  *
  * Rechtlich entscheidend ist, was hier NICHT steht: kein Preis, kein
  * Jahrgang, keine Rebsorte, kein Alkoholgehalt, keine Flaschengröße, kein
@@ -98,6 +98,14 @@ import { restaurant } from '../lib/daten.ts'
     display: grid;
     gap: var(--raum-6);
     padding-block: var(--raum-8);
+  }
+
+  /* Rasterzellen haben von sich aus `min-width: auto` und schrumpfen damit
+     nicht unter ihren Mindestinhalt. Seit die Überschriften in Archivo 900
+     als Versalien laufen, reicht ein langes Kompositum, um die ganze Seite
+     waagerecht zu ziehen (1.4.10). Deshalb ausdrücklich 0. */
+  .aufmacher > * {
+    min-inline-size: 0;
   }
 
   @media (min-width: 62rem) {

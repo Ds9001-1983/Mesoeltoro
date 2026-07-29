@@ -1,5 +1,13 @@
 # 0007 — Genau ein dunkles Kapitel
 
+> **Überholt am 29.07.2026 durch [ADR 0009](0009-dunkle-gestaltung.md).**
+> Die Seite ist seitdem durchgehend dunkel. Diese Entscheidung bleibt stehen,
+> weil ihre Begründungen geprüft wurden statt gelöscht: Zwei davon halten
+> weiterhin (Wartungsaufwand der Kontrastfläche, das Markenrot trägt auf
+> Dunkel nicht), die dritte ist gegenstandslos geworden. Was von ihr überlebt:
+> **Der WebGL-Shader läuft weiterhin an genau einer Stelle.**
+
+
 **Entschieden:** 28.07.2026 · **Status:** angenommen
 
 ## Entscheidung

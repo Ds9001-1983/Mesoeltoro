@@ -1,0 +1,156 @@
+---
+/**
+ * Laufband mit den Begriffen des Hauses.
+ *
+ * Aus der SUPERBRAND-Vorschau übernommen — dort läuft es über GSAP mit
+ * `repeat: -1`. Genau das ist der Punkt, an dem die Vorschau WCAG 2.2.2
+ * verfehlt: automatisch startende Bewegung, die länger als fünf Sekunden
+ * läuft, braucht einen Mechanismus zum Anhalten AUF DER SEITE.
+ *
+ * Hier läuft es über eine CSS-Animation mit `data-anim="zeit"`. Damit greift
+ * die vorhandene Pausetaste ohne eine Zeile zusätzliches JavaScript: Sie
+ * setzt `data-motion-paused` auf <html>, und tokens.css friert daraufhin
+ * jede zeitgesteuerte Animation ein.
+ *
+ * Weitere Auflagen, die im Markup stehen und nicht nur im Kommentar:
+ *
+ *  · Der Inhalt ist eine echte <ul>. Strg+F findet die Begriffe, ein
+ *    Screenreader liest sie als Liste. Ein Band aus <span> wäre für beides
+ *    unsichtbar.
+ *  · Die Verdopplung für den nahtlosen Umlauf ist `aria-hidden`, sonst
+ *    liest der Screenreader jeden Begriff zweimal.
+ *  · Bei reduzierter Bewegung steht das Band still und zeigt die Begriffe
+ *    als ruhige Reihe — der Inhalt bleibt, nur die Bewegung geht.
+ *  · `lang="es"` auf den spanischen Begriffen (3.1.2).
+ */
+import Pausetaste from './Pausetaste.astro'
+
+interface Props {
+  readonly begriffe: readonly string[]
+  /** Umlaufdauer. Langsamer als 20s wirkt zäh, schneller wird unruhig. */
+  readonly dauer?: string
+}
+
+const { begriffe, dauer = '38s' } = Astro.props
+---
+
+<div class="laufband">
+  <div class="laufband__fenster">
+    <ul class="laufband__reihe" data-anim="zeit" style={`--umlauf: ${dauer}`} lang="es">
+      {begriffe.map((begriff) => <li class="laufband__wort">{begriff}</li>)}
+    </ul>
+
+    {/* Zweiter Durchlauf nur fürs Auge — der nahtlose Anschluss. */}
+    <ul
+      class="laufband__reihe"
+      data-anim="zeit"
+      style={`--umlauf: ${dauer}`}
+      lang="es"
+      aria-hidden="true"
+    >
+      {begriffe.map((begriff) => <li class="laufband__wort">{begriff}</li>)}
+    </ul>
+  </div>
+
+  <Pausetaste klasse="laufband__pause" />
+</div>
+
+<style>
+  .laufband {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--raum-4);
+    padding-inline: var(--rahmen);
+    border-block: 1px solid var(--linie);
+    background-color: var(--grund);
+  }
+
+  .laufband__fenster {
+    display: flex;
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    padding-block: var(--raum-4);
+  }
+
+  .laufband__reihe {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--raum-7);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    padding-inline-end: var(--raum-7);
+    animation-name: laufband-umlauf;
+    animation-duration: var(--umlauf);
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  .laufband__wort {
+    flex: none;
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-mikro);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    /* Gold auf Grund = 7,85:1. */
+    color: var(--gold);
+  }
+
+  /* Trennpunkt zwischen den Begriffen. Dekorativ, deshalb ::after statt
+     eines Zeichens im Text — sonst läge er in der Zwischenablage. */
+  .laufband__wort::after {
+    content: '·';
+    margin-inline-start: var(--raum-7);
+    color: color-mix(in oklab, var(--gold) 55%, transparent);
+  }
+
+  .laufband__pause {
+    flex: none;
+  }
+
+  /* Bei reduzierter Bewegung steht das Band. Die Begriffe bleiben sichtbar
+     und brechen um, statt in einer Zeile abgeschnitten zu werden. */
+  :global(:root[data-motion='reduced']) .laufband__reihe,
+  :global(:root[data-motion='off']) .laufband__reihe {
+    animation: none;
+    flex-wrap: wrap;
+    gap: var(--raum-2) var(--raum-6);
+  }
+
+  :global(:root[data-motion='reduced']) .laufband__reihe[aria-hidden],
+  :global(:root[data-motion='off']) .laufband__reihe[aria-hidden] {
+    display: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .laufband__reihe {
+      animation: none;
+      flex-wrap: wrap;
+      gap: var(--raum-2) var(--raum-6);
+    }
+
+    .laufband__reihe[aria-hidden] {
+      display: none;
+    }
+  }
+
+  @media print {
+    .laufband {
+      display: none;
+    }
+  }
+</style>
+
+<style is:global>
+  @keyframes laufband-umlauf {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-100%);
+    }
+  }
+</style>

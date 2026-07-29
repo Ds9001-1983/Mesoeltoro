@@ -1,22 +1,18 @@
 ---
 /**
- * Signature Moves 2 und 3 — „Der Temperaturwechsel“ und „Die Glut“.
+ * Kapitel III — „Sobre la brasa“. Der einzige WebGL-Effekt des Projekts.
  *
- * Das einzige dunkle Kapitel der gesamten Website.
+ * Bis zum 28.07.2026 war dies das einzige DUNKLE Kapitel einer hellen Seite,
+ * und es trug zwei Moves: den Temperaturwechsel und die Glut. Seit die
+ * gesamte Seite dunkel ist, gibt es keine Temperatur mehr zu wechseln — der
+ * Korridor ist ersatzlos entfallen. Was bleibt, ist die Glut selbst, und die
+ * ist hier stärker als vorher, weil sie nicht mehr gegen eine helle Umgebung
+ * anarbeiten muss.
  *
- * Temperaturwechsel: Die Espresso-Fläche wächst über einen 40svh hohen
- * Korridor von unten hoch. Der Korridor ist PER LAYOUTREGEL TEXTFREI — und
- * das ist der springende Punkt. Eine Farbinterpolation unter laufendem Text
- * erzeugt Zwischenzustände, in denen der Kontrast messbar unter 4,5:1 fällt.
- * Wo kein Text steht, kann auch keiner unlesbar werden. Ein Playwright-Test
- * schlägt fehl, sobald ein Textknoten in den Korridor gerät.
+ * Der Shader ist ein einziger Fragment-Shader (OGL, ~10 KB gzip).
  *
- * Glut: ein einziger Fragment-Shader (OGL, ~10 KB gzip), ausschließlich hier.
- * Über hellem Grund wäre er bei zulässiger Deckkraft ohnehin unsichtbar —
- * volle WebGL-Kosten für nichts.
- *
- * Zu 2.3.1 („Three Flashes“): Der Shader erzeugt NULL Helligkeitsereignisse
- * pro Sekunde statt der erlaubten drei. Die Partikel steigen mit konstanter
+ * Zu 2.3.1 („Three Flashes“): Er erzeugt NULL Helligkeitsereignisse pro
+ * Sekunde statt der erlaubten drei. Die Partikel steigen mit konstanter
  * Geschwindigkeit und ändern ihre Helligkeit nur langsam; die Sättigung ist
  * im Shader hart gedeckelt. Gesättigtes Rot ist die kritischste Farbe
  * überhaupt für Photosensitivität — bei einer Glut-Ästhetik ist das keine
@@ -24,59 +20,32 @@
  * 60-Sekunden-Bildschirmaufnahme in docs/A11Y-KONFORMITAET.md.
  */
 import { restaurant } from '../lib/daten.ts'
-import { KATEGORIEN, preiszeile } from '../lib/karte.ts'
 import Bild from './Bild.astro'
 import Pausetaste from './Pausetaste.astro'
-
-const steaks = KATEGORIEN.find((kategorie) => kategorie.id === 'steaks')
+import Rubrik from './Rubrik.astro'
 ---
 
-{/*
-  Textfreier Übergangskorridor. Hier darf nie Inhalt hinein.
-
-  Zwei Lagen: unten der Verlauf als Rückfall, darüber die Vollfläche, die
-  scroll-getrieben von unten hochwächst. Ohne Unterstützung für
-  scroll-getriebene Animationen bleibt der Verlauf allein stehen — er sieht
-  fertig aus, nicht kaputt.
-*/}
-<div class="korridor" aria-hidden="true" data-korridor data-dekor>
-  <div class="korridor__fuellung"></div>
-</div>
-
-<section class="glut" data-flaeche="glut" aria-labelledby="glut-titel">
+<section class="glut" aria-labelledby="brasa-titel">
   {
     restaurant.glut_shader_aktiv && (
       <>
-        <canvas class="glut__canvas" data-glut-canvas aria-hidden="true" tabindex="-1"></canvas>
-        <script src="../islands/glut-shader.ts"></script>
+        <canvas class="glut__canvas" data-glut-canvas aria-hidden="true" tabindex="-1" />
+        <script src="../islands/glut-shader.ts" />
       </>
     )
   }
 
   <div class="huelle glut__raster">
     <div class="glut__inhalt">
-      <p class="glut__eyebrow">Vom Feuer</p>
-      <h2 id="glut-titel" class="glut__titel">La Morocha. Über offener Glut.</h2>
+      <Rubrik ziffer="III" spanisch="Sobre la brasa" id="brasa-titel">Über offener Glut</Rubrik>
+
       <p class="glut__text">
-        Zwei Schnitte, zwei Größen, kein Beiwerk. Was hier zählt, ist der Punkt, an dem das Fleisch
-        vom Rost kommt.
+        Kein Gas, kein Kontaktgrill. Holzkohle, offene Flamme und ein Koch, der weiß, wann ein
+        Stück heruntergehört. Das ist der ganze Unterschied — und er lässt sich nicht abkürzen.
       </p>
 
-      {
-        steaks && (
-          <dl class="preise">
-            {steaks.gerichte.map((gericht) => (
-              <div class="preise__zeile">
-                <dt>{gericht.name}</dt>
-                <dd class="preis">{preiszeile(gericht)}</dd>
-              </div>
-            ))}
-          </dl>
-        )
-      }
-
-      <p class="glut__weiter">
-        <a href="/speisekarte/#steaks">Alle Gerichte vom Grill</a>
+      <p class="glut__text">
+        Wer bei uns ein Steak bestellt, bekommt es so, wie es bestellt wurde. Rare heißt rare.
       </p>
 
       <Pausetaste klasse="glut__pause" />
@@ -95,34 +64,11 @@ const steaks = KATEGORIEN.find((kategorie) => kategorie.id === 'steaks')
 </section>
 
 <style>
-  /* --- Korridor -----------------------------------------------------------
-     40svh hoch, garantiert textfrei. Die dunkle Fläche wächst hier hoch,
-     bevor der erste Buchstabe erscheint. */
-  .korridor {
-    position: relative;
-    block-size: 40svh;
-    /* In oklab interpolieren, nicht in sRGB. Der direkte Weg von Kalk nach
-       Espresso führt in sRGB durch ein totes Grau — die Fläche sieht dann
-       schmutzig aus statt warm. */
-    background: linear-gradient(in oklab, var(--kalk) 0%, var(--espresso) 100%);
-  }
-
-  .korridor__fuellung {
-    position: absolute;
-    inset: 0;
-    background-color: var(--espresso);
-    /* Ausgangszustand: vollständig weggeschnitten. Sichtbar ist der Verlauf
-       darunter. Erst die Animation lässt die Fläche hochwachsen. */
-    clip-path: inset(100% 0 0 0);
-  }
-
-  /* --- Kapitel ------------------------------------------------------------- */
   .glut {
     position: relative;
     isolation: isolate;
     padding-block: var(--raum-9);
-    /* data-flaeche="glut" setzt die Token; die Fläche selbst kommt aus
-       tokens.css, damit sie nicht doppelt definiert ist. */
+    border-block: 1px solid var(--linie);
   }
 
   .glut__canvas {
@@ -138,6 +84,12 @@ const steaks = KATEGORIEN.find((kategorie) => kategorie.id === 'steaks')
     position: relative;
     display: grid;
     gap: var(--raum-8);
+  }
+
+  /* Siehe index.astro: Rasterzellen brauchen ausdrücklich 0, sonst
+     schrumpfen sie nicht unter ihren Mindestinhalt (1.4.10). */
+  .glut__raster > * {
+    min-inline-size: 0;
   }
 
   @media (min-width: 62rem) {
@@ -164,131 +116,20 @@ const steaks = KATEGORIEN.find((kategorie) => kategorie.id === 'steaks')
     object-fit: cover;
   }
 
-  .glut__eyebrow {
-    font-family: var(--schrift-mikro);
-    font-size: var(--t-eyebrow);
-    font-weight: 600;
-    letter-spacing: var(--sperrung);
-    text-transform: uppercase;
-    /* messing-hell: 6,25:1 auf Espresso. Das normale Messing läge bei 3,36:1
-       und wäre als Kleinschrift ein klarer 1.4.3-Verstoß. */
-    color: var(--akzent-gross);
-  }
-
-  .glut__titel {
-    margin-block-start: var(--raum-4);
-    font-size: var(--t-display);
-    /* Kalk auf Espresso: 13,20:1 */
-    color: var(--text);
-    max-inline-size: 18ch;
-  }
-
   .glut__text {
-    margin-block-start: var(--raum-5);
-    max-inline-size: 46ch;
-    color: var(--text);
-  }
-
-  /* --- Preise -------------------------------------------------------------- */
-  .preise {
-    margin-block-start: var(--raum-7);
-    display: grid;
-    gap: var(--raum-4);
-    max-inline-size: 38rem;
-  }
-
-  .preise__zeile {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: var(--raum-3);
-    padding-block-end: var(--raum-3);
-    border-block-end: 1px solid var(--linie);
-  }
-
-  .preise__zeile dt {
-    font-family: var(--schrift-display);
-    font-size: var(--t-h3);
-  }
-
-  .preise__zeile dd {
-    margin: 0;
-    font-family: var(--schrift-mikro);
-    font-size: var(--t-mikro);
-  }
-
-  .glut__weiter {
     margin-block-start: var(--raum-6);
-  }
-
-  .glut__weiter a {
-    /* ember-hell: 7,08:1 auf Espresso. Ochsenblut läge bei 1,07:1. */
-    color: var(--akzent);
+    max-inline-size: 46ch;
+    line-height: 1.7;
   }
 
   .glut__pause {
-    margin-block-start: var(--raum-6);
+    margin-block-start: var(--raum-7);
   }
 
-  /* Bei reduzierter Bewegung liegt die Fläche sofort dunkel — kein Verlauf,
-     der beim Scrollen aufbaut. */
-  :global(:root[data-motion='reduced']) .korridor,
-  :global(:root[data-motion='off']) .korridor {
-    block-size: var(--raum-8);
-    background: var(--espresso);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .korridor {
-      block-size: var(--raum-8);
-      background: var(--espresso);
-    }
-  }
-
-  /* Auf Papier kostet eine schwarze Vollfläche eine halbe Tonerpatrone. */
+  /* Auf Papier kostet der Canvas nichts, aber er zeichnet auch nichts. */
   @media print {
-    .korridor,
     .glut__canvas {
       display: none;
-    }
-  }
-</style>
-
-<style is:global>
-  /* --- Signature Move 2: „Der Temperaturwechsel“ --------------------------
-   *
-   * Die Espresso-Fläche wächst von unten hoch, während der Korridor ins Bild
-   * fährt. Bei `entry 100%` — also sobald der Korridor vollständig sichtbar
-   * ist — steht sie. Das dunkle Kapitel darunter beginnt damit auf einer
-   * Fläche, die bereits fertig ist; es gibt keinen Zustand, in dem Text auf
-   * halb aufgebautem Grund liegt.
-   *
-   * `view()` ist hier richtig (anders als beim Anschnitt): Der Korridor steht
-   * beim Laden NICHT im Bild, also beginnt die Zeitachse garantiert bei 0.
-   *
-   * Nur Langformen — `animation` zusammen mit `animation-timeline` wird von
-   * den Minifiern zusammengefaltet und damit ungültig. Nachgemessen am
-   * 28.07.2026, steht auf der Verbotsliste in CLAUDE.md.
-   */
-  @supports (animation-timeline: view()) {
-    :root[data-motion='full'] .korridor__fuellung {
-      animation-name: temperatur-steigt;
-      animation-duration: 1s;
-      animation-timing-function: linear;
-      animation-fill-mode: both;
-      animation-timeline: view();
-      animation-range-start: entry 0%;
-      animation-range-end: entry 100%;
-    }
-  }
-
-  @keyframes temperatur-steigt {
-    from {
-      clip-path: inset(100% 0 0 0);
-    }
-    to {
-      clip-path: inset(0 0 0 0);
     }
   }
 </style>

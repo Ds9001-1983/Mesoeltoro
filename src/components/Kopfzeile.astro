@@ -73,7 +73,7 @@ const { aktuellerPfad } = Astro.props
     position: sticky;
     inset-block-start: 0;
     z-index: 100;
-    background-color: var(--kalk);
+    background-color: var(--grund);
     border-block-end: 1px solid var(--linie);
   }
 
@@ -92,7 +92,7 @@ const { aktuellerPfad } = Astro.props
     align-items: center;
     gap: var(--raum-3);
     margin-inline-end: auto;
-    color: var(--espresso);
+    color: var(--creme);
     text-decoration: none;
     line-height: 1.1;
   }
@@ -102,13 +102,13 @@ const { aktuellerPfad } = Astro.props
     flex-direction: column;
   }
 
-  /* Das Signet trägt die Hausfarbe, der Name daneben bleibt Espresso —
-     sonst konkurrieren zwei rote Flächen mit dem Telefon-Button. */
+  /* Das Signet trägt Gold, der Name daneben Creme — sonst konkurrieren
+     zwei goldene Flächen mit dem Telefon-Knopf. */
   .wortmarke__signet {
     flex: none;
     inline-size: clamp(2.25rem, 1.9rem + 1.6vw, 3rem);
     aspect-ratio: 2572 / 1195;
-    background-color: var(--ochsenblut);
+    background-color: var(--gold);
     -webkit-mask-image: url('/marke/signet.png');
     mask-image: url('/marke/signet.png');
     -webkit-mask-repeat: no-repeat;
@@ -137,8 +137,8 @@ const { aktuellerPfad } = Astro.props
     font-size: var(--t-eyebrow);
     letter-spacing: var(--sperrung);
     text-transform: uppercase;
-    /* espresso-70 auf Kalk = 6,85:1 — auch als Kleinschrift sicher. */
-    color: var(--espresso-70);
+    /* creme-leise auf Grund = 6,59:1 — auch als Kleinschrift sicher. */
+    color: var(--creme-leise);
   }
 
   /* --- Navigation --------------------------------------------------------- */
@@ -154,7 +154,7 @@ const { aktuellerPfad } = Astro.props
     display: inline-flex;
     align-items: center;
     min-block-size: var(--ziel-min);
-    color: var(--espresso);
+    color: var(--creme);
     font-family: var(--schrift-mikro);
     font-size: var(--t-mikro);
     letter-spacing: 0.06em;
@@ -172,7 +172,7 @@ const { aktuellerPfad } = Astro.props
     inset-inline: 0;
     inset-block-end: 0.55rem;
     block-size: 2px;
-    background-color: var(--ochsenblut);
+    background-color: var(--gold);
     transform: scaleX(0);
     transform-origin: center;
     transition: transform var(--dauer-mittel) var(--ease);
@@ -185,7 +185,7 @@ const { aktuellerPfad } = Astro.props
   }
 
   .hauptnav__link--aktiv {
-    color: var(--ochsenblut);
+    color: var(--gold);
   }
 
   /* --- Telefon-Button ----------------------------------------------------- */
@@ -196,16 +196,16 @@ const { aktuellerPfad } = Astro.props
     justify-content: center;
     min-block-size: var(--ziel-min);
     padding: var(--raum-2) var(--raum-5);
-    background-color: var(--ochsenblut);
-    /* Kalk auf Ochsenblut = 12,37:1 — AAA, das echte Markenrot ist sehr dunkel. */
-    color: var(--kalk);
+    background-color: var(--gold);
+    /* Grund auf Gold = 7,85:1 — AAA. */
+    color: var(--grund);
     font-family: var(--schrift-mikro);
     text-decoration: none;
     line-height: 1.2;
   }
 
   .ruf:hover {
-    background-color: color-mix(in oklab, var(--ochsenblut) 88%, black);
+    background-color: color-mix(in oklab, var(--gold) 88%, black);
   }
 
   .ruf__wort {

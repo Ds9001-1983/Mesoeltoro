@@ -151,7 +151,7 @@ const unterste = ebenen[ebenen.length - 1] as string
        Nebenwirkung mit Absicht — es rechtfertigt Text NEBEN oder ÜBER statt
        AUF dem Bild und löst das Kontrastproblem gestalterisch. */
     padding: var(--rahmen);
-    background-color: var(--kalk);
+    background-color: var(--grund);
   }
 
   .anschnitt__form {
@@ -170,7 +170,7 @@ const unterste = ebenen[ebenen.length - 1] as string
     block-size: min(76svh, 52vw);
     min-block-size: 20rem;
     overflow: hidden;
-    background-color: color-mix(in oklab, var(--espresso) 8%, var(--kalk));
+    background-color: color-mix(in oklab, var(--creme) 8%, var(--grund));
   }
 
   @media (max-width: 47.99rem) {
@@ -214,7 +214,7 @@ const unterste = ebenen[ebenen.length - 1] as string
        Ort, an dem diese Farbe überhaupt zulässig ist. */
     background: radial-gradient(
       ellipse 60% 100% at 50% 50%,
-      color-mix(in oklab, var(--ember) 85%, transparent),
+      color-mix(in oklab, var(--glut) 85%, transparent),
       transparent 70%
     );
     opacity: 0;

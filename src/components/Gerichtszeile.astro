@@ -131,6 +131,20 @@ const { gericht } = Astro.props
     .gericht__linie {
       display: none;
     }
+
+    /*
+     * Der Preis darf hier umbrechen.
+     *
+     * `white-space: nowrap` hält oben die Zahl zusammen — richtig, damit
+     * „17,50 €“ nicht zwischen Betrag und Zeichen bricht. Bei 320px ist eine
+     * Zeile mit zwei Varianten („200 g · 22,00 € — 300 g · 33,00 €“) aber
+     * breiter als die Spalte, und die Seite bekommt einen Waagerechtlauf.
+     * Seit die Mikroschrift eine Monospace ist, tritt das bei fast jedem
+     * Gericht mit Varianten auf. Am 29.07.2026 bei 320px gemessen.
+     */
+    .gericht__preis {
+      white-space: normal;
+    }
   }
 </style>
 

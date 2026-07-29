@@ -10,12 +10,12 @@ describe('kontrast', () => {
   })
 
   it('ist symmetrisch — die Reihenfolge der Farben ändert nichts', () => {
-    expect(kontrast('#551213', '#F4EFE6')).toBeCloseTo(kontrast('#F4EFE6', '#551213'), 10)
+    expect(kontrast('#C9A24B', '#14110D')).toBeCloseTo(kontrast('#14110D', '#C9A24B'), 10)
   })
 
   it('versteht Kurzschreibweise und akzeptiert fehlende Raute', () => {
     expect(ausHex('#fff')).toEqual({ r: 255, g: 255, b: 255 })
-    expect(ausHex('2B2521')).toEqual({ r: 43, g: 37, b: 33 })
+    expect(ausHex('14110D')).toEqual({ r: 20, g: 17, b: 13 })
   })
 
   it('weist ungültige Werte zurück, statt still 0 zu liefern', () => {
@@ -73,20 +73,23 @@ describe('Farbpaarungen', () => {
   it('hält die dokumentierten Kernwerte ein', () => {
     // Diese vier Zahlen stehen so in tokens.css, im Plan und in der
     // Kundendokumentation. Wenn sich hier etwas ändert, muss es dort auch.
-    expect(gerundet(kontrast(PALETTE.espresso, PALETTE.kalk))).toBe(13.2)
-    expect(gerundet(kontrast(PALETTE.ochsenblut, PALETTE.kalk))).toBe(12.37)
-    expect(gerundet(kontrast(PALETTE.ochsenblut, PALETTE.leinen))).toBe(10.04)
-    expect(gerundet(kontrast(PALETTE.messing, PALETTE.kalk))).toBe(3.93)
-    expect(gerundet(kontrast(PALETTE.ochsenblut, PALETTE.espresso))).toBe(1.07)
+    expect(gerundet(kontrast(PALETTE.creme, PALETTE.grund))).toBe(14.43)
+    expect(gerundet(kontrast(PALETTE.gold, PALETTE.grund))).toBe(7.85)
+    expect(gerundet(kontrast(PALETTE['creme-leise'], PALETTE.grund))).toBe(6.59)
+    expect(gerundet(kontrast(PALETTE.elfenbein, PALETTE.bordeaux))).toBe(9.2)
+    expect(gerundet(kontrast(PALETTE.gold, PALETTE.bordeaux))).toBe(4.13)
+    expect(gerundet(kontrast(PALETTE.glut, PALETTE.grund))).toBe(3.68)
   })
 
   it('lässt den Fokusring auf hellem UND dunklem Grund tragen', () => {
     // Der Doppelring funktioniert nur, wenn beide Ringfarben zueinander
     // und jeweils zur Fläche genug Abstand haben.
-    const innen = PALETTE.kalk
-    const aussen = PALETTE.espresso
+    const innen = PALETTE.elfenbein
+    const aussen = PALETTE.grund
     expect(kontrast(innen, aussen)).toBeGreaterThanOrEqual(3)
-    expect(kontrast(aussen, PALETTE.kalk)).toBeGreaterThanOrEqual(3)
-    expect(kontrast(innen, PALETTE.espresso)).toBeGreaterThanOrEqual(3)
+    // Auf der dunklen Grundfläche trägt der innere Ring …
+    expect(kontrast(innen, PALETTE.grund)).toBeGreaterThanOrEqual(3)
+    // … auf Bordeaux ebenfalls, und der äußere gegen helle Bildstellen.
+    expect(kontrast(innen, PALETTE.bordeaux)).toBeGreaterThanOrEqual(3)
   })
 })

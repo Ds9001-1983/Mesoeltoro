@@ -9,18 +9,27 @@
  *
  * Deshalb rendert dieses Bauteil den Hinweis ZWINGEND mit. Es gibt keinen
  * Schalter, ihn wegzulassen. Wer ein Zitat zeigen will, zeigt den Hinweis.
+ * Das gilt auch, seit hier mehrere Stimmen nebeneinander stehen: Der Hinweis
+ * hängt am einzelnen Zitat, nicht an der Sektion — sonst könnte eine Stimme
+ * herausgelöst und ohne ihn verwendet werden.
  *
  * Ebenfalls bewusst: kein aggregateRating im JSON-LD, keine Sterne, kein
  * Durchschnittswert. Selbst ausgespielte Bewertungen erzeugen bei Google
  * ohnehin keine Sterne und verschärfen nur die Prüfpflicht.
  */
 import { restaurant } from '../lib/daten.ts'
+
+interface Props {
+  /** Der Wortlaut. Unverändert aus dem öffentlichen Profil übernommen. */
+  readonly zitat: string
+  readonly klasse?: string
+}
+
+const { zitat, klasse } = Astro.props
 ---
 
-<figure class="stimme zitat">
-  <blockquote cite="https://www.google.com/maps">
-    Perfekte Bedienung, gemütliches Ambiente, sehr gutes Essen.
-  </blockquote>
+<figure class:list={['stimme', 'zitat', klasse]}>
+  <blockquote cite="https://www.google.com/maps">{zitat}</blockquote>
   <figcaption>
     Gast im öffentlichen Google-Unternehmensprofil
     <span class="stimme__pruefung">{restaurant.bewertungen_pruefhinweis}</span>
@@ -29,7 +38,6 @@ import { restaurant } from '../lib/daten.ts'
 
 <style>
   .stimme {
-    margin-block-start: var(--raum-8);
     max-inline-size: 52ch;
   }
 

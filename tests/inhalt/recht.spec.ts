@@ -96,10 +96,13 @@ test.describe('Speisekarte', () => {
     const seite = await kontext.newPage()
     await seite.goto('http://localhost:4321/speisekarte/')
 
+    // Ohne Gross-/Kleinschreibung: Die Überschriften laufen seit dem
+    // 29.07.2026 in Versalien, und `innerText` gibt text-transform mit aus.
+    // Geprüft wird der INHALT, nicht seine Darstellung.
     const text = await seite.locator('main').innerText()
-    expect(text).toContain('Speisekarte')
-    expect(text).toContain('Rumpsteak')
-    expect(text).toContain('inklusive gesetzlicher Mehrwertsteuer')
+    expect(text).toMatch(/speisekarte/i)
+    expect(text).toMatch(/rumpsteak/i)
+    expect(text).toMatch(/inklusive gesetzlicher mehrwertsteuer/i)
 
     // Die Sprungnavigation ist reines HTML und muss auch hier stehen.
     await expect(seite.locator('.anker__liste a').first()).toBeVisible()
@@ -112,14 +115,20 @@ test.describe('Bewertungen (§ 5b Abs. 3 UWG)', () => {
   test('das Zitat trägt den Prüfhinweis unmittelbar bei sich', async ({ page }) => {
     await page.goto('/')
 
-    const stimme = page.locator('.stimme')
-    await expect(stimme).toBeVisible()
+    // Seit dem 29.07.2026 stehen VIER Stimmen auf der Startseite. Der Hinweis
+    // hängt am einzelnen Zitat, nicht an der Sektion — deshalb wird hier auch
+    // jedes einzeln geprüft und nicht nur das erste.
+    const stimmen = page.locator('.stimme')
+    const anzahl = await stimmen.count()
+    expect(anzahl).toBeGreaterThan(0)
 
-    const text = await stimme.innerText()
-    expect(
-      text,
-      'Wer Bewertungen zeigt, muss angeben, ob und wie deren Echtheit geprüft wird',
-    ).toContain('Echtheitsprüfung')
+    for (let i = 0; i < anzahl; i += 1) {
+      await expect(stimmen.nth(i)).toBeVisible()
+      expect(
+        await stimmen.nth(i).innerText(),
+        'Wer Bewertungen zeigt, muss angeben, ob und wie deren Echtheit geprüft wird',
+      ).toContain('Echtheitsprüfung')
+    }
   })
 
   test('kein aggregateRating und kein Review-Markup', async ({ page }) => {

@@ -89,7 +89,7 @@ const bauzeitpunkt = new Date(Number(process.env['SOURCE_DATE_EPOCH'] ?? 0) * 10
     />
     <link
       rel="preload"
-      href="/fonts/meson-display-400.woff2"
+      href="/fonts/meson-display-900.woff2"
       as="font"
       type="font/woff2"
       crossorigin
@@ -148,7 +148,7 @@ const bauzeitpunkt = new Date(Number(process.env['SOURCE_DATE_EPOCH'] ?? 0) * 10
     position: fixed;
     inset: 0;
     z-index: 9000;
-    background-color: var(--kalk);
+    background-color: var(--grund);
     display: grid;
     place-items: center;
     /* Kein Fade der Fläche, sondern ein Aufzug nach oben: Die Seite liegt
@@ -165,14 +165,14 @@ const bauzeitpunkt = new Date(Number(process.env['SOURCE_DATE_EPOCH'] ?? 0) * 10
     display: block;
     inline-size: min(12rem, 40vw);
     block-size: 2px;
-    background-color: color-mix(in oklab, var(--espresso) 18%, transparent);
+    background-color: color-mix(in oklab, var(--creme) 18%, transparent);
     overflow: hidden;
   }
 
   .vorhang__fuellung {
     display: block;
     block-size: 100%;
-    background-color: var(--ochsenblut);
+    background-color: var(--gold);
     transform: scaleX(0);
     transform-origin: left center;
     transition: transform var(--dauer-mittel) var(--ease);
@@ -189,7 +189,7 @@ const bauzeitpunkt = new Date(Number(process.env['SOURCE_DATE_EPOCH'] ?? 0) * 10
     block-size: 2.25rem;
     margin-block-start: -1.125rem;
     margin-inline-start: -1.125rem;
-    border: 1px solid var(--ochsenblut);
+    border: 1px solid var(--gold);
     border-radius: 50%;
     pointer-events: none;
     /* Unter der Kopfzeile (100) und unter dem Vorhang (9000) — der Ring darf

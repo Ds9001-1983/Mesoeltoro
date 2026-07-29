@@ -148,11 +148,31 @@ for (const datei of dateien) {
 
 /* --- Gegenprobe: Ist die Sperrliste überhaupt scharf? ---------------------- */
 
-if (muster.length === 0) {
+/*
+ * Eine leere Sperrliste ist zulässig — aber nur ausdrücklich.
+ *
+ * Der Unterschied, auf den es ankommt: Eine Liste, die jemand VERSEHENTLICH
+ * geleert hat, sieht genauso aus wie eine, die jemand ABSICHTLICH geleert
+ * hat. Der erste Fall ist ein stiller Ausfall der Prüfung, der zweite eine
+ * Entscheidung. Deshalb verlangt der Wächter dafür ein eigenes Feld.
+ *
+ * Am 29.07.2026 hat der Auftraggeber entschieden, dass nichts gesperrt wird.
+ */
+if (muster.length === 0 && claims.blockliste_bewusst_leer !== true) {
   pruefung.fehlt(
     'content/claims.json → blockliste',
     'Die Sperrliste ist leer — der Wächter prüft damit nichts.',
-    'Beanstandete Begriffe eintragen. Eine leere Liste ist gefährlicher als keine Prüfung.',
+    'Entweder Begriffe eintragen, oder "blockliste_bewusst_leer": true setzen und ' +
+      'in "blockliste_begruendung" festhalten, wer das wann entschieden hat.',
+  )
+}
+
+if (muster.length === 0 && claims.blockliste_bewusst_leer === true) {
+  console.log(
+    grau(
+      `  Sperrliste bewusst leer — ${claims.blockliste_begruendung ?? 'ohne Begründung'}\n` +
+        '  Der Wächter läuft weiter und ist mit einem Eintrag sofort wieder scharf.',
+    ),
   )
 }
 

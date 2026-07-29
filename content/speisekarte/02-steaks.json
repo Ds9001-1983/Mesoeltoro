@@ -1,7 +1,7 @@
 {
   "$schema": "../schema/kategorie.schema.json",
   "id": "steaks",
-  "titel": "Steaks „La Morocha“ vom Grill",
+  "titel": "Argentinische Steaks „La Morocha“ vom Grill",
   "einleitung": "Über offener Glut gegrillt, auf den Punkt.",
   "reihenfolge": 2,
   "steuerkategorie": "speise",

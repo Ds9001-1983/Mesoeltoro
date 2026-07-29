@@ -25,6 +25,17 @@ const ZIEL = 'public/fonts'
  * Selbst-Hosting ausdrücklich erlaubt. Die Lizenztexte liegen daneben.
  */
 /*
+ * Stand 29.07.2026: Die Display-Schrift wechselt von Instrument Serif auf
+ * ARCHIVO 900. Grund ist der Wechsel auf die dunkle Gestaltung aus der
+ * SUPERBRAND-Vorschau — dort trägt eine schwere Grotesk in Versalien die
+ * Überschriften, keine Serife. Newsreader bleibt als Fließtext (die Vorschau
+ * nutzt dieselbe Familie), Geist Mono ersetzt Instrument Sans für Rubriken
+ * und Ziffern.
+ *
+ * Kursiv kommt neu dazu: Die Vorschau setzt spanische Begriffe („Estancia“,
+ * „seit 1975“) kursiv in Gold. Das ist ein tragendes Stilmittel, keine
+ * Verzierung — die rund 22 KB sind dafür gerechtfertigt.
+ *
  * Bewusst STATISCHE Schnitte statt variabler Schriften.
  *
  * Gemessen am 28.07.2026 (nur Teilmenge latin):
@@ -41,11 +52,11 @@ const ZIEL = 'public/fonts'
  */
 const SCHRIFTEN = [
   {
-    datei: 'meson-display-400',
-    rolle: 'Display (Überschriften)',
-    familie: 'Instrument Serif',
+    datei: 'meson-display-900',
+    rolle: 'Display (Überschriften, Versalien)',
+    familie: 'Archivo',
     lizenz: 'SIL Open Font License 1.1',
-    anfrage: 'family=Instrument+Serif:ital@0&display=swap',
+    anfrage: 'family=Archivo:wght@900&display=swap',
   },
   {
     datei: 'meson-text-400',
@@ -62,11 +73,18 @@ const SCHRIFTEN = [
     anfrage: 'family=Newsreader:wght@600&display=swap',
   },
   {
-    datei: 'meson-mikro-400',
-    rolle: 'Mikrotypografie (Allergencodes, Labels)',
-    familie: 'Instrument Sans',
+    datei: 'meson-text-400i',
+    rolle: 'Fließtext kursiv (spanische Begriffe, Akzente)',
+    familie: 'Newsreader',
     lizenz: 'SIL Open Font License 1.1',
-    anfrage: 'family=Instrument+Sans:wght@400&display=swap',
+    anfrage: 'family=Newsreader:ital,wght@1,400&display=swap',
+  },
+  {
+    datei: 'meson-mikro-400',
+    rolle: 'Mikrotypografie (Rubriken, Allergencodes, Ziffern)',
+    familie: 'Geist Mono',
+    lizenz: 'SIL Open Font License 1.1',
+    anfrage: 'family=Geist+Mono:wght@400&display=swap',
   },
 ]
 

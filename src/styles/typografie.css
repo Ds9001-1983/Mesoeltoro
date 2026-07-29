@@ -1,9 +1,24 @@
 /* ============================================================================
    Typografie
    ----------------------------------------------------------------------------
-   Instrument Serif hat nur einen Schnitt. Auszeichnung läuft deshalb über
-   Größe, Raum und Sperrung — nie über Fettung der Display-Schrift.
+   Die Display-Schrift ist Archivo 900 — eine schwere Grotesk, gesetzt in
+   Versalien mit negativer Laufweite. Auszeichnung läuft über Größe und Raum;
+   eine zweite Fettung gibt es nicht, weil es nur diesen einen Schnitt gibt.
    ============================================================================ */
+
+h1,
+h2 {
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  line-height: 0.94;
+  /* Letzte Rückfallebene: Ein einzelnes Wort, das breiter ist als die Spalte,
+     bricht — statt die Seite waagerecht zu ziehen. Greift nur dann, deutsche
+     Komposita in Versalien werden lang. Eine Bindestrichtrennung wäre schöner,
+     aber `hyphens: auto` in Überschriften trennt auch dort, wo es nicht nötig
+     ist; das steht in CLAUDE.md auf der Verbotsliste. */
+  overflow-wrap: break-word;
+}
 
 h1 {
   font-size: var(--t-h1);
@@ -28,7 +43,7 @@ h3 {
   font-weight: 500;
   letter-spacing: var(--sperrung);
   text-transform: uppercase;
-  /* espresso-70 auf Kalk = 6,85:1 — auch in dieser Größe sicher. */
+  /* creme-leise auf Grund = 6,59:1 — auch in dieser Größe sicher. */
   color: var(--text-leise);
   margin-block-end: var(--raum-3);
 }
@@ -51,8 +66,9 @@ time,
 }
 
 /* --- Zitat -----------------------------------------------------------------
-   Kein Kursivschnitt geladen (spart ~144 KB). Die Auszeichnung läuft über
-   die Display-Schrift, Einzug und einen Randstrich.                        */
+   Gästestimmen laufen im Fließtext-Kursiv, nicht in der Display-Schrift:
+   Archivo 900 in Versalien liest sich als Parole, nicht als gesprochener
+   Satz. Der goldene Randstrich trägt die Auszeichnung.                    */
 .zitat {
   margin: 0;
   padding-inline-start: var(--raum-5);
@@ -61,9 +77,10 @@ time,
 
 .zitat blockquote {
   margin: 0;
-  font-family: var(--schrift-display);
+  font-family: var(--schrift-text);
+  font-style: italic;
   font-size: var(--t-h3);
-  line-height: 1.35;
+  line-height: 1.45;
 }
 
 .zitat figcaption {
@@ -86,6 +103,15 @@ time,
 .liste-schlicht {
   list-style: none;
   padding: 0;
+}
+
+/* --- Spanische Begriffe -----------------------------------------------------
+   „Estancia", „Parrilla", „seit 1975" — kursiv in Gold. Das Stilmittel der
+   Gestaltung. Rein visuell: Die Bedeutung hängt nirgends an der Auszeichnung,
+   sonst wäre es ein 1.4.1-Fall.                                            */
+.spanisch {
+  font-style: italic;
+  color: var(--akzent);
 }
 
 /* --- Hilfsklassen ----------------------------------------------------------- */

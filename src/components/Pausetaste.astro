@@ -35,9 +35,9 @@ const { klasse } = Astro.props
     block-size: var(--ziel-min);
     /* Deckend, nicht durchscheinend: Über einem hellen Bild muss die Fläche
        ihre 3:1 auch dann halten, wenn darunter Weiß liegt. */
-    background-color: var(--espresso);
-    color: var(--kalk);
-    border: 2px solid var(--kalk);
+    background-color: var(--grund);
+    color: var(--creme);
+    border: 2px solid var(--gold);
     border-radius: 2px;
   }
 
@@ -46,7 +46,7 @@ const { klasse } = Astro.props
   }
 
   .pause:hover {
-    background-color: color-mix(in oklab, var(--espresso) 82%, var(--ochsenblut));
+    background-color: color-mix(in oklab, var(--grund) 82%, var(--gold));
   }
 
   /* Zwei Balken = läuft, kann pausiert werden. */
