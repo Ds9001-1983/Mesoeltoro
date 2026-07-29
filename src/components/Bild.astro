@@ -58,6 +58,21 @@ if (gesperrt) {
 const freigegeben = eintrag.freigabe
 const basis = eintrag.datei.replace(/\.[a-z0-9]+$/i, '')
 
+/*
+ * Welche Breiten stehen bereit?
+ *
+ * Bilder mit `grossformat: true` bekommen von scripts/bilder-aufbereiten.mjs
+ * zusätzlich 2000 und 2400 px — notfalls hochskaliert. Ohne diese Zeilen
+ * lägen die Dateien zwar auf der Platte, aber kein Browser bekäme sie je zu
+ * sehen, weil sie nicht im srcset stünden.
+ */
+const BREITEN = eintrag.grossformat === true
+  ? [2400, 2000, 1600, 1200, 800, 400]
+  : [1600, 1200, 800, 400]
+
+const satz = (endung: string) =>
+  BREITEN.map((breite) => `/bilder/${basis}-${breite}.${endung} ${breite}w`).join(', ')
+
 // hole() wirft, falls doch etwas nicht stimmt — doppelte Absicherung.
 if (freigegeben) hole(schluessel)
 ---
@@ -65,8 +80,8 @@ if (freigegeben) hole(schluessel)
 {
   freigegeben ? (
     <picture class:list={['bild', klasse]}>
-      <source type="image/avif" srcset={`/bilder/${basis}-1600.avif 1600w, /bilder/${basis}-1200.avif 1200w, /bilder/${basis}-800.avif 800w, /bilder/${basis}-400.avif 400w`} sizes={sizes} />
-      <source type="image/webp" srcset={`/bilder/${basis}-1600.webp 1600w, /bilder/${basis}-1200.webp 1200w, /bilder/${basis}-800.webp 800w, /bilder/${basis}-400.webp 400w`} sizes={sizes} />
+      <source type="image/avif" srcset={satz('avif')} sizes={sizes} />
+      <source type="image/webp" srcset={satz('webp')} sizes={sizes} />
       <img
         src={`/bilder/${basis}-1200.jpg`}
         alt={eintrag.alt}
@@ -97,7 +112,25 @@ if (freigegeben) hole(schluessel)
     display: block;
   }
 
-  .bild img {
+  /*
+   * `:global(img)` statt `img` — und das ist keine Kosmetik.
+   *
+   * Astro hängt an jeden Selektorteil ein Scope-Attribut. Aus `.bild img`
+   * wurde dadurch `.bild[cid] img[cid]` mit der Spezifität (0,4,1). Jede
+   * aufrufende Seite, die ein Bild eine Fläche füllen lässt, schreibt aber
+   * `.kasten[cid] .bild img` — nur (0,3,1). Das hier gewann also immer.
+   *
+   * Folge: `block-size: auto` überstimmte in JEDER Bildfläche des Projekts
+   * die 100 %, das img behielt seine Eigenhöhe und lief unten aus dem
+   * Kasten. `object-fit: cover` hatte dadurch nichts zu beschneiden —
+   * sichtbar war überall der OBERE Rand der Vorlage statt des gewählten
+   * Ausschnitts. Am 29.07.2026 am Hero aufgefallen, nachdem zwei
+   * `object-position`-Werte wirkungslos geblieben waren.
+   *
+   * Mit `:global(img)` bleibt der Selektor bei (0,2,1) — die Vorgabe steht,
+   * aber jeder Container kann sie überschreiben.
+   */
+  .bild :global(img) {
     inline-size: 100%;
     block-size: auto;
     /* Bilder sitzen im Passepartout; ohne object-fit würden sie bei fester

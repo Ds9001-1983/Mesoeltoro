@@ -2,6 +2,7 @@
   "$schema": "../schema/kategorie.schema.json",
   "id": "beilagen",
   "titel": "Beilagen und Saucen",
+  "spanisch": "Guarniciones",
   "einleitung": null,
   "reihenfolge": 5,
   "steuerkategorie": "speise",

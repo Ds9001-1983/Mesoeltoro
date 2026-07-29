@@ -53,6 +53,10 @@ Gate hart, weil es um fremde Rechte geht, nicht um eigene Aussagen.
 | Sekundärtext als Deckkraft statt als eigener Hexwert | Die Vorschau setzt `#ece0cc/50` — das sind 4,37:1 und verfehlt 4,5. Ein fester Ton ist nachrechenbar, eine Alpha-Angabe prüft niemand |
 | Rasterzellen ohne `min-inline-size: 0` | Voreingestellt ist `min-width: auto`; eine einzige lange Zeile zieht dann die ganze Seite waagerecht (1.4.10) |
 | Endlos laufende Bewegung ohne Pausetaste | 2.2.2. Genau daran scheitert die Vorschau mit Laufband und Glutpuls |
+| Laufband unter 45 px/s | Bewegt sich messbar, wird aber als stehend wahrgenommen. Die erste Fassung lief mit 34 px/s und wurde genau so gemeldet |
+| `block-size` in `Bild.astro` ohne `:global()` | Astro hängt an jeden Selektorteil ein Scope-Attribut. `.bild img` wird dadurch (0,4,1) und überstimmt jeden Container. Folge: `object-fit: cover` hatte nichts zu beschneiden, sichtbar war überall der obere Rand der Vorlage |
+| Vollbild aus einer Vorlage unter 2400 px, ohne `grossformat: true` | Ein Vollbild bei 1440 CSS-px fordert auf Retina 2880 an. `tests/unit/bildaufloesung.test.ts` bricht sonst |
+| Spanisch ohne `lang="es"` | 3.1.2. Eine deutsche Sprachausgabe spricht „La Parrilla" sonst deutsch aus |
 | `cursor: none` | Der eigene Zeiger ist Zugabe, kein Ersatz. Wer den System-Cursor ausblendet, nimmt Nutzern mit vergrößertem Zeiger oder Bildschirmvergrößerer die Orientierung. Ein Test sucht die Deklaration im ganzen Dokument. |
 | Eine Ladeanzeige mit künstlicher Mindestdauer | *Das* wäre der 2.2.1-Verstoß, den man dem Preloader fälschlich pauschal unterstellt. Fertig ist fertig. |
 | Alternativtexte aus dem Dateinamen ableiten | Am 28.07.2026 beschrieb der Eintrag `gastraum` einen Gastraum und zeigte ein Steak — die Datei hieß `header_restaurant_steak.jpg`. Alt-Texte werden am geöffneten Bild geschrieben. |
@@ -83,8 +87,9 @@ durchgesetzt, nicht bloß dokumentiert.
 | 3 | Die Glut — WebGL-Fragment-Shader (OGL) | Kapitel III, genau einmal |
 | 4 | Der Küchenpass — echter Öffnungsstatus | Kapitel VI, Kontakt |
 | 5 | Der Satz der Karte — Leader-Linie zeichnet sich | Speisekarte, Kapitel II |
-| 6 | Das Laufband — Begriffsband mit Pausetaste | zwischen Vorspann und I |
+| 6 | Das Laufband — Begriffsband mit Pausetaste, 58 px/s | zwischen Vorspann und I |
 | 7 | Das Papier — gerechnete Faserkachel + `@view-transition` | global |
+| 8 | Das Bildband — das einzige Bild über die volle Breite | zwischen IV und V |
 
 Der frühere Move „Der Temperaturwechsel“ ist entfallen: Seit die ganze Seite
 dunkel ist, gibt es keine Temperatur mehr zu wechseln.
@@ -105,6 +110,11 @@ Fehlermeldungen. Das ist kein Selbstzweck: Der Kunde pflegt die Inhalte selbst
 **Ansprache auf der Website: Sie.** Bewusst abweichend vom SUPERBRAND-Standard
 — der gilt für die Agenturmarke, nicht für Kundenmarken.
 
+**Spanisch ist Rubriksprache, nie Information.** Kategorien, Kapitel und
+Seitenköpfe tragen eine spanische Zeile über der deutschen. Preise, Allergene,
+Öffnungszeiten und Rechtstexte bleiben deutsch — wer die Karte liest, muss sie
+verstehen. Jede spanische Zeichenkette bekommt `lang="es"`.
+
 **Die Seite ist durchgehend dunkel** (`--grund: #14110D`). Akzent ist Gold
 `#C9A24B` (7,85:1), Fließtext Creme `#ECE0CC` (14,43:1).
 
@@ -122,9 +132,9 @@ Wer eine Farbe anfasst, ändert sie in `src/lib/farben.ts` **und** `tokens.css`
 ## Vor jedem Commit
 
 ```
-pnpm pruefen      Typen, 74 Einheitentests, Inhalte, Kontraste
+pnpm pruefen      Typen, 93 Einheitentests, Inhalte, Kontraste
 pnpm build        baut und prüft danach Claims, Bildrechte, Fremdanfragen
-pnpm test:e2e     236 Prüfungen im Browser, 4 Projekte
+pnpm test:e2e     279 Prüfungen im Browser, 4 Projekte
 ```
 
 Bild geändert? `pnpm bilder` erzeugt die Ableitungen neu.

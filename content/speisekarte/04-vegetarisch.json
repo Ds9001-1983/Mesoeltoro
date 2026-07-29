@@ -2,6 +2,7 @@
   "$schema": "../schema/kategorie.schema.json",
   "id": "vegetarisch",
   "titel": "Vegetarisch",
+  "spanisch": "Verduras",
   "einleitung": null,
   "reihenfolge": 4,
   "steuerkategorie": "speise",

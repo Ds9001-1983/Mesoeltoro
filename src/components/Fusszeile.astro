@@ -24,6 +24,7 @@ const jahr = 2026
       {/* Dieselbe Maske wie in der Kopfzeile — hier in Kalk, weil die Fläche
           dunkel ist. Eine Datei, zwei Farben, keine zweite Wahrheit. */}
       <span class="fuss__signet" aria-hidden="true"></span>
+      <p class="fuss__spanisch" lang="es" aria-hidden="true">La Casa</p>
       <h2 class="fuss__titel">{restaurant.name_lang}</h2>
       <address class="fuss__adresse">
         {restaurant.adresse.strasse}<br />
@@ -37,6 +38,7 @@ const jahr = 2026
     </section>
 
     <section class="fuss__block">
+      <p class="fuss__spanisch" lang="es" aria-hidden="true">El Horario</p>
       <h2 class="fuss__titel">Öffnungszeiten</h2>
       <dl class="fuss__zeiten">
         {
@@ -54,6 +56,7 @@ const jahr = 2026
     </section>
 
     <section class="fuss__block">
+      <p class="fuss__spanisch" lang="es" aria-hidden="true">Legal</p>
       <h2 class="fuss__titel">Rechtliches</h2>
       <nav aria-label="Rechtliche Hinweise">
         <ul class="fuss__liste">
@@ -146,13 +149,22 @@ const jahr = 2026
     }
   }
 
+  .fuss__spanisch {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    /* Gold auf Grund = 7,85:1. */
+    color: var(--gold);
+  }
+
   .fuss__titel {
     font-family: var(--schrift-mikro);
     font-size: var(--t-eyebrow);
     font-weight: 600;
     letter-spacing: var(--sperrung);
     text-transform: uppercase;
-    color: var(--gold); /* 7,85:1 auf Grund */
+    color: var(--creme);
     margin-block-end: var(--raum-4);
   }
 

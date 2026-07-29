@@ -20,7 +20,7 @@
  * 60-Sekunden-Bildschirmaufnahme in docs/A11Y-KONFORMITAET.md.
  */
 import { restaurant } from '../lib/daten.ts'
-import Bild from './Bild.astro'
+import Anschnitt from './Anschnitt.astro'
 import Pausetaste from './Pausetaste.astro'
 import Rubrik from './Rubrik.astro'
 ---
@@ -51,14 +51,20 @@ import Rubrik from './Rubrik.astro'
       <Pausetaste klasse="glut__pause" />
     </div>
 
-    {/* Steht NEBEN dem Text, nicht dahinter — Projektregel 2. */}
+    {/*
+      Hier steht der Anschnitt — und zwar aus einem inhaltlichen Grund, nicht
+      als Zierrat.
+
+      Bis zum 29.07.2026 lag er in Kapitel VI neben der Adresse: der stärkste
+      Move des Projekts an der belanglosesten Stelle. Hier schneidet er den
+      angerichteten Teller in die Glut, also genau die Bewegung, die dieses
+      Kapitel beschreibt. Wer scrollt, sieht das Gericht zurück auf den Rost
+      wandern.
+
+      Steht NEBEN dem Text, nicht dahinter — Projektregel 2.
+    */}
     <div class="glut__bild">
-      <Bild
-        schluessel="dampf-kueche"
-        breite={1200}
-        hoehe={1600}
-        sizes="(min-width: 62rem) 38vw, 100vw"
-      />
+      <Anschnitt ebenen={['steak-teller', 'glut-grill']} strecke="80vh" />
     </div>
   </div>
 </section>
@@ -106,6 +112,19 @@ import Rubrik from './Rubrik.astro'
   .glut__bild {
     aspect-ratio: 3 / 4;
     overflow: hidden;
+  }
+
+  /* Der Anschnitt bringt sein eigenes Passepartout mit — hier soll er die
+     Zelle ganz ausfüllen. */
+  .glut__bild :global(.anschnitt) {
+    padding: 0;
+    block-size: 100%;
+    background-color: transparent;
+  }
+
+  .glut__bild :global(.anschnitt__rahmen) {
+    block-size: 100%;
+    min-block-size: 0;
   }
 
   .glut__bild :global(.bild),

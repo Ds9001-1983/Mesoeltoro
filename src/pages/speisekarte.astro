@@ -51,6 +51,7 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
     </div>
 
     <section class="huelle karte__kopf">
+      <p class="kategorie__spanisch" lang="es" aria-hidden="true">La Carta</p>
       <h1>Speisekarte</h1>
 
       <div class="karte__hinweise satz">
@@ -114,6 +115,13 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
               Ohne das scrollt die Seite, der Fokus bleibt aber am Link stehen —
               der häufigste reale Fehler bei Sprungnavigationen (2.4.3).
             */}
+            {/*
+              Die spanische Rubrik steht als eigenes <p> NEBEN der Überschrift,
+              nicht darin: Sonst hieße der Ankersprung „Entrantes Vorspeisen“
+              und die Überschriftenliste eines Screenreaders wäre doppelt
+              belegt. `lang="es"` sorgt für die richtige Aussprache (3.1.2).
+            */}
+            <p class="kategorie__spanisch" lang="es" aria-hidden="true">{kategorie.spanisch}</p>
             <h2 class="kategorie__titel" id={kategorie.id} tabindex="-1">{kategorie.titel}</h2>
 
             {kategorie.einleitung && <p class="kategorie__einleitung">{kategorie.einleitung}</p>}
@@ -180,6 +188,16 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
 
   .karte__kopf {
     padding-block: var(--raum-8) var(--raum-6);
+  }
+
+  .kategorie__spanisch {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    /* Gold auf Grund = 7,85:1. */
+    color: var(--gold);
+    margin-block-end: var(--raum-2);
   }
 
   .karte__hinweise {

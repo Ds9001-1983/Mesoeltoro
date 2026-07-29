@@ -27,11 +27,21 @@ import Pausetaste from './Pausetaste.astro'
 
 interface Props {
   readonly begriffe: readonly string[]
-  /** Umlaufdauer. Langsamer als 20s wirkt zäh, schneller wird unruhig. */
+  /**
+   * Umlaufdauer.
+   *
+   * 22 s auf rund 1280 px Umlauf sind etwa 58 px/s — dasselbe Tempo wie in
+   * der Vorschau. Die erste Fassung lief mit 38 s, also 34 px/s: Das Band
+   * bewegte sich messbar, aber so langsam, dass es als stehend wahrgenommen
+   * wurde. Am 29.07.2026 vom Auftraggeber genau so gemeldet.
+   *
+   * Der Test in tests/verhalten/laufband.spec.ts prüft seitdem das TEMPO,
+   * nicht mehr nur, ob überhaupt Bewegung stattfindet.
+   */
   readonly dauer?: string
 }
 
-const { begriffe, dauer = '38s' } = Astro.props
+const { begriffe, dauer = '22s' } = Astro.props
 ---
 
 <div class="laufband">

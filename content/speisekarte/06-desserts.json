@@ -2,6 +2,7 @@
   "$schema": "../schema/kategorie.schema.json",
   "id": "desserts",
   "titel": "Desserts",
+  "spanisch": "Postres",
   "einleitung": null,
   "reihenfolge": 6,
   "steuerkategorie": "speise",

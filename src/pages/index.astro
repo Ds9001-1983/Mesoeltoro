@@ -12,7 +12,6 @@
  * Verläufe die Fläche auf reines --grund ausgelaufen haben. Ein Test misst
  * die tatsächliche Hintergrundfarbe hinter jedem Textknoten des Heros.
  */
-import Anschnitt from '../components/Anschnitt.astro'
 import Bild from '../components/Bild.astro'
 import Gaestestimme from '../components/Gaestestimme.astro'
 import GlutKapitel from '../components/GlutKapitel.astro'
@@ -66,33 +65,51 @@ const BEGRIFFE = [
     */}
     <div class="hero__grade" aria-hidden="true" data-dekor></div>
     <div class="hero__vignette" aria-hidden="true" data-dekor></div>
-    <div class="hero__pool" aria-hidden="true" data-dekor></div>
-    <div class="hero__sockel" aria-hidden="true" data-dekor></div>
 
     <div class="hero__inhalt">
-      <p class="hero__kicker">
-        <span lang="es">Mesón el Toro — Parrilla Argentina</span> · Waldbröl · <span lang="es"
-          >Desde</span
-        > {restaurant.zahlen.gegruendet}
-      </p>
+      {/*
+        Die feste Fläche hängt am TEXTBLOCK, nicht an einem Prozentsatz der
+        Hero-Höhe.
 
-      <div class="hero__unten">
+        Vorher war sie ein Verlauf über 52 % der Sektion. Das ging bei
+        1440 × 900 gerade auf und war bei 1440 × 1200 doppelt so hoch wie
+        nötig — auf hohen Bildschirmen blieb vom Bild fast nichts. Jetzt ist
+        sie exakt so hoch wie der Text plus ein fester Übergang darüber,
+        unabhängig von der Fenstergröße.
+      */}
+      <div class="hero__flaeche">
+        <div class="hero__unten">
+        {/*
+          Die Kickerzeile stand bis zum 29.07.2026 oben über dem Bild und
+          brauchte dafür einen eigenen dunklen Fleck. Der kostete genau die
+          Bildstelle, an der das Steak liegt. Jetzt steht sie unmittelbar über
+          der Überschrift auf voller Fläche — die klassische Position einer
+          Dachzeile, und der obere Bildbereich bleibt unangetastet.
+        */}
+        <p class="hero__kicker">
+          <span lang="es">Mesón el Toro — Parrilla Argentina</span> · Waldbröl · <span lang="es"
+            >Desde</span
+          > {restaurant.zahlen.gegruendet}
+        </p>
+
         <h1 id="hero-titel" class="hero__titel">
           Feuer, Fleisch<br />&amp; <span class="hero__gold">spanischer</span><br />Wein.
         </h1>
 
-        <p class="hero__lead">
-          Seit {restaurant.zahlen.gegruendet} die kulinarische Instanz im Bergischen Land — argentinisches
-          Premiumfleisch von der <span class="spanisch" lang="es">Estancia</span>, spanische Feinkost
-          und ein eigener Weinkeller.
-        </p>
-
+        {/*
+          Der Vorspann stand bis zum 29.07.2026 hier und sagte fast dasselbe
+          wie der große Satz eine Sektion tiefer. Zwei Gründe, ihn zu
+          streichen: Er war eine Dopplung, und er machte den Textblock so
+          hoch, dass für das Bild nur noch ein Sechstel des Heros übrig blieb.
+          Die Aussage steht vollständig in der Positionierung darunter.
+        */}
         <div class="wege">
           <a class="ruf-block" href={`tel:${restaurant.telefon_e164}`} data-ziel>
             <span class="ruf-block__wort">Reservierung</span>
             <span class="ruf-block__nummer zahlen">{restaurant.telefon_anzeige}</span>
           </a>
           <a class="weiter" href="/speisekarte/">Speisekarte ansehen</a>
+          </div>
         </div>
       </div>
     </div>
@@ -102,8 +119,9 @@ const BEGRIFFE = [
   <section class="haltung" aria-labelledby="haltung-titel">
     <h2 id="haltung-titel" class="vh">Was dieses Haus ausmacht</h2>
     <p class="huelle haltung__satz">
-      Tradition aus dem <span class="spanisch">Bergischen Land</span>, argentinisches Premiumfleisch,
-      spanische Feinkost und moderne Küche — an einem Tisch vereint.
+      Tradition aus dem <span class="hervor">Bergischen Land</span>, argentinisches Premiumfleisch
+      von der <span class="spanisch" lang="es">Estancia</span>, spanische Feinkost und ein eigener
+      Weinkeller — an einem Tisch vereint.
     </p>
   </section>
 
@@ -228,6 +246,16 @@ const BEGRIFFE = [
     </div>
   </section>
 
+  {/* --- Bildband ------------------------------------------------------------
+      Der einzige Ort der Seite, an dem ein Bild über die Kante läuft. Nach
+      vier Kapiteln über Essen ein Atemzug — und inhaltlich die Überleitung
+      zu den Gästen.
+
+      Vorlage nativ 3000 px breit, also ohne Hochskalieren retinatauglich.  */}
+  <div class="bildband">
+    <Bild schluessel="gastraum-band" breite={2400} hoehe={1198} sizes="100vw" />
+  </div>
+
   {/* --- V · Los Huéspedes ---------------------------------------------------
       Vier Stimmen aus dem öffentlichen Google-Profil. Jede trägt den
       Prüfhinweis nach § 5b Abs. 3 UWG — Gaestestimme.astro rendert ihn
@@ -278,7 +306,12 @@ const BEGRIFFE = [
       </div>
 
       <div class="kapitel__bild kapitel__bild--hoch">
-        <Anschnitt ebenen={['tafel-gedeckt', 'haus-abendlicht']} strecke="70vh" />
+        <Bild
+          schluessel="tafel-gedeckt"
+          breite={1200}
+          hoehe={1600}
+          sizes="(min-width: 62rem) 38vw, 100vw"
+        />
       </div>
     </div>
   </section>
@@ -294,75 +327,81 @@ const BEGRIFFE = [
     overflow: hidden;
   }
 
-  .hero__bild,
   .hero__grade,
-  .hero__vignette,
-  .hero__pool,
-  .hero__sockel {
+  .hero__vignette {
     position: absolute;
     inset: 0;
     z-index: 0;
   }
 
+  /*
+   * Der Bildkasten reicht NICHT über den ganzen Hero, sondern nur über den
+   * Bereich, der tatsächlich zu sehen ist.
+   *
+   * Vorher lag er über der vollen Höhe. Weil die untere Hälfte von der festen
+   * Textfläche verdeckt wird, bildete `object-fit: cover` die Vorlage auf
+   * einen Kasten ab, dessen sichtbarer Teil nur das obere Drittel war — und
+   * dort liegt auf dieser Aufnahme das UNSCHARFE hintere Steak. Kein
+   * `object-position`-Wert konnte das erreichen, weil der Überstand nur
+   * 206 px betrug. Am 29.07.2026 zweimal danebengegriffen, bis der Kasten
+   * selbst das Problem war.
+   */
+  .hero__bild {
+    position: absolute;
+    inset: 0 0 auto 0;
+    block-size: 72%;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  /*
+   * Das Bild hängt DIREKT am Kasten, nicht über eine Prozentkette.
+   *
+   * `block-size: 100%` auf dem <picture> und noch einmal auf dem <img> löste
+   * sich nicht auf — das img blieb bei seiner Eigenhöhe von 1080 px, und
+   * `object-fit: cover` hatte damit gar nichts zu beschneiden. Sichtbar war
+   * einfach der obere Rand der Vorlage, egal welche `object-position` dort
+   * stand. Am 29.07.2026 erst durch Messen der berechneten Werte gefunden;
+   * am Ergebnis war es nicht zu unterscheiden.
+   */
   .hero__bild :global(.bild),
   .hero__bild :global(.bild img),
   .hero__bild :global(.platzhalter) {
+    position: absolute;
+    inset: 0;
     inline-size: 100%;
     block-size: 100%;
     object-fit: cover;
-    object-position: 55% 42%;
+    /* Auf dem Foto liegt hinten ein unscharfes Steak, vorn das scharfe.
+       72 % holt den scharfen Vordergrund ins Band. */
+    object-position: 50% 72%;
   }
 
-  /* Warme Gradierung — dämpft das helle Tellerweiß zu Glut, damit die Marke
-     schon im ersten Bild trägt. */
+  /*
+   * Warme Gradierung. Deutlich zurückgenommen gegenüber der ersten Fassung.
+   *
+   * Vorher endete der Verlauf bei #47240e — das multipliziert mit
+   * 0,28 / 0,14 / 0,05. Zusammen mit Vignette und Sockel blieb vom Motiv fast
+   * nichts übrig; der Auftraggeber konnte das Steak nicht mehr erkennen.
+   * Jetzt endet er bei #7d4520 (0,49 / 0,27 / 0,13). Die Wärme bleibt, das
+   * Bild kommt zurück.
+   *
+   * Wie weit sich das aufhellen lässt, entscheidet nicht das Auge, sondern
+   * tests/verhalten/hero-grund.spec.ts: Er misst den real gerenderten
+   * Kontrast hinter jeder Textzeile. So hell wie möglich, so dunkel wie nötig.
+   */
   .hero__grade {
     mix-blend-mode: multiply;
-    background: linear-gradient(155deg, #efc084 0%, #b06a38 46%, #47240e 100%);
+    background: linear-gradient(155deg, #fbe6cc 0%, #d79a68 46%, #9c6136 100%);
   }
 
   .hero__vignette {
     background: radial-gradient(
-      ellipse 96% 86% at 62% 34%,
-      transparent 34%,
-      color-mix(in srgb, var(--grund) 58%, transparent) 76%,
-      color-mix(in srgb, var(--grund) 92%, transparent) 100%
+      ellipse 110% 100% at 58% 34%,
+      transparent 52%,
+      color-mix(in srgb, var(--grund) 26%, transparent) 82%,
+      color-mix(in srgb, var(--grund) 70%, transparent) 100%
     );
-  }
-
-  /* Dunkler Glutteich oben links — trägt die goldene Kickerzeile. */
-  .hero__pool {
-    background: radial-gradient(
-      ellipse 58% 50% at 10% 8%,
-      color-mix(in srgb, var(--grund) 90%, transparent) 0%,
-      color-mix(in srgb, var(--grund) 60%, transparent) 40%,
-      transparent 72%
-    );
-  }
-
-  /*
-   * Der Sockel ist die Bedingung dafür, dass die Headline zulässig ist:
-   * Bis 34 % Höhe steht die Fläche auf reinem --grund, ohne jede
-   * Bildinformation. Genau dort sitzt der Text. Ein Playwright-Test misst
-   * die effektive Hintergrundfarbe hinter jedem Textknoten.
-   */
-  .hero__sockel {
-    background: linear-gradient(
-      0deg,
-      var(--grund) 0%,
-      var(--grund) var(--sockel-voll, 52%),
-      color-mix(in srgb, var(--grund) 62%, transparent) calc(var(--sockel-voll, 52%) + 12%),
-      color-mix(in srgb, var(--grund) 22%, transparent) calc(var(--sockel-voll, 52%) + 24%),
-      transparent calc(var(--sockel-voll, 52%) + 34%)
-    );
-  }
-
-  /* Auf schmalen Schirmen braucht der Textblock mehr Höhe — die Headline
-     bricht dort auf mehr Zeilen um. Der volle Bereich wächst entsprechend
-     mit, sonst stünde die erste Zeile wieder auf Bildinhalt. */
-  @media (max-width: 47.99rem) {
-    .hero__sockel {
-      --sockel-voll: 66%;
-    }
   }
 
   .hero__inhalt {
@@ -370,22 +409,56 @@ const BEGRIFFE = [
     z-index: 1;
     display: flex;
     flex-direction: column;
+    justify-content: flex-end;
+    inline-size: 100%;
+  }
+
+  /*
+   * Zwei Hintergrundlagen, beide ohne Wiederholung:
+   *   oben  — ein Übergang von durchsichtig auf Grund, genau --fade hoch
+   *   unten — volle Fläche über den ganzen Rest
+   *
+   * Damit ist der feste Bereich immer exakt so hoch wie der Text, egal wie
+   * hoch das Fenster ist. Genau das misst hero-grund.spec.ts nach.
+   */
+  .hero__flaeche {
+    --fade: clamp(4rem, 14svh, 9rem);
+
+    padding-block: var(--fade) var(--raum-8);
+    background-image:
+      linear-gradient(0deg, var(--grund) 0%, transparent 100%),
+      linear-gradient(var(--grund), var(--grund));
+    background-size:
+      100% var(--fade),
+      100% calc(100% - var(--fade));
+    background-position:
+      top,
+      bottom;
+    background-repeat: no-repeat, no-repeat;
+  }
+
+  .hero__unten {
     inline-size: min(100% - 2 * var(--rahmen), var(--breite-max));
     margin-inline: auto;
-    padding-block: var(--raum-7) var(--raum-8);
+  }
+
+  /* Auf schmalen Schirmen bricht die Überschrift auf mehr Zeilen um und die
+     Schaltflächen stapeln sich — der Textblock reicht dann weiter nach oben
+     als der Übergang. Kürzerer Übergang, damit die feste Fläche früher
+     beginnt. Bei 320 px bleibt vom Bild ohnehin nur ein schmales Band. */
+  @media (max-width: 47.99rem) {
+    .hero__flaeche {
+      --fade: 2.5rem;
+    }
   }
 
   .hero__kicker {
+    margin-block-end: var(--raum-5);
     font-family: var(--schrift-mikro);
     font-size: var(--t-eyebrow);
     letter-spacing: var(--sperrung);
     text-transform: uppercase;
     color: var(--gold);
-  }
-
-  .hero__unten {
-    margin-block-start: auto;
-    padding-block-start: var(--raum-8);
   }
 
   .hero__titel {
@@ -611,6 +684,32 @@ const BEGRIFFE = [
     font-size: clamp(2.5rem, 1.6rem + 4vw, 4.5rem);
     line-height: 1;
     color: var(--gold);
+  }
+
+  /* --- Bildband -------------------------------------------------------------
+     Volle Breite, ohne Hülle, ohne Rand. Die Höhe ist gedeckelt, damit das
+     Band auf hohen Bildschirmen nicht zur Wand wird.                       */
+  .bildband {
+    inline-size: 100%;
+    block-size: min(62svh, 38vw);
+    min-block-size: 14rem;
+    overflow: hidden;
+    border-block: 1px solid var(--linie);
+  }
+
+  .bildband :global(.bild),
+  .bildband :global(.bild img),
+  .bildband :global(.platzhalter) {
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    object-position: center 42%;
+  }
+
+  @media (max-width: 47.99rem) {
+    .bildband {
+      block-size: min(46svh, 84vw);
+    }
   }
 
   /* --- V Huéspedes ---------------------------------------------------------- */

@@ -37,6 +37,12 @@ const bildSchema = z
       .regex(/^\d{4}-\d{2}-\d{2}$/)
       .nullable(),
     verwendung: z.array(z.string()),
+    /**
+     * Wird über die halbe Fensterbreite hinaus ausgegeben — Vollbilder,
+     * Hero, Bildbänder. Erlaubt Ableitungen bis 2400 px, notfalls durch
+     * Hochskalieren. Siehe scripts/bilder-aufbereiten.mjs.
+     */
+    grossformat: z.boolean().optional(),
   })
   .superRefine((wert, kontext) => {
     if (wert.freigabe && !wert.urheber_nachweis) {

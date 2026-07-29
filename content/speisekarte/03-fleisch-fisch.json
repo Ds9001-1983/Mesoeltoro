@@ -2,6 +2,7 @@
   "$schema": "../schema/kategorie.schema.json",
   "id": "fleisch-fisch",
   "titel": "Fleisch und Fisch",
+  "spanisch": "Carnes y Pescados",
   "einleitung": null,
   "reihenfolge": 3,
   "steuerkategorie": "speise",

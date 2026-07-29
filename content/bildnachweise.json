@@ -1,12 +1,8 @@
 {
   "$schema": "./schema/bildnachweise.schema.json",
-
   "//": "Register aller verwendbaren Bilder. Zugleich Build-Gate: Bild.astro nimmt einen Schlüssel aus dieser Datei entgegen, NIEMALS einen Dateipfad. Fehlt der Eintrag, fehlt die Freigabe oder ist eine Person ohne Einwilligung abgebildet, bricht der Build ab. Dieselbe Datei erzeugt /bildnachweise/ — Register und öffentliche Liste können damit nicht auseinanderlaufen.",
-
   "//rechtslage": "Die Fotos stammen vom Fotografen J. Schumacher und wurden für die Vorgängerseite erstellt. Der Auftraggeber hat am 28.07.2026 erklärt, dass die Nutzungsrechte vorliegen und auf die heutige GmbH übergegangen sind (§ 34 UrhG), und dass die Einwilligungen der abgebildeten Personen vorliegen (§ 22 KunstUrhG). Diese Erklärung ist die Grundlage jeder Freigabe unten und in docs/BILDRECHTE.md protokolliert.",
-
   "//alttexte": "Jeder Alternativtext wurde am geöffneten Bild geschrieben, nicht aus dem Dateinamen abgeleitet. Das ist kein Formalismus: Der Eintrag 'gastraum' zeigte in der ersten Fassung ein Steak, weil die Datei 'header_restaurant_steak' hieß. Wer Alt-Texte rät, beschreibt das falsche Bild.",
-
   "sperrliste": [
     "JSchumacher_Theos_",
     "Claudios",
@@ -25,9 +21,7 @@
     "pricing-",
     "video-prev"
   ],
-
   "//sperrliste": "Zwei Gruppen. Erstens Dateinamen aus FREMDEN Kundenprojekten, die im Medienverzeichnis der alten WordPress-Installation mitliegen. Zweitens — am 28.07.2026 nachgetragen — das komplette Demo-Material des gekauften Themes 'latulipe': food-menu-1…17, top-img-1…10, team-1…8, portfolio-1…5, blog-1…9 und weitere. Das sind fremde Stockfotos, die aussehen, als gehörten sie zum Haus. Sie standen bis dahin NICHT auf der Liste — der Guard hätte 'food-menu-3.jpg' anstandslos durchgelassen.",
-
   "bilder": {
     "glut-grill": {
       "datei": "meson_el_toro_speisekarte_steak.jpg",
@@ -40,7 +34,11 @@
       "personen_einwilligung": null,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/", "/speisekarte/"]
+      "verwendung": [
+        "/",
+        "/speisekarte/"
+      ],
+      "grossformat": true
     },
     "steak-teller": {
       "datei": "JS_Meson_el_Toro_468_02.jpg",
@@ -53,7 +51,10 @@
       "personen_einwilligung": null,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/"]
+      "verwendung": [
+        "/"
+      ],
+      "grossformat": true
     },
     "tafel-gedeckt": {
       "datei": "meson_el_toro_reservierung.jpg",
@@ -66,7 +67,10 @@
       "personen_einwilligung": null,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/", "/kontakt/"]
+      "verwendung": [
+        "/",
+        "/kontakt/"
+      ]
     },
     "dampf-kueche": {
       "datei": "IMG_6611.jpg",
@@ -79,7 +83,10 @@
       "personen_einwilligung": true,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/", "/philosophie/"]
+      "verwendung": [
+        "/",
+        "/philosophie/"
+      ]
     },
     "fisch-teller": {
       "datei": "JS_Meson_el_Toro_549.jpg",
@@ -92,7 +99,10 @@
       "personen_einwilligung": null,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/", "/speisekarte/"]
+      "verwendung": [
+        "/",
+        "/speisekarte/"
+      ]
     },
     "steak-grillmuster": {
       "datei": "meson_el_toro_steak.jpg",
@@ -105,7 +115,10 @@
       "personen_einwilligung": null,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/", "/speisekarte/"]
+      "verwendung": [
+        "/",
+        "/speisekarte/"
+      ]
     },
     "schild-haus": {
       "datei": "meson_el_toro_historie.jpg",
@@ -118,7 +131,10 @@
       "personen_einwilligung": null,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/", "/philosophie/"]
+      "verwendung": [
+        "/",
+        "/philosophie/"
+      ]
     },
     "haus-abendlicht": {
       "datei": "meson_el_toro_header_restaurant.jpg",
@@ -131,7 +147,9 @@
       "personen_einwilligung": null,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/kontakt/"]
+      "verwendung": [
+        "/kontakt/"
+      ]
     },
     "gastraum": {
       "datei": "meson_el_toro_header_philosophie.jpg",
@@ -144,7 +162,9 @@
       "personen_einwilligung": null,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/philosophie/"]
+      "verwendung": [
+        "/philosophie/"
+      ]
     },
     "koechin-herd": {
       "datei": "IMG_6596_1.jpg",
@@ -157,7 +177,9 @@
       "personen_einwilligung": true,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/philosophie/"]
+      "verwendung": [
+        "/philosophie/"
+      ]
     },
     "wein-flasche": {
       "datei": "JS_Meson_el_Toro_517.jpg",
@@ -170,7 +192,9 @@
       "personen_einwilligung": null,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/weinfachhandel/"]
+      "verwendung": [
+        "/weinfachhandel/"
+      ]
     },
     "wein-einschank": {
       "datei": "meson_el_toro_wein_einschank.jpg",
@@ -183,7 +207,9 @@
       "personen_einwilligung": true,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/weinfachhandel/"]
+      "verwendung": [
+        "/weinfachhandel/"
+      ]
     },
     "wein-service": {
       "datei": "JS_Meson_el_Toro_104.jpg",
@@ -196,7 +222,9 @@
       "personen_einwilligung": true,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/weinfachhandel/"]
+      "verwendung": [
+        "/weinfachhandel/"
+      ]
     },
     "glas-eindecken": {
       "datei": "IMG_6897_2_1.jpg",
@@ -209,7 +237,9 @@
       "personen_einwilligung": true,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/kontakt/"]
+      "verwendung": [
+        "/kontakt/"
+      ]
     },
     "fisch-safran": {
       "datei": "header_speisekarte_03.jpg",
@@ -222,7 +252,9 @@
       "personen_einwilligung": null,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/speisekarte/"]
+      "verwendung": [
+        "/speisekarte/"
+      ]
     },
     "sommelier-regal": {
       "datei": "IMG_7401.jpg",
@@ -235,7 +267,25 @@
       "personen_einwilligung": true,
       "freigabe": true,
       "freigabe_datum": "2026-07-28",
-      "verwendung": ["/weinfachhandel/"]
+      "verwendung": [
+        "/weinfachhandel/"
+      ]
+    },
+    "gastraum-band": {
+      "datei": "header_philosophie_03.jpg",
+      "motiv": "Zwei Servicekräfte im Gastraum",
+      "alt": "Zwei Servicekräfte im Gastraum: Die eine legt an einer weiß eingedeckten Tafel Besteck und Servietten zurecht, die andere hält ein Weinglas kopfüber in die Höhe. Im Hintergrund gerahmte Hafenbilder an gelber Wand und ein Regal mit Weinflaschen",
+      "urheber": "J. Schumacher",
+      "urheber_nachweis": true,
+      "nachweis_fundstelle": "Rechteerklärung des Auftraggebers vom 28.07.2026, protokolliert in docs/BILDRECHTE.md",
+      "personen_abgebildet": true,
+      "personen_einwilligung": true,
+      "freigabe": true,
+      "freigabe_datum": "2026-07-29",
+      "verwendung": [
+        "/"
+      ],
+      "grossformat": true
     }
   }
 }

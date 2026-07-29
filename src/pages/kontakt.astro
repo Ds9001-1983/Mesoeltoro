@@ -34,6 +34,7 @@ import { restaurant } from '../lib/daten.ts'
   />
   <div class="huelle kontakt">
     <header class="kontakt__kopf">
+      <p class="rubrik-es" lang="es" aria-hidden="true">La Reserva</p>
       <p class="eyebrow">Waldbröl · Bröltal</p>
       <h1>Kontakt und Anfahrt</h1>
       <Statusband mitKonfiguration klasse="kontakt__status" />
@@ -128,6 +129,15 @@ import { restaurant } from '../lib/daten.ts'
 <style>
   .kontakt {
     padding-block: var(--raum-8) var(--raum-9);
+  }
+
+  .rubrik-es {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-block-end: var(--raum-2);
   }
 
   .kontakt__haus {

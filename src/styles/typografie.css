@@ -105,11 +105,18 @@ time,
   padding: 0;
 }
 
-/* --- Spanische Begriffe -----------------------------------------------------
-   „Estancia", „Parrilla", „seit 1975" — kursiv in Gold. Das Stilmittel der
-   Gestaltung. Rein visuell: Die Bedeutung hängt nirgends an der Auszeichnung,
-   sonst wäre es ein 1.4.1-Fall.                                            */
-.spanisch {
+/* --- Auszeichnung im Fließtext ----------------------------------------------
+   Kursiv in Gold. Rein visuell: Die Bedeutung hängt nirgends an der
+   Auszeichnung, sonst wäre es ein 1.4.1-Fall.
+
+   ZWEI Klassen, nicht eine — der Unterschied ist nicht kosmetisch:
+   `.spanisch` steht nur bei echtem Spanisch und wird immer zusammen mit
+   `lang="es"` gesetzt, damit eine deutsche Sprachausgabe „Estancia“ nicht
+   deutsch ausspricht (3.1.2). `.hervor` ist dieselbe Optik für deutsche
+   Begriffe — „Bergisches Land“ stand am 29.07.2026 fälschlich unter
+   `.spanisch` und hätte damit ein falsches Sprachsignal getragen.        */
+.spanisch,
+.hervor {
   font-style: italic;
   color: var(--akzent);
 }

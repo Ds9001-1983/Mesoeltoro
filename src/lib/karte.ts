@@ -133,6 +133,14 @@ const gericht = z
 const kategorie = z.object({
   id: z.string().regex(/^[a-z0-9-]+$/),
   titel: z.string().min(1),
+  /**
+   * Spanische Rubrik über der deutschen Überschrift — „Entrantes“ über
+   * „Vorspeisen“. Rein typografisch: Sie trägt nie Information, die nicht
+   * auch auf Deutsch dasteht. Wer die Karte liest, muss sie verstehen.
+   *
+   * Pflichtfeld, damit eine neue Kategorie nicht stumm ohne Rubrik erscheint.
+   */
+  spanisch: z.string().min(1),
   einleitung: z.string().min(1).nullable(),
   reihenfolge: z.number().int().positive(),
   steuerkategorie: z.enum(['speise', 'getraenk']),

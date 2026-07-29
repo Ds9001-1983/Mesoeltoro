@@ -154,3 +154,55 @@ test.describe('Bilder', () => {
     })
   }
 })
+
+test.describe('Spanisch (3.1.2)', () => {
+  test.skip(({ browserName }) => browserName !== 'chromium', 'nur einmal nötig')
+
+  for (const route of ROUTEN) {
+    test(`jede spanische Zeile trägt lang="es": ${route}`, async ({ page }) => {
+      await page.goto(route)
+
+      /*
+       * Ohne `lang="es"` spricht eine deutsche Sprachausgabe „La Parrilla“
+       * mit deutschem Lautwert aus. Das ist WCAG 3.1.2 — und es ist der
+       * Fehler, der bei zweisprachiger Gestaltung am häufigsten passiert,
+       * weil er beim Ansehen nicht auffällt.
+       */
+      const verdaechtig = await page.evaluate(() => {
+        const SPANISCH =
+          /\b(La Parrilla|La Carta|La Casa|La Bodega|La Reserva|Los Huéspedes|Sobre la brasa|La Filosofía|El Corazón|El Horario|Entrantes|Postres|Verduras|Guarniciones|Carnes y Pescados|Estancia|Desde|Parrilla Argentina)\b/
+        const treffer: string[] = []
+        const lauf = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT)
+        let knoten = lauf.nextNode()
+        while (knoten) {
+          const text = (knoten.textContent ?? '').trim()
+          if (text && SPANISCH.test(text)) {
+            const element = knoten.parentElement
+            const sprache = element?.closest('[lang]')?.getAttribute('lang') ?? 'de'
+            if (!sprache.startsWith('es')) treffer.push(text.slice(0, 60))
+          }
+          knoten = lauf.nextNode()
+        }
+        return treffer
+      })
+
+      expect(verdaechtig, `Spanisch ohne lang="es" auf ${route}`).toEqual([])
+    })
+  }
+
+  test('keine Information steht ausschließlich auf Spanisch', async ({ page }) => {
+    await page.goto('/speisekarte/')
+
+    // Jede spanische Rubrik hat eine deutsche Überschrift unmittelbar daneben.
+    const rubriken = page.locator('.kategorie__spanisch')
+    const anzahl = await rubriken.count()
+    expect(anzahl).toBeGreaterThan(0)
+
+    for (let i = 0; i < anzahl; i += 1) {
+      const deutsch = await rubriken
+        .nth(i)
+        .evaluate((el) => el.nextElementSibling?.textContent?.trim() ?? '')
+      expect(deutsch.length, 'spanische Rubrik ohne deutsche Überschrift').toBeGreaterThan(2)
+    }
+  })
+})

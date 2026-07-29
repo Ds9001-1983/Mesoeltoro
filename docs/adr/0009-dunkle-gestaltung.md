@@ -116,3 +116,62 @@ schlechtesten Pixel gegen die Textfarbe. Gemessen wird bei 320, 768 und
 
 Die Gegenprobe ist gelaufen: Ohne die Verlaufsebenen fällt der Test auf
 1,00:1 bis 1,76:1 — er kann also rot werden und ist keine Attrappe.
+
+---
+
+## Nachtrag 29.07.2026 — drei Rückmeldungen, drei verschiedene Ursachen
+
+Der Auftraggeber meldete: Hero unscharf, Steak kaum erkennbar, Laufband steht.
+Alle drei nachgemessen, keine hatte die vermutete Ursache.
+
+**Das Laufband stand nicht — es lief mit 34 px/s.** Ein Umlauf misst 1280 px
+und dauerte 38 s. Der bestehende Test wies korrekt nach, *dass* Bewegung
+stattfindet; das war die falsche Frage. Jetzt 22 s (58 px/s, wie die
+Vorschau), und ein zweiter Test prüft das Tempo.
+
+**Der Hero war unscharf, weil die Vorlage zu klein ist.**
+`meson_el_toro_speisekarte_steak.jpg` hat 1766 px. Ein Vollbild bei 1440
+CSS-Pixeln fordert auf einem Retina-Bildschirm 2880 an und bekam 1600 — 55 %.
+Behoben durch Hochskalieren auf 2400 px mit Lanczos und Nachschärfen auf der
+Zielgröße, bei gleichzeitig niedrigerer AVIF-Qualität. Nachgemessen:
+
+    1600 px @ 58, vom Browser hochgezogen ....  78,8 KB
+    2400 px @ 44, Lanczos + geschärft .......   80,9 KB   ← sichtbar schärfer
+    2400 px @ 50 ............................  104,2 KB   ← kaum besser
+
+Gleiche Dateigröße, deutlich besseres Bild. Hochskalieren fügt trotzdem keine
+Bildinformation hinzu — es entfällt nur das doppelte Umrechnen. Eine Aufnahme
+mit 2880 px sähe besser aus.
+
+**Dass das Steak nicht zu erkennen war, hatte ZWEI Gründe.**
+
+Der erste war das Grading: Der Multiply-Verlauf endete bei `#47240e`, also
+Faktor 0,28 / 0,14 / 0,05. Zurückgenommen auf `#9c6136`, Vignette schwächer.
+
+Der zweite war ein **Spezifitätsfehler in `Bild.astro`**, und er betraf jede
+einzelne Bildfläche des Projekts. Astro hängt an jeden Selektorteil ein
+Scope-Attribut; aus `.bild img` wurde `.bild[cid] img[cid]` mit (0,4,1).
+Jeder aufrufende Container schreibt `.kasten[cid] .bild img` — nur (0,3,1).
+Das `block-size: auto` aus der Komponente gewann also immer.
+
+Folge: `object-fit: cover` hatte nirgends etwas zu beschneiden. Das `img`
+behielt seine Eigenhöhe (im Hero 1080 px in einem 629 px hohen Kasten) und
+lief unten heraus. Sichtbar war überall der **obere Rand** der Vorlage statt
+des gewählten Ausschnitts — im Hero das unscharfe hintere Steak statt des
+scharfen vorderen.
+
+Der Fehler war am Ergebnis nicht zu erkennen: Ein oben angeschnittenes Bild
+sieht aus wie ein absichtlich so gewähltes. Gefunden erst, als zwei
+verschiedene `object-position`-Werte dasselbe Bild ergaben und die berechneten
+Werte im Browser gemessen wurden.
+
+Behoben durch `:global(img)` in der Komponente — der Selektor bleibt bei
+(0,2,1), die Vorgabe steht, jeder Container kann sie überschreiben.
+Zusätzlich nutzt der Reset in `basis.css` jetzt `block-size` statt `height`,
+damit nicht zwei verschiedene Eigenschaften auf dasselbe zeigen.
+
+**Spanisch** ist von sechs Stellen auf ein System erweitert: Kategorien der
+Speisekarte, Kapitel, Seitenköpfe und Fußzeilenrubriken. Preise, Allergene
+und Rechtstexte bleiben deutsch. `tests/verhalten/dekor.spec.ts` prüft, dass
+jede spanische Zeichenkette `lang="es"` trägt (3.1.2) — gegengeprüft, der
+Test wird rot, wenn eines fehlt.

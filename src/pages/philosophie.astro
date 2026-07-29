@@ -26,6 +26,7 @@ import { restaurant } from '../lib/daten.ts'
   <div class="huelle">
     <section class="aufmacher">
       <div class="aufmacher__text">
+        <p class="rubrik-es" lang="es" aria-hidden="true">La Casa</p>
         <p class="eyebrow">Seit {restaurant.zahlen.gegruendet}</p>
         <h1>Ein halbes Jahrhundert Mesón el Toro in Waldbröl.</h1>
         <p class="lead">
@@ -116,6 +117,15 @@ import { restaurant } from '../lib/daten.ts'
       gap: var(--raum-8);
       align-items: center;
     }
+  }
+
+  .rubrik-es {
+    font-family: var(--schrift-mikro);
+    font-size: var(--t-eyebrow);
+    letter-spacing: var(--sperrung);
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-block-end: var(--raum-2);
   }
 
   .aufmacher__text .lead {

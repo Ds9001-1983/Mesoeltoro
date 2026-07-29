@@ -61,9 +61,23 @@ svg {
 }
 
 img {
-  /* Verhindert CLS, wenn width/height am Element fehlen. Sie sollen trotzdem
-     immer gesetzt werden — pruefe-bildrechte.mjs meckert, wenn nicht. */
-  height: auto;
+  /*
+   * Verhindert CLS, wenn width/height am Element fehlen. Sie sollen trotzdem
+   * immer gesetzt werden — pruefe-bildrechte.mjs meckert, wenn nicht.
+   *
+   * Bewusst `block-size` und nicht `height`: Die Komponenten setzen zum
+   * Füllen einer Fläche `block-size: 100%`. Stünde hier die physische
+   * Schreibweise, kollidierten zwei verschiedene Eigenschaften, die auf
+   * dasselbe zeigen — und das Ergebnis hing an einer Feinheit der
+   * Kaskadenauflösung statt an der Spezifität.
+   *
+   * Folge des alten Zustands: `object-fit: cover` hatte in JEDER Bildfläche
+   * nichts zu beschneiden, weil das img seine Eigenhöhe behielt und einfach
+   * unten aus dem Kasten lief. Sichtbar war dadurch immer der OBERE Rand der
+   * Vorlage statt der gewählte Ausschnitt. Am 29.07.2026 am Hero aufgefallen,
+   * nachdem zwei `object-position`-Werte wirkungslos geblieben waren.
+   */
+  block-size: auto;
 }
 
 /* --- Formular-Elemente (existieren aktuell nur als Radios im Fuß) ---------- */

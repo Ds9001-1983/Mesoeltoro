@@ -58,7 +58,7 @@ Bordeaux `#7B2233` — aber nur als Vollfläche. Begründung in ADR 0009.
 
 ---
 
-## Signature Moves — 7 von geforderten 5–7
+## Signature Moves — 8, einer über der Skill-Obergrenze
 
 | # | Move | Ort | Technik |
 |---|---|---|---|
@@ -69,10 +69,15 @@ Bordeaux `#7B2233` — aber nur als Vollfläche. Begründung in ADR 0009.
 | 5 | **Der Satz der Karte** | Speisekarte, Kapitel II | Leader-Linie zeichnet sich zeilenweise, `scaleX()` auf `view()` |
 | 6 | **Das Laufband** | zwischen Vorspann und I | Begriffsband, CSS-Animation, **mit Pausetaste** |
 | 7 | **Das Papier** | global | Gerechnete Faserkachel bei 3,5 % + nativer `@view-transition` |
+| 8 | **Das Bildband** | zwischen IV und V | Das einzige Bild der Seite, das über die Kante läuft. Vorlage nativ 3000 px |
 
-Sieben Moves — die Obergrenze des Skills. Der frühere „Temperaturwechsel" ist
-entfallen, weil es seit der dunklen Grundfläche keine Temperatur mehr zu
-wechseln gibt.
+Acht Moves — einer über der Obergrenze des Skills (5–7). Das ist eine bewusste
+Abweichung: Das Bildband ist kein Effekt, sondern eine Layoutentscheidung
+gegen die Monotonie von sechs gleich gebauten Kapiteln. Wer streichen will,
+streicht es zuerst.
+
+Der frühere „Temperaturwechsel" ist entfallen, weil es seit der dunklen
+Grundfläche keine Temperatur mehr zu wechseln gibt.
 
 | Anforderung | Stand |
 |---|---|
@@ -168,6 +173,7 @@ Ein Badge wäre hier eine falsche Aussage.
 | Punkt | Ziel | Stand |
 |---|---|---|
 | JavaScript auf `/` | ≤ 32 KB gzip | **17,9 KB** |
+| Hero-Bild scharf auf Retina | 2400 px | **hochskaliert aus 1766 px** — sichtbar besser, aber kein Ersatz für eine große Aufnahme |
 | LCP | < 2,5 s | geprüft in `tests/verhalten/dekor.spec.ts` |
 | CLS | < 0,1 | Schriftmetriken angeglichen, alle Bilder mit Maßen |
 | WebGL 60 fps auf Mittelklasse | — | 30-fps-Deckel, `IntersectionObserver`, Notausschalter in `restaurant.json` |

@@ -80,6 +80,36 @@ test.describe('Laufband (2.2.2 Pause, Stop, Hide)', () => {
     expect(stillGeblieben, 'die Pausetaste hält das Band nicht an').toBe(true)
   })
 
+  test('läuft schnell genug, um als Bewegung wahrgenommen zu werden', async ({ page }, info) => {
+    test.skip(info.project.name.startsWith('reduziert'), 'Dort steht es absichtlich')
+
+    await page.goto('/')
+    const band = page.locator('.laufband__reihe').first()
+
+    /*
+     * Der Test darüber weist nach, DASS sich das Band bewegt. Das genügt
+     * nicht: Die erste Fassung lief mit 38 s auf rund 1280 px Umlauf, also
+     * 34 px/s — messbar in Bewegung, für das Auge stehend. Der Auftraggeber
+     * hat es am 29.07.2026 als „steht" gemeldet, und er hatte recht.
+     *
+     * Unter 45 px/s ist ein Laufband Dekoration ohne Wirkung.
+     */
+    const tempo = await band.evaluate((el) => {
+      const stil = getComputedStyle(el)
+      const dauer = Number.parseFloat(stil.animationDuration) // Sekunden
+      const strecke = el.getBoundingClientRect().width // ein Umlauf = 100 %
+      return { dauer, strecke, proSekunde: strecke / dauer }
+    })
+
+    expect(tempo.dauer, 'keine Animationsdauer gesetzt').toBeGreaterThan(0)
+    expect(
+      tempo.proSekunde,
+      `Das Band läuft mit ${tempo.proSekunde.toFixed(0)} px/s ` +
+        `(${tempo.strecke.toFixed(0)} px in ${tempo.dauer} s). Unter 45 px/s ` +
+        'nimmt es niemand als Bewegung wahr.',
+    ).toBeGreaterThan(45)
+  })
+
   test('steht bei reduzierter Bewegung von Anfang an still', async ({ browser }) => {
     const kontext = await browser.newContext({ reducedMotion: 'reduce' })
     const seite = await kontext.newPage()

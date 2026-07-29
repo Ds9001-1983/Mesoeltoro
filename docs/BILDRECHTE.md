@@ -105,6 +105,28 @@ zwei Ebenen, in der Komponente und in der Nachprüfung.
 
 ---
 
+## Hochskalierte Fassungen
+
+Drei Bilder tragen im Register `grossformat: true` und bekommen dadurch
+Ableitungen bis 2400 px — bei zwei davon durch **Hochskalieren**, weil die
+Vorlage kleiner ist:
+
+| Schlüssel | Vorlage | Zweck |
+|---|---|---|
+| `glut-grill` | 1766 px | Hero, vollflächig |
+| `steak-teller` | 2000 px | obere Ebene des Anschnitts |
+| `gastraum-band` | 3000 px | Bildband — nativ groß genug |
+
+Das Verfahren ist Lanczos plus Nachschärfen, **kein KI-Upscaling**.
+Real-ESRGAN und Verwandte erfinden Textur, die es nie gab; bei einem Foto von
+echtem Essen wäre das eine Manipulation am Produktbild und ab 02.08.2026 ein
+Fall für Art. 50 EU AI Act. Ein Lanczos-Resample ist keines von beidem und
+braucht deshalb auch keine Kennzeichnung.
+
+Hochskalieren fügt keine Bildinformation hinzu. Für ein wirklich scharfes
+Vollbild braucht es eine Aufnahme ab 2400 px — das ist das konkrete Argument
+für einen eigenen Drehtag.
+
 ## Die Bildmarke
 
 `public/marke/signet.png` ist **kein Foto**, sondern das eigene Zeichen des
