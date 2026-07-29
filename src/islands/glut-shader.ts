@@ -185,6 +185,30 @@ if (darfLaufen()) {
   // Erst nach dem LCP aufbauen. Der Shader darf niemals das größte
   // Inhaltselement verzögern — er ist Dekor, kein Inhalt.
   const spaeter = () => {
+    /*
+     * Zweite Prüfung, und die ist die entscheidende.
+     *
+     * Beide Inseln sind type=module, laufen also verzögert und in
+     * Dokumentreihenfolge. Dieses Skript steht in GlutKapitel.astro mitten im
+     * Body, bewegung.ts erst in Basis.astro am Ende — der Shader startet
+     * damit ZUERST. Beim ersten darfLaufen() steht auf <html> noch die
+     * Markup-Vorgabe "full", auch wenn das System „Bewegung reduzieren"
+     * meldet. bewegung.ts setzt "reduced" erst rund 6 ms später und feuert
+     * `meson:bewegung`; den Horcher dafür registriert baueAuf() aber erst im
+     * requestIdleCallback, also 23 ms danach. Das Ereignis war da längst
+     * durch, ein zweites kommt nicht.
+     *
+     * Folge, am 29.07.2026 mit instrumentierten drawArrays-Aufrufen gemessen:
+     * 67 gezeichnete Bilder in 2,8 s bei gesetztem prefers-reduced-motion.
+     * Der Shader ignorierte die Einstellung vollständig.
+     *
+     * Die Prüfung hier läuft nach beiden Inseln und liest den dann gültigen
+     * Zustand.
+     */
+    if (!darfLaufen()) {
+      canvas.remove()
+      return
+    }
     if (!baueAuf()) canvas.remove()
   }
 

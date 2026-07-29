@@ -99,15 +99,54 @@ const { ziffer, spanisch, id, klasse } = Astro.props
    * den Minifiern zusammengefaltet und damit ungültig. Steht auf der
    * Verbotsliste in CLAUDE.md.
    */
+  /*
+   * ACHTUNG BEI DEN BEREICHEN — hier lagen zwei Fehler, die zusammen dafür
+   * gesorgt haben, dass von diesem Move nichts zu sehen war. Am 29.07.2026
+   * gemessen, nachdem der Auftraggeber „es läuft nix" gemeldet hatte.
+   *
+   * 1. Die Prozente eines `entry`-Bereichs sind Anteile der Höhe des
+   *    ANIMIERTEN ELEMENTS, nicht der Fensterhöhe. Die Haarlinie ist 1 px
+   *    hoch. `entry 10%` bis `entry 70%` waren damit **0,6 px Scrollweg** —
+   *    der Fortschritt sprang zwischen zwei Scrollpositionen von 0 auf 100 %.
+   *    Die Animation lief also tadellos und war trotzdem unsichtbar.
+   *
+   * 2. Die Überschrift war fertig aufgezogen, bevor sie den unteren
+   *    Bildschirmrand verlassen hatte: Start bei 95,6–98,8 % Fensterhöhe,
+   *    Ende bei 82–94 %. Vorbei, ehe die Zeile im Lesebereich ankam.
+   *
+   * Beides ist behoben, indem das Ende in `cover` angegeben wird. Der
+   * cover-Bereich ist Fensterhöhe + Elementhöhe lang, damit geht die
+   * Fenstergröße in die Rechnung ein und die Elementhöhe verliert ihren
+   * Alleineinfluss. Bei 1440 × 900 sind das rund 270 px für die Linie und
+   * 378 px für die Überschrift — statt 0,6 px.
+   *
+   * `entry 0%` und `cover 0%` bezeichnen denselben Punkt: den Moment, in dem
+   * die Oberkante den unteren Fensterrand berührt.
+   */
   @supports (animation-timeline: view()) {
     :root[data-motion='full'] .rubrik__linie {
-      animation-name: linie-zeichnen;
+      /*
+       * Der Name ist komponenteneindeutig, und das ist keine Kosmetik.
+       *
+       * Er hieß bis zum 29.07.2026 `linie-zeichnen` — genau wie der Keyframe
+       * in Gerichtszeile.astro. `@keyframes` in einem `is:global`-Block
+       * gelten für das ganze Dokument; bei Namensgleichheit gewinnt die
+       * zuletzt geparste Definition. Die Fassung der Gerichtszeile hat keinen
+       * `from`-Schritt, weil sie ihren Startwert als Basisdeklaration setzt.
+       * Die Haarlinie hat keine solche Basis — ihr Startwert wurde damit der
+       * berechnete Wert, also `scaleX(1)`. Anfang gleich Ende: Die Animation
+       * lief und veränderte nichts.
+       *
+       * Nachgewiesen über getAnimations()[0].effect.getKeyframes(), das
+       * `0: none | 1: scaleX(1)` lieferte.
+       */
+      animation-name: rubrik-linie-zeichnen;
       animation-duration: 1s;
       animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
       animation-fill-mode: both;
       animation-timeline: view();
-      animation-range-start: entry 10%;
-      animation-range-end: entry 70%;
+      animation-range-start: entry 0%;
+      animation-range-end: cover 30%;
     }
 
     :root[data-motion='full'] .rubrik__titel {
@@ -116,12 +155,12 @@ const { ziffer, spanisch, id, klasse } = Astro.props
       animation-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
       animation-fill-mode: both;
       animation-timeline: view();
-      animation-range-start: entry 15%;
-      animation-range-end: entry 80%;
+      animation-range-start: entry 0%;
+      animation-range-end: cover 35%;
     }
   }
 
-  @keyframes linie-zeichnen {
+  @keyframes rubrik-linie-zeichnen {
     from {
       transform: scaleX(0);
     }

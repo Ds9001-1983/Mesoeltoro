@@ -74,6 +74,11 @@ Gate hart, weil es um fremde Rechte geht, nicht um eigene Aussagen.
 | Rasterzellen ohne `min-inline-size: 0` | Voreingestellt ist `min-width: auto`; eine einzige lange Zeile zieht dann die ganze Seite waagerecht (1.4.10) |
 | Endlos laufende Bewegung ohne Pausetaste | 2.2.2. Genau daran scheitert die Vorschau mit Laufband und Glutpuls |
 | Laufband unter 45 px/s | Bewegt sich messbar, wird aber als stehend wahrgenommen. Die erste Fassung lief mit 34 px/s und wurde genau so gemeldet |
+| Scroll-Bereich unter 120 px Scrollweg | `entry`-Prozente sind Anteile der ELEMENTHÖHE, nicht der Fensterhöhe. Bei einer 1 px hohen Haarlinie ergab `entry 10%`–`entry 70%` genau 0,6 px: Die Animation lief und sprang von 0 auf 1. Das Ende gehört in `cover`-Prozent |
+| Ein globaler `@keyframes`-Name ohne Komponentenpräfix | Astro scoped Klassen, aber keine Keyframes in `is:global`. `linie-zeichnen` war zweimal vergeben; die zuletzt geparste Fassung gewann dokumentweit und hatte keinen `from`-Schritt — Anfang gleich Ende, die Rubriklinie zeichnete sich nie. `scripts/pruefe-keyframes.mjs` bricht bei Doppelvergabe ab |
+| `overflow` ≠ `visible` über einem Element mit `view()` | Macht den Kasten zum Scrollcontainer, gegen den die Zeitachse misst. Der Anschnitt stand dadurch bei konstant 63,6 % Fortschritt. Zeitachse benannt auf einem Vorfahren ohne overflow setzen |
+| `animation-range` in `vh` zusammen mit `scroll(root)` | Absolute Offsets ab Seitenanfang. Der Anschnitt zog um und war danach 3000 px vor dem ersten Sichtkontakt durchgelaufen. Bereiche gehören relativ zum Element (`cover`-Prozent) |
+| Zeitgesteuerte Animation ohne `:root[data-motion='full']` | Der Glutpunkt auf `/kontakt/` lief endlos und ließ sich durch nichts anhalten — 2.2.2. Dort gibt es keine Pausetaste, die ihn eingefroren hätte |
 | `block-size` in `Bild.astro` ohne `:global()` | Astro hängt an jeden Selektorteil ein Scope-Attribut. `.bild img` wird dadurch (0,4,1) und überstimmt jeden Container. Folge: `object-fit: cover` hatte nichts zu beschneiden, sichtbar war überall der obere Rand der Vorlage |
 | Vollbild aus einer Vorlage unter 2400 px, ohne `grossformat: true` | Ein Vollbild bei 1440 CSS-px fordert auf Retina 2880 an. `tests/unit/bildaufloesung.test.ts` bricht sonst |
 | Spanisch ohne `lang="es"` | 3.1.2. Eine deutsche Sprachausgabe spricht „La Parrilla" sonst deutsch aus |
@@ -160,8 +165,8 @@ Wer eine Farbe anfasst, ändert sie in `src/lib/farben.ts` **und** `tokens.css`
 
 ```
 pnpm pruefen      Typen, 101 Einheitentests, Inhalte, Kontraste
-pnpm build        baut und prüft danach Claims, Bildrechte, Fremdanfragen
-pnpm test:e2e     296 Prüfungen im Browser, 4 Projekte
+pnpm build        baut und prüft danach Claims, Bildrechte, Fremdanfragen, Keyframes
+pnpm test:e2e     311 Prüfungen im Browser, 4 Projekte
 ```
 
 Bild geändert? `pnpm bilder` erzeugt die Ableitungen neu.

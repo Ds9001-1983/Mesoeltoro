@@ -75,7 +75,36 @@ const { mitKonfiguration = false, klasse } = Astro.props
      je Fläche. */
   .status[data-zustand='geoeffnet'] .status__punkt {
     background-color: var(--puls);
-    animation: glutpuls 4s ease-in-out infinite;
+  }
+
+  /*
+   * Der Puls hängt an denselben drei Schaltern wie jede andere Bewegung.
+   *
+   * Bis zum 29.07.2026 stand hier `animation: glutpuls 4s ease-in-out
+   * infinite` ohne jede Absicherung — kein data-motion-Gate, keine
+   * prefers-reduced-motion-Ausnahme. Der Punkt trägt zwar `data-anim="zeit"`
+   * und wurde deshalb von einer Pausetaste eingefroren; auf der Startseite
+   * fiel das Loch dadurch nicht auf.
+   *
+   * Auf /kontakt/ gibt es aber überhaupt keine Pausetaste. Dort lief der
+   * Punkt während der Öffnungszeiten endlos und ließ sich durch NICHTS
+   * anhalten: nicht durch den Schalter im Fuß, nicht durch die
+   * Systemeinstellung. Gemessen am 29.07.2026: data-motion="off" →
+   * playState weiterhin "running". Das ist ein Verstoß gegen 2.2.2, und er
+   * blieb unentdeckt, weil kein Test je Route nach unaufhaltbaren
+   * Animationen gesucht hat. tests/verhalten/bewegung.spec.ts tut das jetzt.
+   */
+  :global(:root[data-motion='full']) .status[data-zustand='geoeffnet'] .status__punkt {
+    animation-name: glutpuls;
+    animation-duration: 4s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .status[data-zustand='geoeffnet'] .status__punkt {
+      animation-name: none;
+    }
   }
 
   @keyframes glutpuls {

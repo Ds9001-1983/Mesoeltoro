@@ -64,7 +64,7 @@ import Rubrik from './Rubrik.astro'
       Steht NEBEN dem Text, nicht dahinter — Projektregel 2.
     */}
     <div class="glut__bild">
-      <Anschnitt ebenen={['steak-teller', 'glut-grill']} strecke="80vh" />
+      <Anschnitt ebenen={['steak-teller', 'glut-grill']} />
     </div>
   </div>
 </section>
@@ -109,9 +109,23 @@ import Rubrik from './Rubrik.astro'
     position: relative;
   }
 
+  /*
+   * KEIN overflow: hidden hier.
+   *
+   * `overflow` mit einem anderen Wert als `visible` macht aus einem Kasten
+   * einen Scrollcontainer — auch wenn nie etwas zu scrollen ist. Eine
+   * view()-Zeitachse misst gegen den nächsten solchen Container. Der
+   * Anschnitt hing damit an einer Achse, die sich nie bewegt: Sein
+   * Fortschritt stand bei konstant 63,6 %, egal wo die Seite stand.
+   * Am 29.07.2026 gemessen, nachdem der Auftraggeber gemeldet hatte, dass
+   * nichts läuft.
+   *
+   * Beschnitten wird ohnehin eine Ebene tiefer: `.anschnitt__rahmen` bringt
+   * sein eigenes `overflow: hidden` mit. Hier war es doppelt gemoppelt — und
+   * genau diese Verdopplung hat den Move stillgelegt.
+   */
   .glut__bild {
     aspect-ratio: 3 / 4;
-    overflow: hidden;
   }
 
   /* Der Anschnitt bringt sein eigenes Passepartout mit — hier soll er die

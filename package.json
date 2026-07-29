@@ -17,7 +17,7 @@
     "pruefen": "pnpm check && pnpm vitest run && pnpm pruefen:inhalt && pnpm pruefen:kontrast",
     "pruefen:inhalt": "node scripts/pruefe-karte.mjs && node scripts/pruefe-pflichtfelder.mjs && node scripts/pruefe-datumsbomben.mjs",
     "pruefen:kontrast": "node scripts/pruefe-kontraste.mjs",
-    "pruefen:dist": "node scripts/pruefe-claims.mjs && node scripts/pruefe-bildrechte.mjs && node scripts/pruefe-externe-requests.mjs",
+    "pruefen:dist": "node scripts/pruefe-claims.mjs && node scripts/pruefe-bildrechte.mjs && node scripts/pruefe-externe-requests.mjs && node scripts/pruefe-keyframes.mjs",
     "pruefen:recht": "pnpm pruefen:dist",
     "bilder": "node scripts/bilder-aufbereiten.mjs",
     "test": "vitest run",

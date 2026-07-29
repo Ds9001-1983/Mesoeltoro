@@ -23,6 +23,17 @@ const MODI: readonly Modus[] = ['full', 'reduced', 'off']
 
 const wurzel = document.documentElement
 
+/*
+ * Muss VOR setzeModus() stehen, nicht erst beim Abschnitt „Pausetaste“.
+ *
+ * setzeModus('off') ruft setzePause(false) auf, und setzePause() greift auf
+ * diese Liste zu. Stünde sie weiter unten, liefe ein gespeichertes „off“
+ * beim Start in die temporale Totzone der const-Bindung — ReferenceError,
+ * und mit ihm fiele die gesamte Bewegungssteuerung aus. Die Funktionen
+ * selbst sind Deklarationen und damit hochgezogen; eine const ist es nicht.
+ */
+const pausetasten = document.querySelectorAll<HTMLButtonElement>('[data-pausetaste]')
+
 function istModus(wert: unknown): wert is Modus {
   return typeof wert === 'string' && (MODI as readonly string[]).includes(wert)
 }
@@ -52,10 +63,20 @@ function merken(modus: Modus): void {
 function setzeModus(modus: Modus, speichern: boolean): void {
   wurzel.dataset['motion'] = modus
 
-  // Im Modus „off“ steht ohnehin alles; eine aktive Pause wäre dann sinnlos
-  // und würde beim Zurückschalten einen eingefrorenen Zustand hinterlassen.
+  /*
+   * Im Modus „off“ steht ohnehin alles; eine aktive Pause wäre dann sinnlos
+   * und würde beim Zurückschalten einen eingefrorenen Zustand hinterlassen.
+   *
+   * Hier stand bis zum 29.07.2026 `delete wurzel.dataset['motionPaused']`.
+   * Das setzte nur das Attribut am <html> zurück — aria-pressed und die
+   * Beschriftung der Tasten blieben auf „gedrückt“ stehen. Die Umschaltung
+   * in Zeile 120 liest danach den geleerten Datensatz und dreht folgerichtig
+   * in die falsche Richtung: Der nächste Klick auf eine Taste, die
+   * „Bewegung fortsetzen“ anbietet, HÄLT AN. Für Screenreader war der
+   * Zustand ab da dauerhaft falsch angesagt.
+   */
   if (modus === 'off') {
-    delete wurzel.dataset['motionPaused']
+    setzePause(false)
   }
 
   if (speichern) merken(modus)
@@ -93,8 +114,6 @@ if (schalter) {
  * DER SEITE verlangt. Eine Media Query ist kein Mechanismus auf der Seite —
  * das ist der Punkt, an dem die meisten Umsetzungen scheitern.
  */
-
-const pausetasten = document.querySelectorAll<HTMLButtonElement>('[data-pausetaste]')
 
 function setzePause(pausiert: boolean): void {
   if (pausiert) {

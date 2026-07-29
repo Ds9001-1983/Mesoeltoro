@@ -316,3 +316,154 @@ Bordeaux-Block tragen, und auf keiner hellen Fläche darf Gold als Schriftfarbe
 stehen — gesucht wird am gerenderten Ergebnis, nicht im Quelltext, weil genau
 so der Fehler entsteht: durch ein vergessenes `var(--gold)` in einer
 Komponente, die vorher nur auf dunklem Grund stand.
+
+---
+
+## Nachtrag 29.07.2026, dritte Rückmeldung — „es läuft nix"
+
+Wörtlich: *„warum laufen die animationen nicht da ist sogar ein pause knopf
+aber es läuft nix"*, in Safari **und** Chrome.
+
+Erste Messung: In Chromium mit Standardeinstellungen lief alles.
+`data-motion="full"`, Laufband `animationPlayState: running`,
+`CSS.supports('animation-timeline','view()')` wahr, keine Skriptfehler.
+Auf dem Rechner des Auftraggebers steht `com.apple.universalaccess
+reduceMotion` auf `0` — „Bewegung reduzieren" ist also aus. Safari und Chrome
+teilen keine Einstellungen; damit fielen sowohl der Browser als auch die
+Systemeinstellung als Erklärung aus.
+
+Fünf unabhängige Untersuchungen mit anschließender Widerlegungsprobe haben
+dann den eigentlichen Befund geliefert. Er ist unangenehm:
+
+> **Die Animationen liefen technisch einwandfrei — und waren trotzdem
+> unsichtbar.** Das ist dieselbe Fehlerklasse wie beim Laufband mit 34 px/s
+> am Vortag: Die vorhandenen Tests wiesen nach, DASS Bewegung stattfindet.
+> Das war die falsche Frage.
+
+### 1. Der Keyframe-Name war doppelt vergeben
+
+`@keyframes linie-zeichnen` existierte zweimal: in `Rubrik.astro`
+(`from { scaleX(0) } to { scaleX(1) }`) und in `Gerichtszeile.astro`
+(nur `to`, weil die Gerichtszeile ihren Startwert als Basisdeklaration setzt).
+
+Beide stehen in `is:global`-Blöcken und gelten dokumentweit. Bei
+Namensgleichheit gewinnt die zuletzt geparste Definition — hier die ohne
+`from`. Die Haarlinie hatte keine Basisdeklaration, ihr Startwert wurde damit
+der berechnete Wert, also das Ziel selbst.
+
+**Anfang gleich Ende. Die Animation lief und veränderte nichts.**
+
+Nachgewiesen über `getAnimations()[0].effect.getKeyframes()`, das
+`0: none | 1: scaleX(1)` lieferte. Am Ergebnis war es nicht zu erkennen: Eine
+Linie, die sich nicht zeichnet, sieht aus wie eine Linie.
+
+`scripts/pruefe-keyframes.mjs` zählt jetzt bei jedem Build die
+Keyframe-Namen im gebauten CSS und bricht bei Doppelvergabe ab.
+Gegengeprüft — mit dem alten Namen ist der Build rot.
+
+### 2. Die Auslösestrecken waren in der falschen Einheit gerechnet
+
+Die Prozente eines `entry`-Bereichs sind Anteile der Höhe des **animierten
+Elements**, nicht der Fensterhöhe. `.rubrik__linie` ist 1 px hoch.
+`entry 10%` bis `entry 70%` waren damit **0,6 px Scrollweg** — der
+Fortschritt sprang zwischen zwei Scrollpositionen von 0 auf 1.
+
+Die Überschrift war fertig aufgezogen, bevor sie den unteren Bildschirmrand
+verlassen hatte: Start bei 95,6–98,8 % Fensterhöhe, Ende bei 82–94 %.
+Vorbei, ehe die Zeile im Lesebereich ankam.
+
+Behoben, indem das Ende in `cover`-Prozent steht — der cover-Bereich ist
+Fensterhöhe **plus** Elementhöhe lang, damit geht die Fenstergröße in die
+Rechnung ein. Gemessen bei 1440 × 900:
+
+| | vorher | jetzt |
+|---|---|---|
+| Haarlinie | 0,6 px | **250 px** |
+| Überschrift | 39–117 px | **350 px** |
+| Anschnitt | – | **790 px** |
+
+### 3. Der Anschnitt war abgelaufen, bevor er zu sehen war
+
+`scroll(root block)` misst absolute Offsets ab Seitenanfang. Aus
+`strecke="80vh"` wurden 0 bis 720 px. Solange der Anschnitt im Hero saß, ging
+das auf — seit er in Kapitel III liegt (y = 4001), war die Animation bei
+y = 720 vollständig durchgelaufen, also über 3000 px bevor der Rahmen
+überhaupt ins Bild kam. Fortschritt beim Eintritt ins Sichtfeld: 100 %, bei
+sechs geprüften Fensterhöhen.
+
+Der Kommentar im Code begründete `scroll()` mit dem alten Einbauort. Er war
+richtig — für einen Ort, den es nicht mehr gab.
+
+**Der Umbau darauf hat einen zweiten Fehler freigelegt.** `view()` lieferte
+konstant 63,6 % Fortschritt, unabhängig von der Scrollposition. Grund:
+`overflow: hidden` macht aus einem Kasten einen Scrollcontainer, auch wenn
+nie etwas scrollt — und eine view()-Zeitachse misst gegen den nächsten
+solchen Container. Der lag mit `.anschnitt__rahmen` und `.glut__bild` gleich
+zweimal zwischen Element und Seite.
+
+Gelöst über eine **benannte** Zeitachse auf `.anschnitt` (kein overflow) und
+Wegfall des doppelten `overflow: hidden` in `.glut__bild` — der Rahmen
+beschneidet ohnehin schon.
+
+Die Ebenenanteile stehen jetzt in cover-Prozent statt in vh. Damit darf der
+Anschnitt umziehen, ohne dass jemand nachrechnet — genau der Fehler, der hier
+passiert ist.
+
+### 4. Der Glutpunkt auf /kontakt/ ließ sich durch nichts anhalten
+
+`animation: glutpuls 4s ease-in-out infinite` stand ohne jede Absicherung:
+kein `data-motion`-Gate, keine `prefers-reduced-motion`-Ausnahme. Auf der
+Startseite fiel das nicht auf, weil dort drei Pausetasten stehen und der
+Punkt `data-anim="zeit"` trägt.
+
+Auf `/kontakt/` gibt es keine Pausetaste. Gemessen: `data-motion="off"` →
+`playState` weiterhin `"running"`. **Das ist ein echter Verstoß gegen
+WCAG 2.2.2** und der einzige rechtlich harte Fund dieser Runde.
+
+`tests/verhalten/bewegung.spec.ts` prüft jetzt auf **jeder** Route: Bei
+`data-motion="off"` darf keine endlose Animation mehr laufen. Gegengeprüft —
+ohne das Gate fallen `/` und `/kontakt/`.
+
+### 5. Der WebGL-Shader ignorierte die Systemeinstellung
+
+Reihenfolgefehler zwischen zwei Inseln. Beide sind `type=module`, laufen also
+in Dokumentreihenfolge — und das Shader-Skript steht in `GlutKapitel.astro`
+mitten im Body, `bewegung.ts` erst in `Basis.astro` am Ende. Zeitprotokoll:
+
+    t = 20,9 ms   Shader prüft data-motion → steht noch auf "full"
+    t = 26,9 ms   bewegung.ts feuert meson:bewegung = "reduced"
+    t = 42,1 ms   Shader baut den WebGL-Kontext auf
+    t = 50,4 ms   Shader registriert den Horcher — 23 ms zu spät
+
+Gemessen mit instrumentierten `drawArrays`-Aufrufen: **67 gezeichnete Bilder
+in 2,8 s bei gesetztem `prefers-reduced-motion`.** Der Shader prüft den Modus
+jetzt ein zweites Mal, unmittelbar vor dem Aufbau.
+
+### 6. Die Pausetaste lief nach einem Moduswechsel aus dem Zustand
+
+`setzeModus('off')` löschte nur `data-motion-paused` am `<html>` und ließ
+`aria-pressed` samt Beschriftung auf „gedrückt" stehen. Der nächste Klick
+drehte dann in die falsche Richtung: Eine Taste, die „Bewegung fortsetzen"
+anbot, hielt an. Für Screenreader war der Zustand ab da dauerhaft falsch
+angesagt.
+
+Behoben über `setzePause(false)` statt des rohen `delete`. Dafür musste die
+Konstante `pausetasten` nach oben — sonst liefe ein gespeichertes „off" beim
+Start in die temporale Totzone und risse die ganze Bewegungssteuerung mit.
+
+### Was NICHT geändert wurde
+
+**Firefox kennt `animation-timeline` nicht.** Alle vier scroll-getriebenen
+Moves entfallen dort ersatzlos; gemessen in Firefox 151: `animationName`
+durchgehend `"none"`, `getAnimations().length` 0. Laufband, Glutpuls, Shader,
+Zeiger und Vorhang laufen dagegen tadellos.
+
+Das ist die im Code beabsichtigte Degradation — nur ist sie nirgends
+entschieden worden. Sie steht als offene Frage für den Auftraggeber: bewusst
+bestätigen, oder für Haarlinie und Leader-Linie einen zeitgesteuerten Ersatz
+hinter `@supports not (animation-timeline: view())` bauen.
+
+**Die Prüfkette läuft in vier Projekten, alle `Desktop Chrome`.** Deshalb
+konnte der Ausfall unbemerkt ausgeliefert werden. Ein Firefox-Projekt braucht
+`pnpm exec playwright install firefox` — im Cache liegt nur Revision 1532,
+Playwright 1.62 erwartet 1538.

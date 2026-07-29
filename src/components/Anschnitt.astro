@@ -37,11 +37,9 @@ interface Props {
    * zuerst aufgeschnitten, der letzte bleibt stehen. Mindestens zwei.
    */
   readonly ebenen: readonly string[]
-  /** Gesamte Scrollstrecke, über die sich alle Schnitte verteilen. */
-  readonly strecke?: string
 }
 
-const { ebenen, strecke = '110vh' } = Astro.props
+const { ebenen } = Astro.props
 
 if (ebenen.length < 2) {
   throw new Error(
@@ -51,18 +49,36 @@ if (ebenen.length < 2) {
 }
 
 /**
- * Jede geschnittene Ebene bekommt ihr eigenes Stück der Scrollstrecke.
- * Bei drei Ebenen sind das zwei Schnitte: 0–50 % und 50–100 % der Strecke.
- * Die Anteile stehen als calc() im style-Attribut, weil animation-range
- * pro Ebene verschieden ist und Astro-Styles nicht parametrisierbar sind.
+ * Jede geschnittene Ebene bekommt ihr eigenes Stück der Sichtstrecke.
+ *
+ * Die Anteile sind Prozente des `cover`-Bereichs, NICHT Vielfache einer
+ * Viewport-Höhe. Das ist der Kern der Korrektur vom 29.07.2026:
+ *
+ * Vorher standen hier absolute Offsets (`calc(80vh * 0/1)` bis
+ * `calc(80vh * 1/1)`), die zusammen mit `scroll(root block)` ab
+ * SEITENANFANG gemessen wurden. Solange der Anschnitt im Hero saß, ging das
+ * auf. Seit er in Kapitel III liegt — bei y = 2865 — war die Animation bei
+ * y = 720 vollständig abgelaufen, also 2145 px bevor der Rahmen überhaupt
+ * sichtbar wurde. Gemessen bei sechs Fensterhöhen: Fortschritt beim Eintritt
+ * ins Sichtfeld durchgehend 100 %.
+ *
+ * Mit `view()` und cover-Prozenten hängt der Bereich am Element statt an der
+ * Seite. Der Einbauort darf sich damit ändern, ohne dass jemand nachrechnen
+ * muss — genau der Fehler, der hier passiert ist.
+ *
+ * Die Folge läuft über cover 15 % bis 70 %: davor steht das komponierte
+ * Standbild, danach das Endbild, dazwischen die Schnitte nacheinander.
  */
+const ANFANG = 15
+const ENDE = 70
+
 const schnitte = ebenen.length - 1
 const geschnitten = ebenen.slice(0, -1).map((schluessel, index) => ({
   schluessel,
   // z-index von oben nach unten absteigend, unterste Ebene bekommt 1.
   ebene: ebenen.length - index,
-  von: `calc(${strecke} * ${index} / ${schnitte})`,
-  bis: `calc(${strecke} * ${index + 1} / ${schnitte})`,
+  von: `cover ${(ANFANG + ((ENDE - ANFANG) * index) / schnitte).toFixed(2)}%`,
+  bis: `cover ${(ANFANG + ((ENDE - ANFANG) * (index + 1)) / schnitte).toFixed(2)}%`,
 }))
 
 const unterste = ebenen[ebenen.length - 1] as string
@@ -152,6 +168,26 @@ const unterste = ebenen[ebenen.length - 1] as string
        AUF dem Bild und löst das Kontrastproblem gestalterisch. */
     padding: var(--rahmen);
     background-color: var(--grund);
+
+    /*
+     * Die Zeitachse hängt HIER, am äußeren Kasten — nicht an den animierten
+     * Ebenen.
+     *
+     * Ein anonymes `view()` löst gegen den nächsten Scrollcontainer auf. Der
+     * ist für die Ebenen aber `.anschnitt__rahmen`, denn `overflow: hidden`
+     * macht aus einem Kasten einen Scrollcontainer, auch wenn nie etwas
+     * scrollt. Der Fortschritt stand deshalb bei konstant 63,6 % — bei jeder
+     * Scrollposition derselbe Wert, am 29.07.2026 gemessen. Genau das war
+     * der unausgesprochene Grund, warum hier ursprünglich `scroll(root)`
+     * stand; der Kommentar nannte nur den Hero.
+     *
+     * `.anschnitt` trägt kein overflow und liegt außerhalb des Rahmens. Eine
+     * benannte Zeitachse von hier aus ist damit beides: an der Lage des
+     * Bildes verankert (anders als scroll(root)) und trotzdem am
+     * Seitenscroll gemessen (anders als das anonyme view() der Ebenen).
+     */
+    view-timeline-name: --anschnitt;
+    view-timeline-axis: block;
   }
 
   .anschnitt__form {
@@ -243,18 +279,23 @@ const unterste = ebenen[ebenen.length - 1] as string
       animation-timing-function: linear;
       animation-fill-mode: both;
       /*
-       * scroll() statt view() — und das ist keine Feinheit.
+       * view() statt scroll(root block) — zurückgedreht am 29.07.2026.
        *
-       * Eine view()-Zeitachse misst die Lage des Elements im Sichtfeld.
-       * Der Hero steht beim Laden aber schon mitten im Bild, also war die
-       * Animation sofort zu rund 45 Prozent fortgeschritten: Man sah beim
-       * Öffnen der Seite bereits einen halb aufgezogenen Schnitt statt eines
-       * komponierten Standbilds. Am 28.07.2026 im Screenshot nachgewiesen.
+       * Der Kommentar, der hier stand, begründete scroll() damit, dass der
+       * Anschnitt im HERO liege und dort beim Laden schon halb abgelaufen
+       * gewesen wäre. Das stimmte — für den alten Einbauort.
        *
-       * scroll() misst dagegen den Seitenfortschritt. Bei Scrollposition 0
-       * ist die Animation garantiert bei 0 — das Bild steht ganz.
+       * Seit dem 29.07.2026 sitzt der Anschnitt in Kapitel III, bei y = 2865.
+       * scroll(root block) misst aber absolute Offsets ab Seitenanfang: aus
+       * strecke="80vh" wurden 0 bis 720 px. Die Animation war damit bei
+       * y = 720 vollständig durchgelaufen — **2145 px bevor der Rahmen
+       * überhaupt ins Bild kam**. Gemessen bei sechs Fensterhöhen von 900
+       * bis 3200: Fortschritt beim Eintritt ins Sichtfeld durchgehend 100 %.
+       *
+       * Der ursprüngliche Einwand gegen view() trifft am neuen Ort nicht mehr
+       * zu — der Rahmen ist beim Laden bei keiner Fensterhöhe sichtbar.
        */
-      animation-timeline: scroll(root block);
+      animation-timeline: --anschnitt;
       animation-range-start: var(--von);
       animation-range-end: var(--bis);
     }
@@ -265,7 +306,7 @@ const unterste = ebenen[ebenen.length - 1] as string
       animation-duration: 1s;
       animation-timing-function: linear;
       animation-fill-mode: both;
-      animation-timeline: scroll(root block);
+      animation-timeline: --anschnitt;
       animation-range-start: var(--von);
       animation-range-end: var(--bis);
     }
@@ -275,7 +316,7 @@ const unterste = ebenen[ebenen.length - 1] as string
       animation-duration: 1s;
       animation-timing-function: linear;
       animation-fill-mode: both;
-      animation-timeline: scroll(root block);
+      animation-timeline: --anschnitt;
       animation-range-start: var(--von);
       animation-range-end: var(--bis);
     }
