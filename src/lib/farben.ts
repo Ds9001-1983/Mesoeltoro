@@ -37,6 +37,28 @@ export const PALETTE = {
   elfenbein: '#FAF6EF',
   /** Ausschließlich Dekor: Glutsaum, Shader-Partikel. Nie Text. */
   glut: '#C1440E',
+
+  /* --- Die helle Fläche ---------------------------------------------------
+   * Am 29.07.2026 zurückgeholt. Nicht als Rückzug von der dunklen Gestaltung,
+   * sondern weil sie ohne Gegenlicht nicht funktioniert: Ausgezählt waren
+   * 81 % der Startseite und 93,5 % der Speisekarte unbedruckte Grundfläche.
+   * Eine dunkle Seite wirkt erst dunkel, wenn nichts darauf liegt.
+   *
+   * Diese vier Töne sind keine Neuerfindung — sie standen bis zum
+   * Vorschau-Umbau als Grundpalette der Seite und sind längst nachgerechnet.
+   */
+  kalk: '#F4EFE6',
+  espresso: '#2B2521',
+  'espresso-leise': '#5A5049',
+  /**
+   * Das echte Markenrot, am 28.07.2026 aus drei Logodateien ausgelesen.
+   *
+   * Auf dem dunklen Grund steht es bei 1,32:1 und war damit von der Seite
+   * verschwunden. Auf Kalk trägt es 12,37:1 — es ist dort nicht nur
+   * zulässig, sondern besser als Gold es auf Dunkel je war. Die Hausfarbe
+   * kommt mit den hellen Kapiteln zurück.
+   */
+  ochsenblut: '#551213',
 } as const
 
 export type Farbname = keyof typeof PALETTE
@@ -96,6 +118,41 @@ export const PAARUNGEN: readonly Paarung[] = [
     einsatz: 'Fließtext auf Bordeaux-Flächen',
   },
 
+  /* --- Kalk als helle Fläche ---------------------------------------------
+   * Kapitel II und V der Startseite, die gesamte Speisekarte und der
+   * Zeitstrahl der Philosophie stehen auf Kalk. Der Akzent ist dort NICHT
+   * Gold (2,09:1, siehe Verbot unten), sondern das Markenrot.             */
+  {
+    vordergrund: 'espresso',
+    hintergrund: 'kalk',
+    verwendung: 'fliesstext',
+    einsatz: 'Fließtext und Überschriften auf den hellen Kapiteln',
+  },
+  {
+    vordergrund: 'espresso-leise',
+    hintergrund: 'kalk',
+    verwendung: 'fliesstext',
+    einsatz: 'Allergenhinweise, Bildunterschriften und Quellenangaben auf Kalk',
+  },
+  {
+    vordergrund: 'ochsenblut',
+    hintergrund: 'kalk',
+    verwendung: 'fliesstext',
+    einsatz: 'Links, spanische Rubriken, römische Ziffern und Preise auf Kalk',
+  },
+  {
+    vordergrund: 'kalk',
+    hintergrund: 'ochsenblut',
+    verwendung: 'fliesstext',
+    einsatz: 'Schrift auf der gefüllten Schaltfläche im Hover-Zustand über Kalk',
+  },
+  {
+    vordergrund: 'grund',
+    hintergrund: 'kalk',
+    verwendung: 'ui',
+    einsatz: 'Äußerer Fokusring und Trennlinien gegen die helle Fläche',
+  },
+
   /* --- Fokusring: muss auf BEIDEN Flächen tragen ------------------------- */
   {
     vordergrund: 'elfenbein',
@@ -138,6 +195,32 @@ export const PAARUNGEN: readonly Paarung[] = [
     hintergrund: 'grund',
     verwendung: 'fliesstext',
     einsatz: 'VERBOTEN als Text — 3,68:1. Ausschließlich Glutsaum und Shader',
+    verboten: true,
+  },
+  /*
+   * Die beiden folgenden Verbote sind der Grund, warum es überhaupt zwei
+   * Akzentfarben gibt. Sie sind exakt spiegelbildlich: Jede der beiden
+   * Farben scheitert auf der Fläche der anderen.
+   */
+  {
+    vordergrund: 'gold',
+    hintergrund: 'kalk',
+    verwendung: 'fliesstext',
+    einsatz: 'VERBOTEN — 2,09:1. Auf hellen Kapiteln ist der Akzent Ochsenblut, nicht Gold',
+    verboten: true,
+  },
+  {
+    vordergrund: 'ochsenblut',
+    hintergrund: 'grund',
+    verwendung: 'fliesstext',
+    einsatz: 'VERBOTEN — 1,32:1. Das Markenrot trägt ausschließlich auf heller Fläche',
+    verboten: true,
+  },
+  {
+    vordergrund: 'creme',
+    hintergrund: 'kalk',
+    verwendung: 'fliesstext',
+    einsatz: 'VERBOTEN — 1,14:1. Wer eine helle Fläche setzt, setzt auch die Textfarbe um',
     verboten: true,
   },
 ]

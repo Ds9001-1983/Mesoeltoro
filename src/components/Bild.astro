@@ -147,8 +147,10 @@ if (freigegeben) hole(schluessel)
     place-items: center;
     inline-size: 100%;
     padding: var(--raum-6);
-    background-color: color-mix(in oklab, var(--creme) 6%, var(--grund));
-    border: 1px dashed color-mix(in oklab, var(--creme) 28%, transparent);
+    /* Semantisch gemischt, damit der Platzhalter auch auf der hellen Fläche
+       als Fehlstelle lesbar bleibt statt als schwarzes Loch. */
+    background-color: color-mix(in oklab, var(--text) 6%, var(--flaeche));
+    border: 1px dashed color-mix(in oklab, var(--text) 28%, transparent);
     text-align: center;
   }
 

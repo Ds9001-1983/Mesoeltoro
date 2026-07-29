@@ -8,6 +8,17 @@
  *
  * Kein `noindex`: § 5 DDG verlangt „ständig verfügbar“, und eine Seite,
  * die Suchmaschinen ausgeschlossen ist, findet auch ein Nutzer schlechter.
+ *
+ * Seit dem 29.07.2026 auf heller Fläche. Die Regel, die seitdem für das
+ * ganze Projekt gilt, trennt nicht nach Geschmack, sondern nach Gebrauch:
+ *
+ *     Auftritt  — Hero, Kapitel, Bilder            → dunkel
+ *     Dokument  — Karte, Chronik, Zeiten, Recht    → Kalk
+ *
+ * Ein Impressum ist das Dokument schlechthin. Vier Bildschirmhöhen
+ * Paragrafentext auf schwarzem Grund waren genau der Zustand, den der
+ * Auftraggeber als „zu dunkel“ gemeldet hat — auf diesen Seiten in
+ * Reinform, weil hier außer Text nichts steht.
  */
 import Basis from './Basis.astro'
 
@@ -29,7 +40,8 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
 ---
 
 <Basis titel={titel} beschreibung={beschreibung}>
-  <article class="rechtstext huelle">
+  <div class="blatt" data-flaeche="hell">
+    <article class="rechtstext huelle">
     <header class="rechtstext__kopf">
       <h1>{titel}</h1>
       {vorspann && <p class="lead">{vorspann}</p>}
@@ -38,13 +50,21 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
       </p>
     </header>
 
-    <div class="rechtstext__inhalt">
-      <slot />
-    </div>
-  </article>
+      <div class="rechtstext__inhalt">
+        <slot />
+      </div>
+    </article>
+  </div>
 </Basis>
 
 <style>
+  /* Die helle Fläche läuft über die volle Breite; die Spalte darin bleibt
+     schmal. Ein 46rem-Streifen Papier in einem schwarzen Rahmen sähe aus wie
+     ein Fehler. */
+  .blatt {
+    min-block-size: 100%;
+  }
+
   .rechtstext {
     padding-block: var(--raum-8) var(--raum-9);
     max-inline-size: 46rem;
@@ -97,8 +117,8 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
   .rechtstext__inhalt p > strong:only-child {
     display: block;
     padding: var(--raum-4);
-    border-inline-start: 3px solid var(--gold);
-    background-color: color-mix(in oklab, var(--gold) 6%, transparent);
+    border-inline-start: 3px solid var(--akzent);
+    background-color: color-mix(in oklab, var(--akzent) 6%, transparent);
     font-weight: 400;
   }
 

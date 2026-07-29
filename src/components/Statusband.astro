@@ -67,9 +67,14 @@ const { mitKonfiguration = false, klasse } = Astro.props
   }
 
   /* Der Zustand steht immer als Volltext daneben — die Farbe ist Zugabe,
-     nie die Information selbst (1.4.1). */
+     nie die Information selbst (1.4.1).
+
+     `--puls` statt `--glut`, weil das Band auf drei Flächen steht: Glut
+     trägt auf Grund (3,68:1) und auf Kalk (4,47:1), auf Bordeaux aber nur
+     1,94:1 — dort wäre der Punkt schlicht weg. tokens.css setzt den Wert
+     je Fläche. */
   .status[data-zustand='geoeffnet'] .status__punkt {
-    background-color: var(--glut);
+    background-color: var(--puls);
     animation: glutpuls 4s ease-in-out infinite;
   }
 

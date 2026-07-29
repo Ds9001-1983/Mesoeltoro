@@ -170,8 +170,12 @@ const BEGRIFFE = [
     </div>
   </section>
 
-  {/* --- II · La Carta ------------------------------------------------------ */}
-  <section class="kapitel" aria-labelledby="carta-titel">
+  {/* --- II · La Carta ------------------------------------------------------
+      Erstes helles Kapitel. Eine Speisekarte ist gedruckt — auf Papier, nicht
+      auf Nacht. Der Wechsel ist deshalb keine reine Helligkeitsfrage, er
+      erklärt sich aus dem Inhalt. Hier kommt außerdem das Markenrot zurück:
+      Auf Kalk trägt es 12,37:1, auf dem dunklen Grund nur 1,32:1.        */}
+  <section class="kapitel kapitel--hell" data-flaeche="hell" aria-labelledby="carta-titel">
     <div class="huelle kapitel__raster kapitel__raster--gedreht">
       <div class="kapitel__bild">
         <Bild
@@ -260,7 +264,7 @@ const BEGRIFFE = [
       Vier Stimmen aus dem öffentlichen Google-Profil. Jede trägt den
       Prüfhinweis nach § 5b Abs. 3 UWG — Gaestestimme.astro rendert ihn
       zwingend mit, es gibt keinen Schalter dagegen.                        */}
-  <section class="kapitel" aria-labelledby="huespedes-titel">
+  <section class="kapitel kapitel--hell" data-flaeche="hell" aria-labelledby="huespedes-titel">
     <div class="huelle">
       <Rubrik ziffer="V" spanisch="Los Huéspedes" id="huespedes-titel">
         Das sagen unsere Gäste
@@ -272,8 +276,17 @@ const BEGRIFFE = [
     </div>
   </section>
 
-  {/* --- VI · La Reserva ------------------------------------------------------ */}
-  <section class="kapitel kapitel--schluss" aria-labelledby="reserva-titel">
+  {/* --- VI · La Reserva ------------------------------------------------------
+      Bordeaux war seit dem Umbau definiert und stand nirgends. Als Schluss
+      der Seite trägt die Vollfläche genau das, wofür sie gedacht war: einen
+      Block, der aufhört zu erzählen und stattdessen die Nummer hinstellt.
+      Auf Bordeaux trägt Elfenbein (9,20:1), NICHT Gold (4,13:1) — der
+      Umschalter in tokens.css setzt das um, die Komponenten merken nichts. */}
+  <section
+    class="kapitel kapitel--schluss"
+    data-flaeche="bordeaux"
+    aria-labelledby="reserva-titel"
+  >
     <div class="huelle kapitel__raster">
       <div class="kapitel__text">
         <Rubrik ziffer="VI" spanisch="La Reserva" id="reserva-titel">
@@ -319,10 +332,18 @@ const BEGRIFFE = [
 
 <style>
   /* --- Hero ---------------------------------------------------------------- */
+  /*
+   * 100svh statt 92svh, und der Textsockel bekommt weniger Innenabstand.
+   *
+   * Grund ist eine Messung vom 29.07.2026: Vom 828 px hohen Hero trug der
+   * Textblock 674 px. Fürs Bild blieben rund 150 px — ein Streifen, kein
+   * Aufmacher. Die Überschrift läuft über drei Zeilen zu 84 px, daran ist
+   * nichts zu kürzen; also wächst der Hero und der Sockel wird knapper.
+   */
   .hero {
     position: relative;
     isolation: isolate;
-    min-block-size: 92svh;
+    min-block-size: 100svh;
     display: flex;
     overflow: hidden;
   }
@@ -422,9 +443,9 @@ const BEGRIFFE = [
    * hoch das Fenster ist. Genau das misst hero-grund.spec.ts nach.
    */
   .hero__flaeche {
-    --fade: clamp(4rem, 14svh, 9rem);
+    --fade: clamp(3rem, 10svh, 6rem);
 
-    padding-block: var(--fade) var(--raum-8);
+    padding-block: var(--fade) var(--raum-7);
     background-image:
       linear-gradient(0deg, var(--grund) 0%, transparent 100%),
       linear-gradient(var(--grund), var(--grund));
@@ -493,7 +514,13 @@ const BEGRIFFE = [
     justify-content: center;
     min-block-size: var(--ziel-min);
     padding: var(--raum-3) var(--raum-6);
-    border: 1px solid var(--gold);
+    /*
+     * Semantisch, weil dieser Block auf drei Flächen steht: im Hero auf
+     * Grund, in Kapitel VI auf Bordeaux. Mit var(--gold) stünde das Wort
+     * „Reservierung“ dort bei 4,13:1 — für Versalien in 12–14 px zu wenig.
+     * Über --akzent wird daraus Elfenbein mit 9,20:1.
+     */
+    border: 1px solid var(--akzent);
     text-decoration: none;
     transition:
       background-color var(--dauer-mittel) var(--ease),
@@ -506,7 +533,7 @@ const BEGRIFFE = [
     font-size: var(--t-eyebrow);
     letter-spacing: var(--sperrung);
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--akzent);
   }
 
   .ruf-block__nummer {
@@ -514,20 +541,28 @@ const BEGRIFFE = [
     font-family: var(--schrift-display);
     font-size: 1.35rem;
     line-height: 1.15;
-    color: var(--creme);
+    color: var(--text);
   }
 
-  /* Gefüllter Zustand: Grund auf Gold = 7,85:1. */
+  /*
+   * Gefüllter Zustand. Die Füllung ist der Akzent der jeweiligen Fläche,
+   * die Schrift darauf die Fläche selbst — das Verhältnis ist damit
+   * automatisch dasselbe wie ungefüllt, nur umgedreht:
+   *
+   *   auf Grund      Grund auf Gold          7,85:1
+   *   auf Kalk       Kalk auf Ochsenblut    12,37:1
+   *   auf Bordeaux   Bordeaux auf Elfenbein  9,20:1
+   */
   .ruf-block:hover,
   .ruf-block:focus-visible {
-    background-color: var(--gold);
+    background-color: var(--akzent);
   }
 
   .ruf-block:hover .ruf-block__wort,
   .ruf-block:hover .ruf-block__nummer,
   .ruf-block:focus-visible .ruf-block__wort,
   .ruf-block:focus-visible .ruf-block__nummer {
-    color: var(--grund);
+    color: var(--flaeche);
   }
 
   .weiter {
@@ -552,8 +587,19 @@ const BEGRIFFE = [
     padding-block: var(--raum-9);
   }
 
+  /*
+   * Die Flächenkapitel bekommen mehr Luft als die dunklen — sonst sieht der
+   * Farbwechsel aus wie ein versehentlicher Streifen statt wie ein eigener
+   * Bogen. Der Schnitt zwischen den Flächen bleibt hart: kein Verlauf, keine
+   * abgerundete Ecke. Ein Kapitelwechsel ist eine Kante.
+   */
+  .kapitel--hell,
   .kapitel--schluss {
-    border-block-start: 1px solid var(--linie);
+    padding-block: calc(var(--raum-9) * 1.25);
+  }
+
+  .kapitel--schluss {
+    border-block-start: none;
   }
 
   .kapitel__raster {
@@ -570,14 +616,23 @@ const BEGRIFFE = [
     min-inline-size: 0;
   }
 
+  /*
+   * Bildspalte von 0,62fr auf 0,92fr.
+   *
+   * Bei 1440 px war das Bild in Kapitel I 465 × 620 px groß — 5 % der
+   * Fensterfläche. Der Rest war Schrift auf Schwarz. Jetzt trägt das Bild
+   * knapp die Hälfte der Zeile und rund die doppelte Fläche. Die Vorlagen
+   * geben das her: Alle Kapitelbilder liegen ab 1200 px vor, die
+   * Vollflächigen ab 2400 px.
+   */
   @media (min-width: 62rem) {
     .kapitel__raster {
-      grid-template-columns: 1fr 0.62fr;
+      grid-template-columns: 1fr 0.92fr;
       align-items: center;
     }
 
     .kapitel__raster--gedreht {
-      grid-template-columns: 0.62fr 1fr;
+      grid-template-columns: 0.92fr 1fr;
     }
   }
 
@@ -600,8 +655,11 @@ const BEGRIFFE = [
     aspect-ratio: 1 / 1;
   }
 
+  /* 3/4 war für die schmale Spalte gedacht. In der breiteren Spalte würde
+     ein Hochformat dieser Proportion das Kapitel unnötig auseinanderziehen —
+     4/5 hält die Höhe bei deutlich mehr Fläche. */
   .kapitel__bild--hoch {
-    aspect-ratio: 3 / 4;
+    aspect-ratio: 4 / 5;
   }
 
   .kapitel__bild :global(.bild),
@@ -651,7 +709,9 @@ const BEGRIFFE = [
     margin: 0;
     font-family: var(--schrift-mikro);
     font-size: var(--t-mikro);
-    color: var(--gold);
+    /* Preise in 13–14 px sind Fließtextgröße — hier zählt --akzent, nicht
+       --akzent-gross. Auf Bordeaux wäre Gold mit 4,13:1 ein 1.4.3-Verstoß. */
+    color: var(--akzent);
   }
 
   .auszug__liste {
@@ -683,7 +743,9 @@ const BEGRIFFE = [
     font-family: var(--schrift-display);
     font-size: clamp(2.5rem, 1.6rem + 4vw, 4.5rem);
     line-height: 1;
-    color: var(--gold);
+    /* Ab 40 px greift die Größenregel aus 1.4.3 — hier darf --akzent-gross
+       stehen, das auf Bordeaux zu Gold auflöst. */
+    color: var(--akzent-gross);
   }
 
   /* --- Bildband -------------------------------------------------------------

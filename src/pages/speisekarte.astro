@@ -91,6 +91,25 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
       }
     </section>
 
+    {/* --- Das Blatt ----------------------------------------------------------
+        Ab hier ist die Karte gedruckt.
+
+        Der Anlass war eine Messung: Am 29.07.2026 waren 93,5 % dieser Seite
+        unbedruckte dunkle Fläche — mehr als auf jeder anderen Route. Eine
+        Speisekarte besteht fast nur aus Text, und Text auf Schwarz über acht
+        Bildschirmhöhen ist genau das, was der Auftraggeber als „zu dunkel“
+        beschrieben hat.
+
+        Die Umstellung ist aber nicht bloß Aufhellung: Sie stimmt mit dem
+        Gegenstand überein. Der Kopf mit Bild und Titel bleibt dunkel, das
+        Blatt darunter ist Papier. Der Übergang liegt genau an der klebenden
+        Ankerleiste — sie ist damit sichtbar die Kante zwischen Auftritt und
+        Dokument.
+
+        Nebeneffekt, der kein Nebeneffekt ist: Auf Kalk trägt das Markenrot
+        12,37:1. Die Hausfarbe steht damit dort, wo die Gäste am längsten
+        lesen.                                                              */}
+    <div class="karte__blatt" data-flaeche="hell">
     {/* --- Sprungnavigation ------------------------------------------------- */}
     <nav class="anker" aria-label="Abschnitte der Speisekarte">
       <ul class="huelle anker__liste">
@@ -154,6 +173,7 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
         </p>
       </section>
     </div>
+    </div>
   </div>
 </Basis>
 
@@ -195,8 +215,9 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
     font-size: var(--t-eyebrow);
     letter-spacing: var(--sperrung);
     text-transform: uppercase;
-    /* Gold auf Grund = 7,85:1. */
-    color: var(--gold);
+    /* Steht im Kopf auf Grund (Gold, 7,85:1) und im Blatt auf Kalk
+       (Ochsenblut, 12,37:1) — deshalb der semantische Akzent. */
+    color: var(--akzent);
     margin-block-end: var(--raum-2);
   }
 
@@ -210,7 +231,7 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
   .uebergang {
     margin-block-start: var(--raum-6);
     padding: var(--raum-5);
-    border: 2px solid var(--gold);
+    border: 2px solid var(--akzent);
     max-inline-size: 62ch;
   }
 
@@ -220,7 +241,7 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
     font-weight: 600;
     letter-spacing: var(--sperrung);
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--akzent);
     margin-block-end: var(--raum-3);
   }
 
@@ -229,7 +250,10 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
     position: sticky;
     inset-block-start: var(--kopfhoehe);
     z-index: 80;
-    background-color: var(--grund);
+    /* --flaeche, nicht --grund: Die Leiste liegt im hellen Blatt und muss
+       dessen Fläche tragen, sonst schöbe sich beim Scrollen ein schwarzer
+       Balken über das Papier. */
+    background-color: var(--flaeche);
     border-block: 1px solid var(--linie);
   }
 
@@ -260,7 +284,14 @@ const standLesbar = new Intl.DateTimeFormat('de-DE', {
 
   .anker__liste a:hover,
   .anker__liste a:focus-visible {
-    border-block-end-color: var(--gold);
+    border-block-end-color: var(--akzent);
+  }
+
+  /* --- Das Blatt -------------------------------------------------------------
+     Die helle Fläche läuft über die volle Breite, nicht nur unter dem Satz —
+     sonst stünde ein Papierstreifen in einem schwarzen Rahmen.            */
+  .karte__blatt {
+    padding-block-end: var(--raum-9);
   }
 
   /* --- Kategorien ------------------------------------------------------------ */

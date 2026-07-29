@@ -69,8 +69,13 @@ const { ziffer, spanisch, id, klasse } = Astro.props
     font-size: var(--t-eyebrow);
     letter-spacing: var(--sperrung);
     text-transform: uppercase;
-    /* Gold auf Grund = 7,85:1 — auch in dieser Größe unbedenklich. */
-    color: var(--gold);
+    /*
+     * Semantisch, nicht wörtlich: Die Rubrik steht auf beiden Flächen.
+     * Auf Grund löst --akzent zu Gold auf (7,85:1), auf Kalk zu Ochsenblut
+     * (12,37:1). Stünde hier var(--gold), wäre die Zeile auf den hellen
+     * Kapiteln mit 2,09:1 praktisch unlesbar.
+     */
+    color: var(--akzent);
   }
 
   .rubrik__ziffer {

@@ -74,14 +74,25 @@ for (const [nummer, zeile] of zeilen.entries()) {
 
   const behauptet = Number(`${behauptung[1]}.${behauptung[2]}`)
 
-  // Auf welchem Grund? "auf Kalk", "auf Espresso" — sonst überspringen.
-  const grund = /auf\s+(Kalk|Espresso|Ochsenblut|Leinen)/i.exec(zeile)
+  /*
+   * Auf welchem Grund? Die Namen kommen aus der Palette selbst, nicht aus
+   * einer festen Liste.
+   *
+   * Vorher stand hier /auf (Kalk|Espresso|Ochsenblut|Leinen)/. Nach dem
+   * Wechsel auf die dunkle Gestaltung hieß der Grund „Grund“ und die
+   * Vollfläche „Bordeaux“ — keiner dieser Namen kam in der Liste vor.
+   * Folge: Die Prüfung sprang für JEDEN Kommentar der dunklen Palette ab,
+   * ohne etwas zu melden. Fünf zugesagte Verhältnisse liefen seit dem
+   * 29.07.2026 ungeprüft mit. Sie stimmten, aber das war Glück.
+   *
+   * Eine Prüfung, die stillschweigend nichts prüft, ist schlimmer als keine:
+   * CLAUDE.md verspricht seitdem, der Wächter rechne jeden Kommentar nach.
+   */
+  const grundnamen = Object.keys(PALETTE).sort((a, b) => b.length - a.length)
+  const grund = new RegExp(`auf\\s+(${grundnamen.join('|')})\\b`, 'i').exec(zeile)
   if (!grund) continue
 
-  const grundname = grund[1].toLowerCase()
-  const hintergrund =
-    grundname === 'espresso' && letzteFarbe !== 'espresso' ? PALETTE.espresso : PALETTE[grundname]
-
+  const hintergrund = PALETTE[grund[1].toLowerCase()]
   const vordergrund = PALETTE[letzteFarbe]
   if (!vordergrund || !hintergrund) continue
 

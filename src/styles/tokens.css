@@ -22,6 +22,16 @@
   --elfenbein: #faf6ef; /* Text auf Bordeaux      →  9,20:1   AAA        OK   */
   --glut: #c1440e; /* auf Grund                  →  3,68:1   NUR DEKOR      */
 
+  /* --- Die helle Fläche ---------------------------------------------------
+   * Zurückgeholt am 29.07.2026. Ausgezählt waren 81 % der Startseite und
+   * 93,5 % der Speisekarte unbedruckte Grundfläche — eine dunkle Seite wirkt
+   * erst dunkel, wenn etwas darauf liegt. Genutzt über [data-flaeche='hell']
+   * weiter unten, nie direkt in einer Komponente.                          */
+  --kalk: #f4efe6; /* helle Fläche                                          */
+  --espresso: #2b2521; /* Fließtext auf Kalk     → 13,20:1   AAA        OK   */
+  --espresso-leise: #5a5049; /* Sekundärtext auf Kalk →  6,85:1   AA         OK   */
+  --ochsenblut: #551213; /* Akzent auf Kalk        → 12,37:1   AAA        OK   */
+
   /*  WARNUNGEN, die im Code gelten und nicht verhandelbar sind:
    *
    *  --creme-leise  ist ein eigener Hexwert, KEINE Deckkraft. Die Vorschau
@@ -46,6 +56,9 @@
   /* Goldene Haarlinie. Rein trennend, trägt keine Zustandsinformation und
      fällt damit nicht unter 1.4.11. */
   --linie: color-mix(in oklab, var(--gold) 22%, transparent);
+  /* Glutpunkt des Öffnungsstatus. Auf Grund 3,68:1, auf Kalk 4,47:1 —
+     auf Bordeaux nur 1,94:1, deshalb dort überschrieben. */
+  --puls: var(--glut);
 
   /* --- Typografie --------------------------------------------------------
    * Die echten Schriftnamen sind hinter Aliassen gekapselt. Ein Wechsel von
@@ -92,7 +105,11 @@
   --raum-6: 2rem;
   --raum-7: 3rem;
   --raum-8: clamp(3rem, 2rem + 5vw, 6rem);
-  --raum-9: clamp(4.5rem, 3rem + 7.5vw, 9rem); /* Sektionsabstand */
+  /* Sektionsabstand. Am 29.07.2026 von clamp(4.5rem, …, 9rem) heruntergesetzt:
+     Bei 9rem oben und unten standen zwischen zwei Kapiteln 288 px leere
+     Fläche. Auf der Startseite summierte sich das über zwölf Kanten auf
+     rund 1700 px reines Nichts — ein knappes Fünftel der Seitenhöhe. */
+  --raum-9: clamp(3.5rem, 2.5rem + 5vw, 6.5rem); /* Sektionsabstand */
 
   /* --- Layout -------------------------------------------------------------
    * --kopfhoehe, --ankerleiste und --callbar speisen scroll-padding.
@@ -142,6 +159,42 @@
 }
 
 /* ----------------------------------------------------------------------------
+   Die helle Fläche.
+
+   Die Seite ist dunkel — aber nicht ununterbrochen. Zwei Kapitel der
+   Startseite, die gesamte Speisekarte und der Zeitstrahl stehen auf Kalk.
+   Der Grund ist gemessen, nicht gefühlt: Am 29.07.2026 waren 81 % der
+   Startseite und 93,5 % der Speisekarte unbedruckte Grundfläche.
+
+   Der Akzent ist hier NICHT Gold. Gold auf Kalk steht bei 2,09:1 und ist
+   damit unlesbar; das Markenrot dagegen bei 12,37:1. Die Hausfarbe, die auf
+   dem dunklen Grund verschwunden war, trägt hier wieder — deshalb ist die
+   helle Fläche nicht bloß eine Aufhellung, sondern die einzige Stelle, an
+   der die Marke farblich vorkommt.
+
+   Wer eine Komponente baut, die auf beiden Flächen stehen kann, benutzt
+   ausschließlich --text, --text-leise, --akzent und --linie. Ein direktes
+   var(--gold) in einer solchen Komponente ist ein Fehler; tests/unit/
+   flaechen.test.ts sucht danach.
+   ---------------------------------------------------------------------------- */
+[data-flaeche='hell'] {
+  --flaeche: var(--kalk);
+  --text: var(--espresso);
+  --text-leise: var(--espresso-leise);
+  --akzent: var(--ochsenblut);
+  --akzent-gross: var(--ochsenblut);
+  --linie: color-mix(in oklab, var(--espresso) 28%, transparent);
+
+  /* Der Doppelring dreht sich um: Auf heller Fläche trägt der äußere,
+     dunkle Ring (Grund auf Kalk = 16,43:1), nicht der innere. */
+  --fokus-innen: #14110d;
+  --fokus-aussen: #faf6ef;
+
+  background-color: var(--flaeche);
+  color: var(--text);
+}
+
+/* ----------------------------------------------------------------------------
    Bordeaux-Fläche. Mobilmenü und gefüllte Blöcke.
 
    Wird per data-Attribut gesetzt, nicht per Klasse — damit ist im
@@ -158,6 +211,9 @@
   --akzent: var(--elfenbein); /* NICHT --gold: 4,13:1 */
   --akzent-gross: var(--gold); /* nur groß — 4,13:1 reicht ab 24px */
   --linie: color-mix(in oklab, var(--elfenbein) 26%, transparent);
+  /* Glut auf Bordeaux wären 1,94:1 — der Punkt verschwände. Gold trägt
+     hier 4,13:1 und ist als reine Grafik damit über den 3:1 aus 1.4.11. */
+  --puls: var(--gold);
 
   background-color: var(--flaeche);
   color: var(--text);

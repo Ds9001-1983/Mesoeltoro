@@ -21,6 +21,10 @@ const offen = eintraege.filter(([, e]) => !e.freigabe)
   titel="Bildnachweise"
   beschreibung="Urheber der auf dieser Website verwendeten Fotografien, einzeln je Motiv ausgewiesen."
 >
+  {/* Ein Nachweisverzeichnis ist Dokument, kein Auftritt — es steht auf
+      derselben hellen Fläche wie Impressum und Datenschutz. Die Regel dazu
+      steht in src/layouts/Rechtstext.astro. */}
+  <div class="blatt" data-flaeche="hell">
   <div class="huelle nachweise">
     <h1>Bildnachweise</h1>
     <p class="lead">
@@ -70,6 +74,7 @@ const offen = eintraege.filter(([, e]) => !e.freigabe)
     <p class="mikro leise nachweise__fuss">
       Alle übrigen Grafiken — Wortmarke, Lageplan, Symbole — wurden für diese Website erstellt.
     </p>
+  </div>
   </div>
 </Basis>
 

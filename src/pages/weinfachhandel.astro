@@ -47,19 +47,30 @@ import { restaurant } from '../lib/daten.ts'
       </div>
     </section>
 
-    <section class="merkmale" aria-labelledby="merkmale-titel">
-      <h2 id="merkmale-titel" class="vh">Wie wir auswählen</h2>
-      <div class="merkmale__raster">
-        {
-          wein.merkmale.map((merkmal) => (
-            <article class="merkmal">
-              <h3 class="merkmal__titel">{merkmal.titel}</h3>
-              <p class="merkmal__text">{merkmal.text}</p>
-            </article>
-          ))
-        }
-      </div>
-    </section>
+  </div>
+
+  {/* --- Das Blatt ------------------------------------------------------------
+      Die Auswahlkriterien sind das, was ein Fachhändler von einem Regal
+      unterscheidet — sie gehören auf Papier, nicht in die Nacht.        */}
+  <div class="blatt" data-flaeche="hell">
+    <div class="huelle">
+      <section class="merkmale" aria-labelledby="merkmale-titel">
+        <h2 id="merkmale-titel" class="vh">Wie wir auswählen</h2>
+        <div class="merkmale__raster">
+          {
+            wein.merkmale.map((merkmal) => (
+              <article class="merkmal">
+                <h3 class="merkmal__titel">{merkmal.titel}</h3>
+                <p class="merkmal__text">{merkmal.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="huelle">
 
     {/* Zwei Formate nebeneinander: das Etikett des Hauses und der Einschank.
         Kein Jahrgang, kein Preis, kein Alkoholgehalt — das Schema kennt diese
@@ -122,7 +133,7 @@ import { restaurant } from '../lib/daten.ts'
     font-size: var(--t-eyebrow);
     letter-spacing: var(--sperrung);
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--akzent);
     margin-block-end: var(--raum-2);
   }
 
@@ -131,9 +142,12 @@ import { restaurant } from '../lib/daten.ts'
   }
 
   /* --- Merkmale ---------------------------------------------------------- */
-  .merkmale {
+  .blatt {
     padding-block: var(--raum-8);
-    border-block-start: 1px solid var(--linie);
+  }
+
+  .merkmale {
+    padding-block: var(--raum-7);
   }
 
   .merkmale__raster {

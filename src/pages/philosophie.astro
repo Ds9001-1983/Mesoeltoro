@@ -39,40 +39,55 @@ import { restaurant } from '../lib/daten.ts'
       </div>
     </section>
 
-    <Zeitstrahl />
+  </div>
 
-    <section class="text" aria-labelledby="kueche-titel">
-      <h2 id="kueche-titel">Herkunft und Handwerk</h2>
-      <div class="text__spalte stapel">
-        <p>
-          Unser Rindfleisch beziehen wir seit Jahrzehnten über dieselbe Lieferkette. Gegrillt wird
-          über offener Glut — das ist der Punkt, an dem sich entscheidet, ob ein Steak gut wird
-          oder nicht.
-        </p>
-        <p>
-          Wir würzen zurückhaltend. Nicht aus Prinzip, sondern weil ein gutes Stück Fleisch nichts
-          braucht, was von ihm ablenkt.
-        </p>
-        <p>
-          Fisch und Gemüse richten sich nach der Saison. Was nicht in ordentlicher Qualität zu
-          bekommen ist, steht in dieser Woche eben nicht auf der Karte.
-        </p>
-        <p>
-          Die spanische Seite unserer Küche ist keine Dekoration. Sie kommt aus der Gründungszeit
-          des Hauses und ist geblieben, weil sie zu dem passt, was hier gegrillt wird.
-        </p>
-      </div>
+  {/* --- Die Akte -------------------------------------------------------------
+      Zeitstrahl und Küchentext auf heller Fläche.
 
-      <figure class="text__bild">
-        <Bild
-          schluessel="koechin-herd"
-          breite={1200}
-          hoehe={1600}
-          sizes="(min-width: 62rem) 34vw, 100vw"
-        />
-      </figure>
-    </section>
+      Beides ist Dokument, nicht Auftritt: eine Chronik und vier Absätze
+      Herkunft. Auf Papier gelesen sind sie das, was sie sind; auf schwarzem
+      Grund wären sie vier Bildschirmhöhen Fließtext ohne Halt. Der Wechsel
+      löst außerdem den gemessenen Befund dieser Route — sie stand am
+      29.07.2026 bei 88 % unbedruckter Fläche.                             */}
+  <div class="blatt" data-flaeche="hell">
+    <div class="huelle">
+      <Zeitstrahl />
 
+      <section class="text" aria-labelledby="kueche-titel">
+        <h2 id="kueche-titel">Herkunft und Handwerk</h2>
+        <div class="text__spalte stapel">
+          <p>
+            Unser Rindfleisch beziehen wir seit Jahrzehnten über dieselbe Lieferkette. Gegrillt
+            wird über offener Glut — das ist der Punkt, an dem sich entscheidet, ob ein Steak gut
+            wird oder nicht.
+          </p>
+          <p>
+            Wir würzen zurückhaltend. Nicht aus Prinzip, sondern weil ein gutes Stück Fleisch
+            nichts braucht, was von ihm ablenkt.
+          </p>
+          <p>
+            Fisch und Gemüse richten sich nach der Saison. Was nicht in ordentlicher Qualität zu
+            bekommen ist, steht in dieser Woche eben nicht auf der Karte.
+          </p>
+          <p>
+            Die spanische Seite unserer Küche ist keine Dekoration. Sie kommt aus der Gründungszeit
+            des Hauses und ist geblieben, weil sie zu dem passt, was hier gegrillt wird.
+          </p>
+        </div>
+
+        <figure class="text__bild">
+          <Bild
+            schluessel="koechin-herd"
+            breite={1200}
+            hoehe={1600}
+            sizes="(min-width: 62rem) 34vw, 100vw"
+          />
+        </figure>
+      </section>
+    </div>
+  </div>
+
+  <div class="huelle">
     <section class="zahlen-band" aria-labelledby="zahlen-titel">
       <h2 id="zahlen-titel" class="vh">Das Haus in Zahlen</h2>
       <dl class="zahlen-band__liste">
@@ -124,12 +139,18 @@ import { restaurant } from '../lib/daten.ts'
     font-size: var(--t-eyebrow);
     letter-spacing: var(--sperrung);
     text-transform: uppercase;
-    color: var(--gold);
+    color: var(--akzent);
     margin-block-end: var(--raum-2);
   }
 
   .aufmacher__text .lead {
     margin-block-start: var(--raum-5);
+  }
+
+  /* Die helle Fläche läuft über die volle Breite und trägt ihren eigenen
+     Innenabstand — sonst klebte der Zeitstrahl an der Oberkante. */
+  .blatt {
+    padding-block: var(--raum-9);
   }
 
   .text {
@@ -140,7 +161,9 @@ import { restaurant } from '../lib/daten.ts'
   @media (min-width: 62rem) {
     .text {
       display: grid;
-      grid-template-columns: 1fr 0.5fr;
+      /* War 0,5fr — die schmalste Bildspalte der Seite. In einem Blatt, das
+         sonst nur Fließtext trägt, ist das Foto der einzige Halt. */
+      grid-template-columns: 1fr 0.72fr;
       gap: var(--raum-8);
       align-items: start;
     }

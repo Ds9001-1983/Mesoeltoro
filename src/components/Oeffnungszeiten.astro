@@ -78,8 +78,10 @@ const heute = zeitpunkt ? kalendertag(zeitpunkt, restaurant.zeitzone).wochentag 
     color: var(--text-leise);
   }
 
+  /* Die Tabelle steht im Fuß auf Grund und im Kontakt auf Kalk — deshalb
+     der semantische Akzent und nicht var(--gold). */
   .zeiten__heute th {
-    color: var(--gold);
+    color: var(--akzent);
   }
 
   .zeiten__ausnahmen {

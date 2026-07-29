@@ -17,11 +17,28 @@ und damit auch nicht den häufigsten Barrierefreiheits-Fehlerherd überhaupt.
 `scripts/pruefe-externe-requests.mjs` und `tests/inhalt/recht.spec.ts` setzen
 das durch.
 
+**1a. Auftritt ist dunkel, Dokument ist hell.**
+Die Seite hat zwei Flächen, und die Zuordnung ist keine Geschmacksfrage:
+Hero, Kapitel, Bilder und die Glut stehen auf `--grund`. Speisekarte,
+Chronik, Öffnungszeiten, Anfahrt, häufige Fragen und alle Rechtstexte stehen
+auf `--kalk`. Wer eine neue Seite baut, fragt nicht „hell oder dunkel",
+sondern „wird das gelesen oder angesehen".
+
+Der Anlass war eine Zählung, kein Gefühl: Am 29.07.2026 waren 81 % der
+Startseite und 93,5 % der Speisekarte blanke Grundfläche.
+`tests/verhalten/flaechen.spec.ts` bricht bei über 70 %.
+
+Umgeschaltet wird **ausschließlich** über `data-flaeche="hell"` bzw.
+`"bordeaux"`. Eine Komponente, die `var(--gold)` oder `var(--creme)` direkt
+setzt, ist damit kaputt — sie gehört auf `--akzent`, `--text`, `--text-leise`
+und `--linie`.
+
 **2. Kein Text über bewegtem Bild.**
 Schrift steht immer auf ruhiger Fläche. Damit ist WCAG 1.4.3 über Bewegtbild
 strukturell erledigt statt mühsam gemessen. Der Hero setzt die Mega-Typo auf
-reinen Kalk und beginnt den Bildstapel erst darunter — das ist keine
+einfarbigen Grund und lässt den Bildstapel darüber enden — das ist keine
 Layoutlaune, sondern die Umsetzung dieser Regel.
+`tests/verhalten/hero-grund.spec.ts` misst sie nach.
 
 **3. Über Werbeaussagen entscheidet der Auftraggeber, nicht der Code.**
 Die Sperrliste in `content/claims.json` ist seit dem 29.07.2026 **leer** —
@@ -50,6 +67,9 @@ Gate hart, weil es um fremde Rechte geht, nicht um eigene Aussagen.
 | Bilder per Dateipfad einbinden | Nur über `Bild.astro` mit Registerschlüssel |
 | `--bordeaux` als Linie, Rand oder Schrift auf `--grund` | 1,90:1. Bordeaux ist Vollfläche, nie Kontur. Darauf trägt nur Elfenbein (9,20:1) |
 | `--gold` als Fließtext auf `--bordeaux` | 4,13:1 — dort nur Großschrift und UI. Auf `--grund` dagegen 7,85:1 und uneingeschränkt |
+| `--gold` irgendwo auf `--kalk` | 2,09:1. Auf heller Fläche ist der Akzent `--ochsenblut` (12,37:1) — dort und nur dort kommt das Markenrot vor |
+| `--ochsenblut` auf `--grund` | 1,32:1. Umgekehrt genauso: Das Markenrot trägt ausschließlich auf heller Fläche |
+| `var(--gold)` oder `var(--creme)` in einer Komponente | Komponenten stehen auf wechselnden Flächen. Immer `--akzent`, `--akzent-gross`, `--text`, `--text-leise`, `--linie` |
 | Sekundärtext als Deckkraft statt als eigener Hexwert | Die Vorschau setzt `#ece0cc/50` — das sind 4,37:1 und verfehlt 4,5. Ein fester Ton ist nachrechenbar, eine Alpha-Angabe prüft niemand |
 | Rasterzellen ohne `min-inline-size: 0` | Voreingestellt ist `min-width: auto`; eine einzige lange Zeile zieht dann die ganze Seite waagerecht (1.4.10) |
 | Endlos laufende Bewegung ohne Pausetaste | 2.2.2. Genau daran scheitert die Vorschau mit Laufband und Glutpuls |
@@ -78,11 +98,11 @@ entziehen, nicht auf Ladeanzeigen. Die Auflagen, unter denen beide zulässig
 sind, stehen in `docs/adr/0008-zeiger-und-vorhang.md` und sind im Code
 durchgesetzt, nicht bloß dokumentiert.
 
-## Die sechs Signature Moves
+## Die acht Signature Moves
 
 | # | Move | Ort |
 |---|------|-----|
-| 1 | Der Anschnitt — gerissene Masken über mehreren Bildebenen | Kapitel VI |
+| 1 | Der Anschnitt — gerissene Masken über mehreren Bildebenen | Kapitel III |
 | 2 | Die Rubrik — römische Ziffer, spanische Zeile, Überschrift zieht auf | I–VI |
 | 3 | Die Glut — WebGL-Fragment-Shader (OGL) | Kapitel III, genau einmal |
 | 4 | Der Küchenpass — echter Öffnungsstatus | Kapitel VI, Kontakt |
@@ -91,8 +111,12 @@ durchgesetzt, nicht bloß dokumentiert.
 | 7 | Das Papier — gerechnete Faserkachel + `@view-transition` | global |
 | 8 | Das Bildband — das einzige Bild über die volle Breite | zwischen IV und V |
 
-Der frühere Move „Der Temperaturwechsel“ ist entfallen: Seit die ganze Seite
-dunkel ist, gibt es keine Temperatur mehr zu wechseln.
+Der frühere Move „Der Temperaturwechsel“ hieß so, weil er zwischen zwei
+Farbtemperaturen wechselte. Er ist am 29.07.2026 vormittags entfallen, als
+die Seite durchgehend dunkel wurde — und nachmittags in anderer Form
+zurückgekehrt: **Der Flächenwechsel** trennt jetzt Auftritt von Dokument
+(Regel 1a). Er zählt nicht als neunter Move, weil er kein Effekt ist,
+sondern die Gliederung der Seite.
 
 Wer einen siebten hinzufügt, streicht einen anderen. Der Skill setzt die
 Obergrenze bei sieben, und sie ist gut begründet: Ab da wird Handschrift zu
@@ -115,12 +139,15 @@ Seitenköpfe tragen eine spanische Zeile über der deutschen. Preise, Allergene,
 Öffnungszeiten und Rechtstexte bleiben deutsch — wer die Karte liest, muss sie
 verstehen. Jede spanische Zeichenkette bekommt `lang="es"`.
 
-**Die Seite ist durchgehend dunkel** (`--grund: #14110D`). Akzent ist Gold
-`#C9A24B` (7,85:1), Fließtext Creme `#ECE0CC` (14,43:1).
+**Die Seite ist dunkel, aber nicht ununterbrochen** (`--grund: #14110D`).
+Akzent dort ist Gold `#C9A24B` (7,85:1), Fließtext Creme `#ECE0CC` (14,43:1).
 
-Das echte Markenrot `#551213` steht auf dem dunklen Grund bei 1,07:1 und ist
-deshalb **nicht mehr auf der Seite**. Es überlebt als Bordeaux `#7B2233`, aber
-nur als Vollfläche. Begründung in `docs/adr/0009-dunkle-gestaltung.md`.
+Auf der hellen Fläche `--kalk: #F4EFE6` gilt die gespiegelte Palette:
+Fließtext Espresso `#2B2521` (13,20:1), Akzent das echte Markenrot
+Ochsenblut `#551213` (12,37:1). Auf dem dunklen Grund stünde es bei 1,32:1 —
+die Hausfarbe kommt deshalb genau dort vor, wo sie trägt, und nirgends sonst.
+Bordeaux `#7B2233` bleibt Vollfläche, nie Kontur.
+Begründung in `docs/adr/0009-dunkle-gestaltung.md`.
 
 Wer eine Farbe anfasst, ändert sie in `src/lib/farben.ts` **und** `tokens.css`
 — der Kontrastwächter vergleicht beide und rechnet jeden Kommentar nach.
@@ -132,9 +159,9 @@ Wer eine Farbe anfasst, ändert sie in `src/lib/farben.ts` **und** `tokens.css`
 ## Vor jedem Commit
 
 ```
-pnpm pruefen      Typen, 93 Einheitentests, Inhalte, Kontraste
+pnpm pruefen      Typen, 101 Einheitentests, Inhalte, Kontraste
 pnpm build        baut und prüft danach Claims, Bildrechte, Fremdanfragen
-pnpm test:e2e     279 Prüfungen im Browser, 4 Projekte
+pnpm test:e2e     296 Prüfungen im Browser, 4 Projekte
 ```
 
 Bild geändert? `pnpm bilder` erzeugt die Ableitungen neu.
