@@ -467,3 +467,50 @@ hinter `@supports not (animation-timeline: view())` bauen.
 konnte der Ausfall unbemerkt ausgeliefert werden. Ein Firefox-Projekt braucht
 `pnpm exec playwright install firefox` — im Cache liegt nur Revision 1532,
 Playwright 1.62 erwartet 1538.
+
+### Nachtrag zum Nachtrag — zwei Funde aus der Gegenmessung
+
+Die fünf Untersuchungen haben nach der Behebung ein zweites Mal gegen den
+neuen Stand gemessen und dabei zwei Fehler gefunden, die vorher unter den
+größeren lagen.
+
+**Die Pausetaste im Anschnitt war mit der Maus nicht bedienbar.**
+Dieselbe Falle wie in `Bild.astro`: Die Regel `.anschnitt__pause` steht in
+`Anschnitt.astro`, der Knopf trägt aber die Kennung von `Pausetaste.astro` —
+die Klasse wird nur als Prop durchgereicht. Der Selektor griff nie, die Taste
+blieb auf `position: static`, saß dadurch oben links im Bildrahmen und lag
+**unter** den Bildebenen. `document.elementFromPoint()` lieferte an ihrer
+Mitte ein `IMG`, ein echter Klick lief in den Timeout.
+
+Bedienbar war sie damit nur per Tastatur. Für 2.2.2 reicht das formal, aber
+der Mechanismus muss auffindbar sein — eine Taste, die man sieht und nicht
+treffen kann, ist schlechter als keine.
+
+Die beiden anderen Pausetasten standen im normalen Fluss und waren deshalb
+nur **zufällig** erreichbar. Alle drei benutzen jetzt `:global()`, damit aus
+dem Zufall eine Zusage wird. Gegengeprüft: Ohne `:global()` meldet der Test
+„An der Mitte von .anschnitt__pause liegt IMG obenauf".
+
+**Die Pausetasten standen auch dann, wenn nichts lief.**
+`bewegung.ts` blendete sie ein, sobald JavaScript lief — ohne Modusprüfung.
+Bei reduzierter Bewegung standen drei Tasten neben null laufenden
+Animationen. Das ist wörtlich die Meldung des Auftraggebers, und der Kopf von
+`Pausetaste.astro` fordert selbst das Gegenteil („ein Bedienelement ohne
+Wirkung ist schlimmer als keines") — gemeint war dort nur der Fall ohne
+JavaScript.
+
+**Diese Änderung war vorher nicht zulässig.** Solange Glutpuls und
+WebGL-Shader den Modus ignorierten, war die Taste der einzige Mechanismus
+nach 2.2.2; sie auszublenden hätte den Notausgang versteckt. Erst weil beide
+seit dieser Runde gegated sind, ist das Ausblenden korrekt. Der Test weist
+das in dieser Reihenfolge nach: erst null laufende Animationen, dann darf die
+Taste weg sein.
+
+**Und einmal Selbstkritik am Messwerkzeug:** Zwei erste Fassungen der neuen
+Tests haben falsch gemessen und wären trotzdem grün geblieben.
+`Animation.rangeStart` liefert `{ offset, rangeName }` statt einer Pixelzahl,
+und `window.scrollTo` ohne `behavior: 'instant'` ist wegen
+`scroll-behavior: smooth` nach zwei Frames noch unterwegs — gemessen wurde
+dann bei Scrollposition 1. Beides fiel nur auf, weil die Gegenprobe
+durchgeführt wurde. Ein Test, dessen Rotfärbung man nie gesehen hat, ist eine
+Behauptung.

@@ -57,9 +57,16 @@ test.describe('Laufband (2.2.2 Pause, Stop, Hide)', () => {
      * Verschiebung misst, erwischt noch ein oder zwei laufende Bilder und
      * bekommt ein falsches Rot. Am 29.07.2026 genau so beobachtet.
      */
+    /*
+     * 5 s statt 2 s. Im Einzellauf greift der Stilabgleich in Millisekunden;
+     * im vollen Lauf mit vier Projekten auf sechs Arbeitern hat dieser Schritt
+     * am 29.07.2026 einmal die 2 s gerissen und den Lauf grundlos rot gemacht.
+     * Ein großzügiges Fenster kostet nichts — der Test wartet nur, bis die
+     * Bedingung eintritt, und bricht bei Erfolg sofort ab.
+     */
     await expect
       .poll(() => band.evaluate((el) => getComputedStyle(el).animationPlayState), {
-        timeout: 2000,
+        timeout: 5000,
       })
       .toBe('paused')
 

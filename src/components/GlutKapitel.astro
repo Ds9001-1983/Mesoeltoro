@@ -155,7 +155,9 @@ import Rubrik from './Rubrik.astro'
     line-height: 1.7;
   }
 
-  .glut__pause {
+  /* :global(), weil der Knopf die Kennung von Pausetaste.astro trägt und
+     nicht die dieser Komponente — siehe Anschnitt.astro. */
+  .glut__inhalt :global(.glut__pause) {
     margin-block-start: var(--raum-7);
   }
 

@@ -79,6 +79,28 @@ function setzeModus(modus: Modus, speichern: boolean): void {
     setzePause(false)
   }
 
+  /*
+   * Die Tasten stehen nur, wenn es etwas anzuhalten gibt.
+   *
+   * Bis zum 29.07.2026 wurden sie eingeblendet, sobald JavaScript lief —
+   * ohne jede Modusprüfung. Bei reduzierter Bewegung standen damit drei
+   * Pausetasten neben null laufenden Animationen. Genau so hat der
+   * Auftraggeber es beschrieben: „da ist sogar ein pause knopf aber es
+   * läuft nix". Der Kopf von Pausetaste.astro fordert selbst das Gegenteil
+   * („ein Bedienelement ohne Wirkung ist schlimmer als keines") — gemeint
+   * war dort nur der Fall ohne JavaScript.
+   *
+   * Diese Änderung war vorher NICHT zulässig und ist es erst seit heute:
+   * Solange der Glutpuls und der WebGL-Shader den Modus ignorierten, war
+   * die Taste der einzige Mechanismus nach 2.2.2. Beide sind inzwischen
+   * gegated — bei „reduced" läuft nachweislich nichts mehr, der Canvas wird
+   * gar nicht erst gebaut. Erst dadurch ist das Ausblenden korrekt und
+   * nicht ein Verstecken des Notausgangs.
+   */
+  for (const taste of pausetasten) {
+    taste.hidden = modus !== 'full'
+  }
+
   if (speichern) merken(modus)
 
   // Der Shader hört hierauf, statt selbst am DOM zu lauschen.
@@ -133,8 +155,8 @@ function setzePause(pausiert: boolean): void {
   window.dispatchEvent(new CustomEvent<boolean>('meson:pause', { detail: pausiert }))
 }
 
+/* Die Sichtbarkeit setzt setzeModus() — hier nur das Verhalten. */
 for (const taste of pausetasten) {
-  taste.hidden = false
   taste.addEventListener('click', () => {
     setzePause(wurzel.dataset['motionPaused'] !== 'true')
   })

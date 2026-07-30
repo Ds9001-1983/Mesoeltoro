@@ -220,6 +220,68 @@ test.describe('Keine Bewegung, die sich nicht anhalten lässt (2.2.2)', () => {
   }
 })
 
+test.describe('Pausetaste steht nur, wenn es etwas anzuhalten gibt', () => {
+  test.skip(({ browserName }) => browserName !== 'chromium', 'nur einmal nötig')
+
+  test('bei voller Bewegung sichtbar und mit der Maus klickbar', async ({ page }, info) => {
+    test.skip(info.project.name !== 'voll-1440', 'einmal genügt')
+
+    await page.goto('/')
+
+    for (const wahl of ['.laufband__pause', '.glut__pause', '.anschnitt__pause']) {
+      const taste = page.locator(wahl)
+      await expect(taste, `${wahl} fehlt`).toBeVisible()
+      // `elementFromPoint` arbeitet in Fensterkoordinaten und liefert für
+      // alles außerhalb des Sichtfelds null — erst hinscrollen, dann messen.
+      await taste.scrollIntoViewIfNeeded()
+
+      /*
+       * Sichtbar heißt nicht bedienbar. `.anschnitt__pause` stand am
+       * 29.07.2026 auf `position: static`, saß dadurch oben links im
+       * Bildrahmen und lag UNTER den Bildebenen — ein echter Klick lief in
+       * den Timeout, die Taste war nur per Tastatur erreichbar.
+       *
+       * Ursache war die Astro-Bereichszuordnung: Die Regel stand in
+       * Anschnitt.astro, der Knopf trägt aber die Kennung von
+       * Pausetaste.astro. Derselbe Fehlertyp wie in Bild.astro.
+       *
+       * Geprüft wird deshalb, was oben liegt — nicht, ob das Element da ist.
+       */
+      const oben = await taste.evaluate((el) => {
+        const r = el.getBoundingClientRect()
+        const treffer = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2)
+        return treffer === el || el.contains(treffer) ? 'die Taste' : (treffer?.tagName ?? 'nichts')
+      })
+      expect(oben, `An der Mitte von ${wahl} liegt ${oben} obenauf`).toBe('die Taste')
+
+      // Und dann tatsächlich klicken — der Beweis, nicht die Rechnung.
+      await taste.click({ timeout: 3000 })
+      await expect(taste).toHaveAttribute('aria-pressed', 'true')
+      await taste.click({ timeout: 3000 })
+    }
+  })
+
+  test('bei reduzierter Bewegung steht keine Taste ohne Wirkung', async ({ browser }) => {
+    const kontext = await browser.newContext({ reducedMotion: 'reduce' })
+    const seite = await kontext.newPage()
+    await seite.goto('/')
+    await seite.waitForTimeout(400)
+
+    // Erst der Nachweis, dass es wirklich nichts anzuhalten gibt.
+    const laufend = await seite.evaluate(
+      () => document.getAnimations().filter((a) => a.playState === 'running').length,
+    )
+    expect(laufend, 'bei reduzierter Bewegung läuft noch etwas').toBe(0)
+
+    // Und erst dann darf die Taste weg sein.
+    for (const wahl of ['.laufband__pause', '.glut__pause', '.anschnitt__pause']) {
+      await expect(seite.locator(wahl), `${wahl} steht ohne Wirkung da`).toBeHidden()
+    }
+
+    await kontext.close()
+  })
+})
+
 test.describe('Pausetaste bleibt im Tritt', () => {
   test.skip(({ browserName }) => browserName !== 'chromium', 'nur einmal nötig')
 

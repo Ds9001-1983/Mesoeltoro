@@ -258,7 +258,26 @@ const unterste = ebenen[ebenen.length - 1] as string
     pointer-events: none;
   }
 
-  .anschnitt__pause {
+  /*
+   * `:global()` — und das ist derselbe Fehlertyp wie in `Bild.astro`.
+   *
+   * Die Klasse `anschnitt__pause` wird per Prop an `Pausetaste.astro`
+   * durchgereicht. Astro hängt an einen Selektor aber die Kennung der
+   * DEFINIERENDEN Komponente, hier also Anschnitt — der Knopf trägt die von
+   * Pausetaste. Aus `.anschnitt__pause` wurde damit ein Selektor, der nie
+   * greift.
+   *
+   * Folge, am 29.07.2026 gemessen: Der Knopf blieb auf `position: static`,
+   * saß dadurch oben links im Bildrahmen und lag UNTER den Bildebenen.
+   * `document.elementFromPoint()` lieferte an seiner Mitte ein `IMG`, ein
+   * echter Klick lief in den Timeout — die Taste war ausschließlich per
+   * Tastatur bedienbar.
+   *
+   * Die beiden anderen Pausetasten stehen im normalen Fluss und waren
+   * deshalb nur ZUFÄLLIG erreichbar. Sie bekommen dieselbe Behandlung, damit
+   * aus dem Zufall eine Zusage wird.
+   */
+  .anschnitt__rahmen :global(.anschnitt__pause) {
     position: absolute;
     inset-block-end: var(--raum-3);
     inset-inline-end: var(--raum-3);

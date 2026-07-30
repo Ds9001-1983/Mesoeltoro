@@ -117,7 +117,9 @@ const { begriffe, dauer = '22s' } = Astro.props
     color: color-mix(in oklab, var(--gold) 55%, transparent);
   }
 
-  .laufband__pause {
+  /* :global(), weil der Knopf die Kennung von Pausetaste.astro trägt und
+     nicht die dieser Komponente — siehe Anschnitt.astro. */
+  .laufband :global(.laufband__pause) {
     flex: none;
   }
 
