@@ -41,6 +41,11 @@
   "headers": [
     {
       "source": "/(.*)",
+      "missing": [{ "type": "host", "value": { "eq": "meson-el-toro.de" } }],
+      "headers": [{ "key": "X-Robots-Tag", "value": "noindex, nofollow" }]
+    },
+    {
+      "source": "/(.*)",
       "headers": [
         {
           "key": "Content-Security-Policy",

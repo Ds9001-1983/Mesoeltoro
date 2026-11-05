@@ -6,7 +6,7 @@
   "description": "Website der Meson el Toro GmbH, Waldbröl — statisch, ohne externe Requests, WCAG 2.2 AA",
   "packageManager": "pnpm@10.33.0",
   "engines": {
-    "node": ">=22.0.0"
+    "node": "24.x"
   },
   "scripts": {
     "dev": "astro dev",
