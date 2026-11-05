@@ -1,13 +1,12 @@
 name: Prüfen
 
-# Läuft bei jedem Push und jedem Pull Request. Was hier rot wird, geht nicht
-# live: Vercel führt dieselben Prüfungen im Build Command aus, sodass ein
-# fehlgeschlagener Lauf die Veröffentlichung tatsächlich verhindert und nicht
-# nur ein rotes Kreuz auf GitHub erzeugt.
+# Was hier rot wird, geht nicht live: Vercel führt dieselben Prüfungen im
+# Build Command aus, sodass ein fehlgeschlagener Lauf die Veröffentlichung
+# tatsächlich verhindert und nicht nur ein rotes Kreuz auf GitHub erzeugt.
 
+# CI nur auf Abruf: Die volle Prüfung läuft lokal vor jedem Push (globale CI-Regel SUPERBRAND, 26.10.2026).
+# Automatisch nur für Pull Requests (Sicherheitsupdates von Dependabot), sonst über „Run workflow“.
 on:
-  push:
-    branches: [main]
   pull_request:
   workflow_dispatch:
 
